@@ -118,6 +118,7 @@ public class PreReqUtil {
         }
 
         for (String topic : sourceTopics) {
+			logger.info(" ============================ >>>> CREATING TOPIC: " + topic);
             createTopic(platform, topic);
         }
 

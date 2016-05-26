@@ -1,5 +1,5 @@
 {
-	"display_name": "Load Events to ES  ",
+	"display_name": " Placeholder for global processors  ",
 	"description": " desc ",
 	"author": "aw",
 	"body_class": "com.aw.common.spark.StreamDef",
@@ -7,12 +7,12 @@
 		"tenant": true,
 		"system": false,
 		"target_driver": "driver30sec",
-		"processor_id": "events",
+		"processor_id": "placeholder",
 		"optimal_events_per_task" : 10000,
-		"source_topic": ["events"],
+		"source_topic": ["dummy"],
 		"config_data": {
 			"processor_class": "com.aw.compute.streams.processor.GenericESProcessor",
-			"index_name": "events"
+			"index_name": "dummy"
 		}
 	}
 }

@@ -197,11 +197,11 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		provisionTenant("1");
 		DataFeedUtils.fireTenantData(TestDependencies.getPlatform().get(), "1",  "test_event1.json", "events");
 
-		System.out.println(" TEMP wait to check spark logs...comment once test is working");
-		Thread.sleep(1200000);
+		//System.out.println(" TEMP wait to check spark logs...comment once test is working");
+		//Thread.sleep(1200000);
 
 		//make sure we get the counts we expect
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.SYSTEM , "game_event", 1, 180);
+		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("1") , "game_event", 1, 180);
 
 	}
 
@@ -212,7 +212,7 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		Map<TaskDef, TaskStatus> status = TestDependencies.getTaskService().get().getTaskStatus();
 
 		//make sure we have the right number of tasks
-		assertEquals(1, status.size());
+		assertEquals(2, status.size());
 
 		TaskDef taskDef = TestDependencies.getDocs().get().getDocument(DocumentType.TASK_DEF, "platform_status_poller").getBodyAsObject(TaskDef.class);
 

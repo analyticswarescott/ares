@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum Topic {
 
+
+	DUMMY(false), //placeholder
+
 	/**
 	 * Used in provisioning tenants - deprecated
 	 */
@@ -28,7 +31,7 @@ public enum Topic {
 	/**
 	 * events from the agent
 	 */
-	EVENTS(false), //TODO: support both global and tenant streams for events
+	EVENTS(true),
 
 	/**
 	 * Any topic that begins with RULE will represent firings of a rule in the detection framework

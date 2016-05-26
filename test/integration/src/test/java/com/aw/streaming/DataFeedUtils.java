@@ -38,21 +38,7 @@ public class DataFeedUtils {
 
 
 
-
     public static void main(String[] args) throws Exception{
-
-    }
-
-
-    public static void createTenantKafka(Platform platform, String tid) throws Exception{
-
-        Tenant t = new Tenant(tid);
-
-        JSONObject msg = new JSONObject(t.getAsJSON().toString());
-        JSONObject[] msgs = new JSONObject[1];
-        msgs[0] = msg;
-
-        seedTopic(platform, "Tenant", msgs);
 
     }
 
@@ -107,14 +93,14 @@ public class DataFeedUtils {
 
 		msgs[0] = rawData;//TODO: support array
 
-		seedTopic(platform, tid + "_" + topic, msgs);
+		seedTopic(Tenant.forId(tid),platform, tid + "_" + topic, msgs);
 
 
 	}
 
 
 
-    public static void seedTopic(Platform platform, String sourceTopicName, JSONObject[] messageObj) throws Exception {
+    public static void seedTopic(Tenant tenant, Platform platform, String sourceTopicName, JSONObject[] messageObj) throws Exception {
 
                         KafkaImporter ki = new KafkaImporter(null, platform.getNode(NodeRole.KAFKA).getHost() +
                                ":" + platform.getNode(NodeRole.KAFKA).getSettingInt(Kafka.PORT)  , "");
@@ -123,7 +109,7 @@ public class DataFeedUtils {
                          for (int i=0; i<messageObj.length; i++) {
                              JSONObject msg = messageObj[i];
                              System.out.println("sending kafka message");
-                             ki.sendMessage(sourceTopicName, "0", msg.toString());
+                             ki.sendMessage(sourceTopicName, tenant.getTenantID(), msg.toString());
                          }
 
 

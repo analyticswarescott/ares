@@ -54,7 +54,7 @@ public class DefaultTenantStatusTest extends AbstractKafkaZkUnitTest {
 		String strJson = JSONUtils.objectToString(status);
 		status = JSONUtils.objectFromString(strJson, DefaultTenantStatus.class);
 
-		assertEquals(5, status.getStreamStatus().size());
+		assertEquals(6, status.getStreamStatus().size());
 
 		//only bundle topic should have offset, and it should be 25
 		long offset = 0L;
