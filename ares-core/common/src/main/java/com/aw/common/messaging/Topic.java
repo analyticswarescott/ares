@@ -28,7 +28,7 @@ public enum Topic {
 	/**
 	 * events from the agent
 	 */
-	EVENTS(true),
+	EVENTS(false), //TODO: support both global and tenant streams for events
 
 	/**
 	 * Any topic that begins with RULE will represent firings of a rule in the detection framework

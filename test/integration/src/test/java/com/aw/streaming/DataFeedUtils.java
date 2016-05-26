@@ -96,21 +96,9 @@ public class DataFeedUtils {
 
     }
 
-    public static void fireGlobalEvents(Platform platform, String tid, String eventFileName) throws Exception {
-        System.out.println("firing bundles ");
-
-        String s =  readFile(eventFileName);
-        JSONObject bundle = new JSONObject(s);
-        JSONObject[] msgs = new JSONObject[1];
-        msgs[0] = bundle;
-
-        seedTopic(platform, "events", msgs);
 
 
-    }
-
-
-	public static void fireTenantData(Platform platform, String tid, String eventFileName, String index) throws Exception {
+	public static void fireTenantData(Platform platform, String tid, String eventFileName, String topic) throws Exception {
 		System.out.println("firing bundles ");
 
 		String s =  readFile(eventFileName);
@@ -119,7 +107,7 @@ public class DataFeedUtils {
 
 		msgs[0] = rawData;//TODO: support array
 
-		seedTopic(platform, tid + "_" + index, msgs);
+		seedTopic(platform, tid + "_" + topic, msgs);
 
 
 	}

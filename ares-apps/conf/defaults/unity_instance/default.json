@@ -27,14 +27,8 @@
 				"download_incident_attachment" : "incidents",
 
                 "platform_error": "errors",
+				"game_event" : "events",
 
-		        "on_disk_executable" : "edr",
-		        "edr_certs" : "edr",
-                "edr_key_val" : "edr",
-		        "windows_registry": "edr",
-		        "running_process": "edr",
-		        "wmi_data": "edr",
-                "windows_log": "edr",
 
                 "topic_status": "status",
 				"perf_stat": "status"

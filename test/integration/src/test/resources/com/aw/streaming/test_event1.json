@@ -1,4 +1,5 @@
 {
+	"dg_utype" : "game_event",
 	"alarmActive": true,
 	"alarmCode": 12,
 	"anomalyDetected": null,

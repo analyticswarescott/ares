@@ -1,0 +1,34 @@
+{
+    "version": 1,
+    "author": "aw",
+    "description": "game event fields",
+    "version_date": "2015-11-23 07:38:11.028 -0800",
+    "body": {"fields": [
+
+        {
+			"array": false,
+			"description": "eventId",
+			"tags": [ "error" ],
+			"type": "string",
+			"display_name": "event id",
+			"name": "eventId"
+		},
+		{
+			"array": false,
+			"description": "alarmActive",
+			"tags": [ "error" ],
+			"type": "string",
+			"display_name": "alarm Active ",
+			"name": "alarmActive"
+		},
+		{
+			"array": false,
+			"description": "alarmCode",
+			"tags": [ "error" ],
+			"type": "string",
+			"display_name": "alarm Code ",
+			"name": "alarmCode"
+		}
+
+    ]}
+}

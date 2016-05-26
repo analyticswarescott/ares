@@ -1,3 +1,4 @@
+/*
 package com.aw.common.cluster.db;
 
 import com.aw.common.cluster.db.exceptions.LockAcquireException;
@@ -49,3 +50,4 @@ public class LockManagerTest extends AbstractClusterTest {
 
 
 }
+*/

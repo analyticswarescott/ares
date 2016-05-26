@@ -194,13 +194,14 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		TestDependencies.getPlatformMgr().get().setPlatform(null);
 
 
-		DataFeedUtils.fireGlobalEvents(TestDependencies.getPlatform().get(), "na", "test_event1.json");
+		provisionTenant("1");
+		DataFeedUtils.fireTenantData(TestDependencies.getPlatform().get(), "1",  "test_event1.json", "events");
 
 		System.out.println(" TEMP wait to check spark logs...comment once test is working");
 		Thread.sleep(1200000);
 
 		//make sure we get the counts we expect
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, null, "gameEvent", 1, 180);
+		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.SYSTEM , "game_event", 1, 180);
 
 	}
 

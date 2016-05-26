@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "author": "aw",
+    "description": "game event",
+    "body": {
+        "resolvers": [
+			{
+				"type": "com.aw.unity.json.DefaultJSONDataTypeResolver",
+				"mappings": [
+					{
+						"path": [
+							"dg_utype"
+						],
+						"value": "game_event",
+						"data_type": "game_event"
+					}
+				]
+			}],
+        "types": [
+
+            {
+                "name": "game_event",
+                "display_name": "game events",
+                "id_field" : "eventId",
+                "description": "game events",
+                "field_refs": [
+
+                    { "name": "eventId" },
+                    { "name": "alarmActive" },
+                    { "name": "alarmCode" }
+
+                ],
+                "tags" : [
+                    "system"
+                ]
+
+            }
+
+       ]
+    }
+}

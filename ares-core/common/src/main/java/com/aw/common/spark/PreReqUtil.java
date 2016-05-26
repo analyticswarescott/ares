@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import com.aw.common.util.JSONUtils;
+import com.aw.document.DocumentType;
 import com.aw.platform.PlatformUtils;
 import kafka.utils.ZKStringSerializer$;
 import org.I0Itec.zkclient.ZkClient;
@@ -36,6 +38,7 @@ public class PreReqUtil {
 
     public static boolean provisionTopicsTolerateErrors(Platform platform, PlatformController controller, List<Document> streamDefs) {
         try {
+
             provisionTopics(platform, controller, streamDefs);
             return true;
         } catch (Exception ex) {
@@ -80,22 +83,27 @@ public class PreReqUtil {
 
             try {
                 streamDef = doc.getBodyAsObject();
+				if (doc.getDocumentType() == DocumentType.STREAM_GLOBAL) {
+					//System.out.println(" ============================ >>>> GLOBAL STREAM detected: " + doc.getName());
+					streamDef.setisGlobal(true);
+				}
             } catch (Exception e) {
                 //log bad stream defs and continue
                 logger.error("error loading stream def for " + tenantAware.getTenantID() + "/" + doc.getDocumentType() + "/" + doc.getName() + "/v" + doc.getVersion() + " : " + e.getMessage());
                 continue; //skip handling this doc in this case
             }
 
-			if (streamDef.getProcessorId().contains("perf")) {
-				int bp = 0;
-			}
-
 			if (tenantAware.getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
+				if (streamDef.isGlobal()) {
+					//System.out.println(" ============================ >>>> GLOBAL STREAM detected: " + JSONUtils.objectToString(streamDef));
+					int bp = 0;
+				}
 				if (streamDef.isSystem()) {
+					//System.out.println(" ============================ >>>> SYSTEM TENANT STREAM topic create: " + sourceTopics);
 					sourceTopics.addAll(streamDef.getSourceTopicNames(Tenant.forId(tenantAware.getTenantID())));
 				}
 				else {
-					logger.info("skipping topic creation for tenant stream not marked as system " + doc.getName());
+					logger.error("skipping topic creation for tenant stream not marked as system " + doc.getName());
 				}
 			}
 			else {
@@ -103,7 +111,7 @@ public class PreReqUtil {
 					sourceTopics.addAll(streamDef.getSourceTopicNames(Tenant.forId(tenantAware.getTenantID())));
 				}
 				else {
-					logger.info("skipping topic creation for tenant stream not marked as tenant " + doc.getName());
+					logger.error("skipping topic creation for tenant stream not marked as tenant " + doc.getName());
 				}
 			}
 

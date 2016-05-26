@@ -1,5 +1,5 @@
 {
-	"display_name": "Load Elastic  ",
+	"display_name": "Load Events to ES  ",
 	"description": " desc ",
 	"author": "aw",
 	"body_class": "com.aw.common.spark.StreamDef",
@@ -7,7 +7,7 @@
 		"tenant": true,
 		"system": false,
 		"target_driver": "driver30sec",
-		"processor_id": "global_events",
+		"processor_id": "events",
 		"optimal_events_per_task" : 10000,
 		"source_topic": [
 			"events"
