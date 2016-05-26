@@ -65,14 +65,7 @@ public class RestRoleServer extends RestServer {
 
     protected void postStart() {
 		//set up logging
-
-/*
-		Exception e = new Exception();
-		e.printStackTrace();
-*/
-
 		PropertyConfigurator.configure(EnvironmentSettings.getLog4JConfigFile());
-		logger.warn("RESTROLESERVER==================== properties file for log4j: " + EnvironmentSettings.getLog4JConfigFile());
-    }
+	}
 
 }

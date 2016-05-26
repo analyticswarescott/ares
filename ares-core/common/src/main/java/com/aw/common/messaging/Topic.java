@@ -28,22 +28,7 @@ public enum Topic {
 	/**
 	 * events from the agent
 	 */
-	MACHINE_EVENT(true),
-
-	/**
-	 * incoming bundles
-	 */
-	BUNDLE(true),
-
-	/**
-	 * A reference to the bundle in the storage layer
-	 */
-	BUNDLE_REF(true),
-
-	/**
-	 * A reference to the scan data in the storage layer
-	 */
-	SCAN_REF(true),
+	EVENTS(true),
 
 	/**
 	 * Any topic that begins with RULE will represent firings of a rule in the detection framework
@@ -51,39 +36,9 @@ public enum Topic {
 	RULE(true),
 
 	/**
-	 * edr scan component data - static executable files on disk - this maps to a unity data type name
-	 */
-	ON_DISK_EXECUTABLE(true),
-
-	/**
-	 * edr scan component data - windows registry - this maps to a unity data type name
-	 */
-	WINDOWS_REGISTRY(true),
-
-	/**
-	 * edr scan component data - windows log - this maps to a unity data type name
-	 */
-	WINDOWS_LOG(true),
-
-	/**
-	 * edr scan component data - active network connections (i.e. netstat) - this maps to a unity data type name
-	 */
-	NETWORK_CONNECTION(true),
-
-	/**
 	 * alarms for a tenant, will be inserted into the alarm index
 	 */
 	ALARM(true),
-
-	/**
-	 * edr scan component data - processes actively running at the time of the scan - this maps to a unity data type name
-	 */
-	RUNNING_PROCESS(true),
-
-	/**
-	 * Windows WMI data
-	 */
-	WMI_DATA(true),
 
 	/**
 	 * System error topic

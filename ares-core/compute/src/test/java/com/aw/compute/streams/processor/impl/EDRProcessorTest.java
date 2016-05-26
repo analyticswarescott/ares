@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor.impl;
 
 import static org.junit.Assert.assertEquals;
@@ -26,12 +27,14 @@ import com.aw.util.Statics;
 
 import kafka.producer.KeyedMessage;
 
+*/
 /**
  * Test the processing of edr data
  *
  *
  *
- */
+ *//*
+
 public class EDRProcessorTest extends DGStreamUnitTest {
 
 	@Test
@@ -110,3 +113,4 @@ public class EDRProcessorTest extends DGStreamUnitTest {
 
 	}
 }
+*/

@@ -1,0 +1,18 @@
+{
+  "type" : "test_type",
+  "name": "test_type:default",
+  "display_name": "test ",
+  "description" : "test desc ",
+  "author": "dg",
+  "body": {
+    "default_workspace_name": "def_workspace:default",
+    "notification_settings": {
+      "email_addresses": [
+        {
+          "addr": "scott@analyticsware.com",
+          "primary": "true"
+        }
+      ]
+    }
+  }
+}

@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor;
 
 import java.io.InputStream;
@@ -8,12 +9,14 @@ import org.xml.sax.InputSource;
 import com.aw.common.system.FileInputMetadata;
 import com.aw.util.Statics;
 
+*/
 /**
  * Processors for xml bundles
  *
  *
  *
- */
+ *//*
+
 public class HDFSXMLBundleProcessor extends XMLBundleProcessor implements HDFSFileProcessor {
 
 	private static final long serialVersionUID = 1L;
@@ -25,3 +28,4 @@ public class HDFSXMLBundleProcessor extends XMLBundleProcessor implements HDFSFi
 	}
 
 }
+*/

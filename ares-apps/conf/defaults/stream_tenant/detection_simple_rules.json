@@ -14,12 +14,7 @@
 			"topic_status",
 			"action",
 			"incident",
-			"machine_event",
-			"on_disk_executable",
-			"windows_registry",
-			"windows_log",
-			"running_process",
-			"wmi_data"
+			"events"
 		],
 		"config_data": {
 			"processor_class": "com.aw.compute.detection.SimpleRuleProcessor"

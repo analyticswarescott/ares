@@ -34,8 +34,8 @@ public class KafkaStreamStatusTest extends AbstractKafkaZkUnitTest {
 		StreamDef testStream = newTestStreamDef();
 
 		Tenant tenant = Tenant.forId("1");
-		createTopic(tenant, Topic.BUNDLE_REF);
-		createTopic(tenant, Topic.SCAN_REF);
+		createTopic(tenant, Topic.EVENTS);
+		createTopic(tenant, Topic.ERRORS);
 
 		setupKafkaFor(Tenant.forId("1"), testStream.getSourceTopicNames(tenant), testStream.getProcessorName(tenant), LAST_OFFSETS);
 
@@ -55,13 +55,13 @@ public class KafkaStreamStatusTest extends AbstractKafkaZkUnitTest {
 
 		//make sure properties are correct
 		assertEquals(2, status.getTopicStatus().size());
-		assertTrue(status.getTopicStatus().keySet().contains(Topic.BUNDLE_REF));
-		assertTrue(status.getTopicStatus().keySet().contains(Topic.SCAN_REF));
+		assertTrue(status.getTopicStatus().keySet().contains(Topic.EVENTS));
+		assertTrue(status.getTopicStatus().keySet().contains(Topic.ERRORS));
 
-		assertEquals(0, status.getTopicStatus().get(Topic.BUNDLE_REF).get(0).getLatest().getPosition());
-		assertEquals(LAST_OFFSETS[0], status.getTopicStatus().get(Topic.BUNDLE_REF).get(0).getLatestProcessed().getPosition());
-		assertEquals(0, status.getTopicStatus().get(Topic.SCAN_REF).get(0).getLatest().getPosition());
-		assertEquals(LAST_OFFSETS[1], status.getTopicStatus().get(Topic.SCAN_REF).get(0).getLatestProcessed().getPosition());
+		assertEquals(0, status.getTopicStatus().get(Topic.EVENTS).get(0).getLatest().getPosition());
+		assertEquals(LAST_OFFSETS[0], status.getTopicStatus().get(Topic.EVENTS).get(0).getLatestProcessed().getPosition());
+		assertEquals(0, status.getTopicStatus().get(Topic.ERRORS).get(0).getLatest().getPosition());
+		assertEquals(LAST_OFFSETS[1], status.getTopicStatus().get(Topic.ERRORS).get(0).getLatestProcessed().getPosition());
 
 	}
 

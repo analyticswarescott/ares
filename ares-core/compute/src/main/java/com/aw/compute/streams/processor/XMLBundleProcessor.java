@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ import com.aw.util.TwoKeyMap;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
+*/
 /**
  * Base class for processing JSON bundle data in Spark.
  *
  *
  *
- */
+ *//*
+
 public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContext, Map<String, Object>> {
 
 	private static final long serialVersionUID = 1L;
@@ -144,12 +147,14 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 		}
 	}
 
-	/**
+	*/
+/**
 	 * Attempts to convert the xml attributes to a string, string map. Unity type information is used to verify.
 	 *
 	 * @param attributes
 	 * @return
-	 */
+	 *//*
+
 	private Map<String, Object> toMap(String key, Attributes attributes) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -209,13 +214,15 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 		return map;
 	}
 
-	/**
+	*/
+/**
 	 * Get the final field value for the raw value given the unity field it corresponds to
 	 *
 	 * @param rawValue
 	 * @param field
 	 * @return
-	 */
+	 *//*
+
 	private String decodeValue(Field field, String rawValue) {
 
 		//if we don't need to do anything, we'll just return the original raw value
@@ -247,9 +254,11 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 	// TODO Auto-generated method stub
 
-	/**
+	*/
+/**
 	 * The SAX handler for parsing xml bundles
-	 */
+	 *//*
+
 	public class XMLBundleHandler extends DefaultHandler {
 
 		public XMLBundleContext getContext() { return m_ctx; }
@@ -316,11 +325,13 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 		}
 
-		/**
+		*/
+/**
 		 * ugly method to convert custom data - we don't have good field names here, so we are using our own
 		 * @param parent
 		 * @param customData
-		 */
+		 *//*
+
 		private void convertCustomData(BundleObject parent, BundleObject customData) {
 
 			Map<String, Object> data = parent.getData();
@@ -361,7 +372,8 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 		}
 
-		/**
+		*/
+/**
 		 * Convert a single named custom data variable holding one or more values to a format
 		 * that the bundle processor framework can understand. This method flattens out
 		 * the xml structure to result in a simple json object with three keys: name, scope, values
@@ -370,7 +382,8 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 		 *
 		 * @param curData the old format
 		 * @return the new format
-		 */
+		 *//*
+
 		private Map<String, Object> convertCustomVariable(Map<String, Object> curData) {
 
 			Map<String, Object> newData = new HashMap<String, Object>();
@@ -404,10 +417,12 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 		}
 
-		/**
+		*/
+/**
 		 * At this point we have a curObject set, and need to handle the data somehow. At the end of this method,
 		 * curObject should be pointing to the parent object in the stack, or null if the stack is empty.
-		 */
+		 *//*
+
 		private void endObject() {
 
 			String tag = curObject.getTag();
@@ -453,10 +468,12 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 		}
 
-		/**
+		*/
+/**
 		 * Holds the structure of bundle data for a particular spot in the bundle tree, along with the
 		 * tag name from the xml.
-		 */
+		 *//*
+
 		private class BundleObject {
 
 			public BundleObject(Map<String, Object> data, String tag) {
@@ -481,3 +498,4 @@ public abstract class XMLBundleProcessor extends BundleProcessor<XMLBundleContex
 
 }
 
+*/

@@ -1,0 +1,11 @@
+{
+  "operator" : "AND",
+      "filter": [
+        {
+          "col_name": "a",
+          "operator": "IN",
+          "values": [1,2],
+          "enabled": "true"
+        }
+      ]
+}

@@ -37,7 +37,7 @@ public class SystemTenantStatusTest extends AbstractKafkaZkUnitTest {
 			StreamDef stream = doc.getBodyAsObject();
 
 			//only populate Tenant
-			if (stream.getSourceTopic().get(0) == Topic.TENANT) {
+			if (stream.getSourceTopic().get(0) == Topic.EVENTS) {
 
 				//initialize kafka/zk for each stream with some offsets specific to each stream
 				setupKafkaFor(tenant, stream, 25L);
@@ -63,8 +63,8 @@ public class SystemTenantStatusTest extends AbstractKafkaZkUnitTest {
 		long offset = 0L;
 		for (StreamStatus streamStatus : status.getGlobalStreamStatus()) {
 
-			if (streamStatus.getTopicStatus().containsKey(Topic.TENANT)  ) {
-				List<TopicPartitionStatus> curStatus = streamStatus.getTopicStatus().get(Topic.TENANT);
+			if (streamStatus.getTopicStatus().containsKey(Topic.EVENTS)  ) {
+				List<TopicPartitionStatus> curStatus = streamStatus.getTopicStatus().get(Topic.EVENTS);
 				if (curStatus.size() > 0) {
 
 					offset = curStatus.get(0).getLatestProcessed().getPosition();

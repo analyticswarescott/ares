@@ -7,10 +7,10 @@
 		"tenant": true,
 		"system": false,
 		"target_driver": "driver30sec",
-		"processor_id": "es_load_events",
+		"processor_id": "global_events",
 		"optimal_events_per_task" : 10000,
 		"source_topic": [
-			"machine_event"
+			"events"
 		],
 		"config_data": {
 			"processor_class": "com.aw.compute.streams.processor.GenericESProcessor",

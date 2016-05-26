@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor;
 
 import java.io.BufferedInputStream;
@@ -33,12 +34,14 @@ import com.aw.util.DateUtil;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 
+*/
 /**
  * Process edr scan zips from hdfs
  *
  *
  *
- */
+ *//*
+
 public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 
 	private static final long serialVersionUID = 1L;
@@ -53,15 +56,19 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 	public Topic getDestTopic() { return destTopic; }
 	private Topic destTopic;
 
-	/**
+	*/
+/**
 	 * The data that is currently being processed
-	 */
+	 *//*
+
 	public enum FileType {
 
-		/**
+		*/
+/**
 		 * for now static data is just one topic, may be multiples eventually - note these topics
 		 * map to data types in unity
-		 */
+		 *//*
+
 		STATIC_DATA(Topic.ON_DISK_EXECUTABLE, "staticdata"),
 
 		WINDOWS_REGISTRY(Topic.WINDOWS_REGISTRY, "registryinfo.json"),
@@ -79,9 +86,11 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 			m_substring = substring;
 		}
 
-		/**
+		*/
+/**
 		 * @return The substring within the file name that identifies the file type
-		 */
+		 *//*
+
 		public String getSubstring() { return m_substring; }
 		private String m_substring;
 
@@ -204,12 +213,14 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 
 	}
 
-	/**
+	*/
+/**
 	 * The data is ready to go at this point, minus the guid and unity type which will be injected into the
 	 * json object.
 	 *
 	 * @param object The JSON to add to the system
-	 */
+	 *//*
+
 	private void addJson(JSONObject object, EDRProcessingContext pc) throws Exception {
 
 		putCommon(object, pc);
@@ -222,12 +233,14 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 
 	}
 
-	/**
+	*/
+/**
 	 * Put the common properties for all scan elements into the json before sending it along
 	 *
 	 * @param object The new json data we need to populate with common scan element properties
 	 * @throws Exception If anything goes wrong
-	 */
+	 *//*
+
 	private void putCommon(JSONObject object, EDRProcessingContext pc) throws Exception {
 
 		//add our time based on the file
@@ -293,9 +306,11 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 
 	}
 
-	/**
+	*/
+/**
 	 * Actually send the message
-	 */
+	 *//*
+
 	protected void sendMessage(KeyedMessage<String, String> message, EDRProcessingContext pc) throws Exception {
 		pc.getProducer().send(message);
 	}
@@ -339,12 +354,14 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 
 	}
 
-	/**
+	*/
+/**
 	 * Add all of the json data from this source
 	 *
 	 * @param source the source of json objects to ingest
 	 * @throws Exception if anything goes wrong
-	 */
+	 *//*
+
 	private void addJson(Iterable<JSONObject> source, EDRProcessingContext pc) throws Exception {
 		for (JSONObject data : source) {
 			if (data != null) {
@@ -353,9 +370,11 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 		}
 	}
 
-	/**
+	*/
+/**
 	 * A single-thread-compatible processing context for a single edr scan
-	 */
+	 *//*
+
 	public class EDRProcessingContext{
 
 		public final SimpleDateFormat CERTIFICATE_TIMESTAMP = new SimpleDateFormat("MM/dd/yyyy");
@@ -364,9 +383,11 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 			m_metadata = meta;
 		}
 
-		/**
+		*/
+/**
 		 * @return The next unique id for a piece of data from a single scan - should only be called from single thread
-		 */
+		 *//*
+
 		public int nextId() {
 			return ++m_id;
 		}
@@ -408,3 +429,4 @@ public class EDRProcessor implements HDFSFileProcessor, JSONHandler, Dependent {
 }
 
 
+*/

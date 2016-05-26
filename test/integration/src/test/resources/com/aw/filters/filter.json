@@ -1,0 +1,29 @@
+{
+  "operator" : "AND",
+      "filter": [
+        {
+          "field": "ua_pt",
+          "operator": "EQ",
+          "not" : true,
+          "values": [1],
+          "enabled": "true"
+        },
+        {
+              "operator" : "OR",
+              "filter": [
+                {
+                  "field": "ua_aa",
+                  "operator": "EQ",
+                  "values": [ true ],
+                  "enabled": "true"
+                },
+                {
+                  "field": "ua_ar",
+                  "operator": "EQ",
+                  "values": [ true ],
+                  "enabled": "true"
+                }
+              ]
+            }
+          ]
+}

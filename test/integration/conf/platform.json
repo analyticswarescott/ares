@@ -2,9 +2,9 @@
     "tags": [],
     "scope": "all",
     "name": "local",
-    "id": "40a4772e-46ed-4d1a-b023-a1c76c339a3a",
-    "description": "local platform",
+    "id": "cac356f7-72f6-44d9-9fcb-2a6a2392a57e",
     "tenant_id": "0",
+    "description": "local platform",
     "body_class": "com.aw.platform.DefaultPlatform",
     "type": "platform",
     "author": "aw",
@@ -12,7 +12,7 @@
     "grouping": "",
     "display_name": "local platform",
     "version_author": "aw",
-    "version_date": 1464079529243,
+    "version_date": 1464254554063,
     "is_current": true,
     "perm_read": "all",
     "perm_write": "all",
@@ -20,20 +20,6 @@
     "dependencies_name": [""],
     "op_sequence": 0,
     "body": {
-        "nodes": {"localhost": {
-            "config_db_master": {},
-            "config_db_worker": {},
-            "elasticsearch": {"cluster_name": "elasticsearch"},
-            "kafka": {"broker_id": 0},
-            "zookeeper": {"server_id": 1},
-            "spark_master": {},
-            "spark_worker": {},
-            "rest": {"port": 9099},
-            "hdfs_name": {},
-            "hdfs_data": {},
-            "hdfs_journal": {},
-            "node": {}
-        }},
         "settings": {
             "config_db_master": {
                 "master_db_port": 5432,
@@ -98,6 +84,20 @@
                 "port": 9100,
                 "stat_collect_interval": 1
             }
-        }
+        },
+        "nodes": {"localhost": {
+            "config_db_master": {},
+            "config_db_worker": {},
+            "elasticsearch": {"cluster_name": "elasticsearch"},
+            "kafka": {"broker_id": 0},
+            "zookeeper": {"server_id": 1},
+            "spark_master": {},
+            "spark_worker": {},
+            "rest": {"port": 9099},
+            "hdfs_name": {},
+            "hdfs_data": {},
+            "hdfs_journal": {},
+            "node": {}
+        }}
     }
 }

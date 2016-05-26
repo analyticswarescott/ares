@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor;
 
 import java.util.Collection;
@@ -38,12 +39,14 @@ import com.google.common.collect.ImmutableMap;
 
 import kafka.producer.KeyedMessage;
 
+*/
 /**
  * Base class for processing bundle data in Spark.
  *
  *
  *
- */
+ *//*
+
 public abstract class BundleProcessor<T extends BundleContext, V> implements StringTupleProcessor, Dependent {
 
 	private static final long serialVersionUID = 1L;
@@ -63,12 +66,14 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 
 	private static final String PREFIX = "aw";
 
-	/**
+	*/
+/**
 	 * Mappings of sections of the bundle to their key field to lookup the corresponding entry.
 	 *
 	 * For each field in an event record (uad/ua), there will be a field name in the value list of this map. The
 	 * keys correspond to the element name of the reference data within the bundle.
-	 */
+	 *//*
+
 	public final static Map<String, List<String>> KEY_FIELDS = ImmutableMap.<String, List<String>>builder()
 		.put("di", ImmutableList.of("imageMD5"))
 		.put("pi", ImmutableList.of("ph", "md5"))
@@ -77,34 +82,42 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 		.put("aw", ImmutableList.of(EVENT_ID)) //inject standard dg_* fields from the UA -> UAD
 	.build();
 
-	/**
+	*/
+/**
 	 * Array id mappings - in cases where we are parsing a field with a particular array id (arrayId_field format),
 	 * the id might need to map to another value - this map provides that mapping.
-	 */
+	 *//*
+
 	public final static Map<String, String> ARRAY_ID_MAPPING = ImmutableMap.<String, String>builder()
 		.put("pi", "pi")
 		.put("di", "di")
 		.put("ua", "ua")
 	.build();
 
-	/**
+	*/
+/**
 	 * in some cases we need to change names of fields - this is a mapping of these field that should be changed
-	 */
+	 *//*
+
 	public final static Map<String, String> STATIC_NAME_MAP = ImmutableMap.<String, String>builder()
 		.put("p", "policy")
 	.build();
 
-	/**
+	*/
+/**
 	 * mapping of data type name to aw fiawd prefix
-	 */
+	 *//*
+
 	public final static Map<String, String> DATATYPE_TO_FIELD_PREFIX = ImmutableMap.<String, String>builder()
 		.put("policy", "p")
 		.put("alert", "alert")
 	.build();
 
-	/**
+	*/
+/**
 	 * base operation type field used to determine the unity type for the resulting events from the bundle
-	 */
+	 *//*
+
 	private static String OPERATION_TYPE = "ot";
 
 	//bundle event types
@@ -114,11 +127,13 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 	public Topic getDestTopic() { return destTopic; }
 	Topic destTopic;
 
-	/**
+	*/
+/**
 	 * Output the keyed message
 	 *
 	 * @param km The keyed message to output
-	 */
+	 *//*
+
 	protected void output(KeyedMessage<String, String> km) throws Exception {
 
 		ResourceManager.KafkaProducerSingleton.getInstance(ComputeInjector.get().getInstance(Platform.class)).send(km);
@@ -155,94 +170,114 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 
 	}
 
-	/**
+	*/
+/**
 	 * Build the reference map of the type specific data from the bundle
 	 *
 	 * @return The reference data from the bundle
 	 * @throws Exception
-	 */
+	 *//*
+
 	protected abstract TwoKeyMap<String, String, V> cacheByTypeAndKey(T ctx) throws Exception;
 
-	/**
+	*/
+/**
 	 * @return The list of uad elements from the bundle
 	 * @throws Exception
-	 */
+	 *//*
+
 	protected abstract List<V> getUads(T ctx) throws Exception;
 
-	/**
+	*/
+/**
 	 * Get a string, or the default value if the key isn't found
 	 *
 	 * @param element The element that may be holding the key
 	 * @param key The key that may be held by the element
 	 * @param def The default value that will be returned if the element does not contain the key
 	 * @return The key or the default value
-	 */
+	 *//*
+
 	protected abstract String getValue(V element, String key, String def) throws Exception;
 
-	/**
+	*/
+/**
 	 * Get a string, or the default value if the key isn't found
 	 *
 	 * @param element The element that may be holding the key
 	 * @param key The key that may be held by the element
 	 * @param def The default value that will be returned if the element does not contain the key
 	 * @return The key or the default value
-	 */
+	 *//*
+
 	protected abstract Object getValue(V element, String key, Object def) throws Exception;
 
 
-	/**
+	*/
+/**
 	 * get a value given the key
 	 *
 	 * @param element the element holding the value
 	 * @param key the key for the value
 	 * @return the value
 	 * @throws Exception if anything goes wrong
-	 */
+	 *//*
+
 	protected abstract Object getValue(V element, String key) throws Exception;
 
-	/**
+	*/
+/**
 	 * Get a collection of values given the key
 	 *
 	 * @param element the element that holds the collection of values
 	 * @param key the key for the values
 	 * @return the values
 	 * @throws Exception if anything goes wrong
-	 */
+	 *//*
+
 	protected abstract Collection<Object> getValues(V element, String key) throws Exception;
 
-	/**
+	*/
+/**
 	 * get a complex sub object from the parent object
 	 *
 	 * @param element the parent object
 	 * @param key the key for the sub object
 	 * @return the sub object
 	 * @throws Exception if anything goes wrong
-	 */
+	 *//*
+
 	protected abstract V getElement(V element, String key) throws Exception;
 
-	/**
+	*/
+/**
 	 * get a collection of complex sub objects from the parent object
 	 *
 	 * @param element the parent object
 	 * @param key the key to the sub objects
 	 * @return the sub objects
 	 * @throws Exception if anything goes wrong
-	 */
+	 *//*
+
 	protected abstract Collection<V> getElements(V element, String key) throws Exception;
 
-	/**
+	*/
+/**
 	 * @param element The element whose keys are needed
 	 * @return An iterable of the string keys for the given element
-	 */
+	 *//*
+
 	protected abstract Iterator<String> keys(V element);
 
-	/**
+	*/
+/**
 	 * Build machine events from the array, using the reference data provided
 	 *
 	 * @param elements
 	 * @param referenceData
 	 * @throws Exception
-	 */
+	 *//*
+
 	private void createMachineEvents(T ctx, String id, List<V> uads, TwoKeyMap<String, String, V> referenceData) throws Exception{
 
 		//for each element, apply reference data and transforms based on unity type
@@ -309,7 +344,8 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 
 	}
 
-	/**
+	*/
+/**
 	 * Build a single event given the raw json and reference data
 	 *
 	 * @param dataType
@@ -317,7 +353,8 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 	 * @param referenceData
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
+
 	private JSONObject buildEvent(String prefix, DataType dataType, V element) throws Exception {
 
 		JSONDataType jsonDataType = (JSONDataType)dataType;
@@ -395,25 +432,29 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 
 	}
 
-	/**
+	*/
+/**
 	 * Common way to build a candidate field using a prefix and raw name
 	 *
 	 * @param prefix The field prefix, usually indicates a category of field
 	 * @param rawKey The raw field name
 	 * @return
-	 */
+	 *//*
+
 	protected static String toFieldName(String prefix, String rawKey) {
 		return prefix + "_" + rawKey;
 	}
 
-	/**
+	*/
+/**
 	 * Take a raw machine event and inject the required reference data
 	 *
 	 * @param dataType
 	 * @param machineEvent
 	 * @param referenceData
 	 * @throws Exception
-	 */
+	 *//*
+
 	private void injectReferenceData(String id, DataType dataType, JSONObject machineEvent, TwoKeyMap<String, String, V> referenceData, V rawEvent) throws Exception {
 
 		JSONDataType jsonDataType = (JSONDataType)dataType;
@@ -529,7 +570,8 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 		return ret;
 	}
 
-	/**
+	*/
+/**
 	 * We connect reference data with the events by key values. With the way the bundle json works right now, some of the keys are not in
 	 * the same format between reference data (PI for example) and the events (UA for example). An example of this problem would be the fact
 	 * that some md5 hashes start and end with brackets '{}' and are lower case, while others are upper case without brackets.
@@ -539,7 +581,8 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 	 * @param arrayId
 	 * @param value
 	 * @return
-	 */
+	 *//*
+
 	private V tryToGetWithReferenceKey(Field field, TwoKeyMap<String, String, V> referenceData, String arrayId, String value) {
 
 		//ignore case
@@ -596,3 +639,4 @@ public abstract class BundleProcessor<T extends BundleContext, V> implements Str
 }
 
 
+*/

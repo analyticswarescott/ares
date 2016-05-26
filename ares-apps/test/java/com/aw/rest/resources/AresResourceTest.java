@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * @author jhaightdigitalguardian.com.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DGResourceTest {
+public class AresResourceTest {
 	@Mock
 	Provider<PlatformMgr> platformMgrProvider;
 	@Mock
@@ -55,49 +55,8 @@ public class DGResourceTest {
 		aresResource = new AresResource(platformMgrProvider, localRestMemberProvider, restClusterProvider, tenantMgr);
 	}
 
-	@Test
-	public void testAddBundle() throws Exception {
-		String tenantId = "I'm a tenant!";
-		String machineId = "I'm a machine!";
-		String bundleId = "I'm a bundle!";
-		InputStream mockInputStream = mock(InputStream.class);
-		Response response = aresResource.addBundle(tenantId, machineId, bundleId, mockInputStream);
-		assertEquals(202, response.getStatus());
-		verify(platformMgr).addFile(HadoopPurpose.BUNDLE, Topic.BUNDLE_REF, new Tenant(tenantId), machineId, bundleId, bundleId, mockInputStream);
-	}
 
-	@Test
-	public void testAddEdrScan() throws Exception {
-		String tenantId = "I'm a tenant!";
-		String machineId = "I'm a machine!";
-		String scanId = "I'm a scan!";
-		InputStream mockInputStream = mock(InputStream.class);
-		Response response = aresResource.addEDRScan(tenantId, machineId, scanId, mockInputStream);
-		assertEquals(202, response.getStatus());
-		verify(platformMgr).addFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantId), machineId, scanId, scanId, mockInputStream);
-	}
 
-	@Test
-	public void testAddEdrScanWithSequenceNumber() throws Exception {
-		String tenantId = "I'm a tenant!";
-		String machineId = "I'm a machine!";
-		String scanId = "I'm a scan!";
-		int sequenceId = 777;
-		InputStream mockInputStream = mock(InputStream.class);
-		Response response = aresResource.addEDRScan(tenantId, machineId, scanId, sequenceId, mockInputStream);
-		assertEquals(202, response.getStatus());
-		verify(platformMgr).addFilePart(HadoopPurpose.EDR, new Tenant(tenantId), machineId, scanId, scanId, mockInputStream, sequenceId);
-	}
-
-	@Test
-	public void testCompleteScan() throws Exception {
-		String tenantId = "I'm still a tenant!";
-		String machineId = "I'm still a machine!";
-		String scanId = "I'm still a scan!";
-		Response response = aresResource.completeScan(tenantId, machineId, scanId);
-		assertEquals(202, response.getStatus());
-		verify(platformMgr).completeFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantId), machineId, scanId, scanId);
-	}
 
 	@Test
 	public void testCreateTenant() throws Exception {

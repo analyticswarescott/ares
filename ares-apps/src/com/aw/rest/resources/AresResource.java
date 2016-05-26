@@ -74,7 +74,7 @@ public class AresResource extends RestMgrBase {
     		) throws Exception {
 
     	//add the bundle
-    	this.platformProvider.get().addFile(HadoopPurpose.BUNDLE, Topic.BUNDLE_REF, new Tenant(tenantID), machineID, bundleID, bundleID, bundle);
+    	//this.platformProvider.get().addFile(HadoopPurpose.BUNDLE, Topic.BUNDLE_REF, new Tenant(tenantID), machineID, bundleID, bundleID, bundle);
     	return Response.status(HttpStatus.ACCEPTED_202).build();
 
     }
@@ -95,7 +95,7 @@ public class AresResource extends RestMgrBase {
     		) throws Exception {
 
 		//add the file
-    	this.platformProvider.get().addFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID, scanData);
+    	//this.platformProvider.get().addFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID, scanData);
     	return Response.status(HttpStatus.ACCEPTED_202).build();
 
     }
@@ -118,7 +118,7 @@ public class AresResource extends RestMgrBase {
     		) throws Exception {
 
 		//add the partial file
-    	this.platformProvider.get().addFilePart(HadoopPurpose.EDR, new Tenant(tenantID), machineID, scanID, scanID, scanData, sequenceNumber);
+    	//this.platformProvider.get().addFilePart(HadoopPurpose.EDR, new Tenant(tenantID), machineID, scanID, scanID, scanData, sequenceNumber);
     	return Response.status(HttpStatus.ACCEPTED_202).build();
 
     }
@@ -139,7 +139,7 @@ public class AresResource extends RestMgrBase {
     		) throws Exception {
 
 		//complete the file, telling the platform about it on the edr scan topic
-    	this.platformProvider.get().completeFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID);
+    	//this.platformProvider.get().completeFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID);
     	return Response.status(HttpStatus.ACCEPTED_202).build();
 
     }

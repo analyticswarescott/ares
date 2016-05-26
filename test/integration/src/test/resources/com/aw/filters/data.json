@@ -1,0 +1,5 @@
+[
+  { "dg_utype" : "device_added", "ua_ot" : 44, "ua_pt" : 3, "ua_aa": true, "ua_ar" : false },
+  { "dg_utype" : "device_added", "ua_ot" : 44, "ua_pt" : 3, "ua_aa": false, "ua_ar" : true },
+  { "dg_utype" : "device_added", "ua_ot" : 44, "ua_pt" : 1, "ua_aa": true, "ua_ar" : true }
+]

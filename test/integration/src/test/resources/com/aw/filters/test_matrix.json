@@ -1,0 +1,3 @@
+[
+  {"data_file" : "data.json", "filter_file" : "filter.json", "expected_results" : [true, true, false]}
+]

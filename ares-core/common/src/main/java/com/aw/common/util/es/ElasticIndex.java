@@ -60,11 +60,6 @@ public enum ElasticIndex {
 	ALARMS,
 
 	/**
-	 * deep scan data
-	 */
-	EDR,
-
-	/**
 	 * system status information, i.e. health & performance
 	 */
 	STATUS;

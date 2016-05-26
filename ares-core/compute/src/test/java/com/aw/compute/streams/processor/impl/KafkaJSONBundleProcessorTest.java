@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor.impl;
 
 import static org.junit.Assert.assertEquals;
@@ -124,3 +125,4 @@ public class KafkaJSONBundleProcessorTest extends DGStreamUnitTest {
 	}
 
 }
+*/

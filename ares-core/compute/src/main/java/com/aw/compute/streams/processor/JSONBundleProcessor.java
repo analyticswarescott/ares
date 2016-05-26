@@ -1,3 +1,4 @@
+/*
 package com.aw.compute.streams.processor;
 
 import java.util.ArrayList;
@@ -10,12 +11,14 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.aw.util.TwoKeyMap;
 
+*/
 /**
  * Processes bundles in json format
  *
  *
  *
- */
+ *//*
+
 public abstract class JSONBundleProcessor extends BundleProcessor<JSONBundleContext, JSONObject> {
 
 	private static final long serialVersionUID = 1L;
@@ -144,3 +147,4 @@ public abstract class JSONBundleProcessor extends BundleProcessor<JSONBundleCont
 	}
 
 }
+*/

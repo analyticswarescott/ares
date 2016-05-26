@@ -17,7 +17,7 @@ public class KafkaTopicPartitionStatusTest {
 	@Test
 	public void test_toFromJson() throws Exception {
 
-		KafkaTopicPartitionStatus status = new KafkaTopicPartitionStatus(Tenant.forId("1"), Topic.BUNDLE_REF, 1, new TopicMessage(Instant.ofEpochMilli(1000), 100), new TopicMessage(Instant.ofEpochMilli(2000), 200));
+		KafkaTopicPartitionStatus status = new KafkaTopicPartitionStatus(Tenant.forId("1"), Topic.EVENTS, 1, new TopicMessage(Instant.ofEpochMilli(1000), 100), new TopicMessage(Instant.ofEpochMilli(2000), 200));
 
 		String strJson = JSONUtils.objectToString(status);
 

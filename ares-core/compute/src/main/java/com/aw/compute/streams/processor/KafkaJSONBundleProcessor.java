@@ -1,15 +1,18 @@
+/*
 package com.aw.compute.streams.processor;
 
 import org.codehaus.jettison.json.JSONObject;
 
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 
+*/
 /**
  * Process bundles whose data is entirely stored in the kafka message
  *
  *
  *
- */
+ *//*
+
 public class KafkaJSONBundleProcessor extends JSONBundleProcessor {
 
 	private static final long serialVersionUID = 1L;
@@ -28,3 +31,4 @@ public class KafkaJSONBundleProcessor extends JSONBundleProcessor {
 	}
 
 }
+*/

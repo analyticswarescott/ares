@@ -65,7 +65,7 @@ public class PlatformStatusPollerTest {
 		TenantStatus mockTenantStatus = mock(TenantStatus.class);
 		StreamStatus mockStreamStatus = mock(StreamStatus.class);
 		TopicPartitionStatus mockTopicStatus = mock(TopicPartitionStatus.class);
-		Map<Topic, List<TopicPartitionStatus>> map = Collections.singletonMap(Topic.BUNDLE_REF, Arrays.asList(mockTopicStatus));
+		Map<Topic, List<TopicPartitionStatus>> map = Collections.singletonMap(Topic.EVENTS, Arrays.asList(mockTopicStatus));
 		doReturn(map).when(mockStreamStatus).getTopicStatus();
 		doReturn(Collections.singletonList(mockTenantStatus)).when(mockStatus).getTenantStatus();
 		doReturn(Collections.singletonList(mockStreamStatus)).when(mockTenantStatus).getStreamStatus();
