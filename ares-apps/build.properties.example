@@ -1,0 +1,10 @@
+# change this to deploy to a different server
+deploy.host=ubuntu
+deploy.username=dg
+deploy.password=dg
+
+# set this to the location of the core directory that contains hadoop, etc.
+infrastructure.dir=/Volumes/MyDigitalSSD-AR-1/temp/core
+archive.dir=archive
+
+remote.deploy.archive.dir=/tmp

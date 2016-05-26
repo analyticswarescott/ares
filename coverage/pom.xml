@@ -1,0 +1,263 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>digitalguardian</groupId>
+        <artifactId>digitalguardian-parent</artifactId>
+        <version>8.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>ares-apps-coverage</artifactId>
+
+    <properties>
+        <build.directory.projecta>../ares-apps/target</build.directory.projecta>
+        <build.directory.projectb>../ares-core/common/target</build.directory.projectb>
+        <build.directory.projectc>../ares-core/compute/target</build.directory.projectc>
+        <build.directory.projectd>../ares-core/incident/target</build.directory.projectd>
+        <build.directory.projecte>../ares-core/unity/target</build.directory.projecte>
+        <build.directory.projectf>../test/system-tests/target</build.directory.projectf>
+        <build.directory.projectg>../ares-core/task/target</build.directory.projectg>
+        <build.directory.projecth>../ares-core/action/target</build.directory.projecth>
+
+        <classes.directory.projecta>../ares-apps/target/classes</classes.directory.projecta>
+        <classes.directory.projectb>../ares-core/common/target/classes</classes.directory.projectb>
+        <classes.directory.projectc>../ares-core/compute/target/classes</classes.directory.projectc>
+        <classes.directory.projectd>../ares-core/incident/target/classes</classes.directory.projectd>
+        <classes.directory.projecte>../ares-core/unity/target/classes</classes.directory.projecte>
+        <classes.directory.projectf>../test/system-tests/target/test-classes</classes.directory.projectf>
+        <classes.directory.projectg>../ares-core/task/target/classes</classes.directory.projectg>
+        <classes.directory.projecth>../ares-core/action/target/classes</classes.directory.projecth>
+
+        <sources.directory.projecta>../ares-apps/src</sources.directory.projecta>
+        <sources.directory.projectb>../ares-core/common/src</sources.directory.projectb>
+        <sources.directory.projectc>../ares-core/compute/src</sources.directory.projectc>
+        <sources.directory.projectd>../ares-core/incident/src</sources.directory.projectd>
+        <sources.directory.projecte>../ares-core/unity/src</sources.directory.projecte>
+        <sources.directory.projectf>../test/system-tests/src</sources.directory.projectf>
+        <sources.directory.projectg>../ares-core/task/src</sources.directory.projectg>
+        <sources.directory.projecth>../ares-core/actuate/src</sources.directory.projecth>
+
+        <generated-sources.directory.projecta>../ares-apps/target/generated-sources/annotations</generated-sources.directory.projecta>
+        <generated-sources.directory.projectb>../ares-core/common/target/generated-sources/annotations</generated-sources.directory.projectb>
+        <generated-sources.directory.projectc>../ares-core/compute/target/generated-sources/annotations</generated-sources.directory.projectc>
+        <generated-sources.directory.projectd>../ares-core/incident/target/generated-sources/annotations</generated-sources.directory.projectd>
+        <generated-sources.directory.projecte>../ares-core/unity/target/generated-sources/annotations</generated-sources.directory.projecte>
+        <generated-sources.directory.projectf>../test/system-tests/target/generated-sources/annotations</generated-sources.directory.projectf>
+        <generated-sources.directory.projectg>../ares-core/task/target/generated-sources/annotations</generated-sources.directory.projectg>
+        <generated-sources.directory.projecth>../ares-core/action/target/generated-sources/annotations</generated-sources.directory.projecth>
+
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!-- Copy the ant tasks jar. Needed for ts.jacoco.report-ant . -->
+                    <execution>
+                        <id>jacoco-dependency-ant</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jacoco</groupId>
+                                    <artifactId>org.jacoco.ant</artifactId>
+                                    <version>${jacoco.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>true</stripVersion>
+                            <outputDirectory>${basedir}/target/jacoco-jars</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Ant plugin. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>post-system-tests-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+
+                            <target name="all">
+                                <!-- Execute an ant task within maven -->
+                                <echo message="Generating JaCoCo Reports" />
+                                <taskdef name="report" classname="org.jacoco.ant.ReportTask">
+                                    <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
+                                </taskdef>
+                                <mkdir dir="${basedir}/target/coverage-all" />
+                                <mkdir dir="${basedir}/target/coverage-unit" />
+                                <mkdir dir="${basedir}/target/coverage-system-tests" />
+                                <report>
+                                    <executiondata>
+                                        <fileset dir="${build.directory.projecta}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectb}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectc}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectd}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projecte}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectf}">
+                                            <include name="jacoco.exec" />
+                                            <include name="jacoco-spark*" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectg}">
+                                            <include name="jacoco.exec" />
+                                            <include name="jacoco-spark*" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projecth}">
+                                            <include name="jacoco.exec" />
+                                            <include name="jacoco-spark*" />
+                                        </fileset>
+                                    </executiondata>
+                                    <structure name="Code Coverage - All Tests">
+                                        <group name="jacoco-multi">
+                                            <classfiles>
+                                                <fileset dir="${classes.directory.projecta}" />
+                                                <fileset dir="${classes.directory.projectb}" />
+                                                <fileset dir="${classes.directory.projectc}" />
+                                                <fileset dir="${classes.directory.projectd}" />
+                                                <fileset dir="${classes.directory.projecte}" />
+                                                <fileset dir="${classes.directory.projectf}" />
+                                                <fileset dir="${classes.directory.projectg}" />
+                                                <fileset dir="${classes.directory.projecth}" />
+                                            </classfiles>
+                                            <sourcefiles encoding="UTF-8">
+                                                <fileset dir="${sources.directory.projecta}" />
+                                                <fileset dir="${sources.directory.projectb}" />
+                                                <fileset dir="${sources.directory.projectc}" />
+                                                <fileset dir="${sources.directory.projectd}" />
+                                                <fileset dir="${sources.directory.projecte}" />
+                                                <fileset dir="${classes.directory.projectf}" />
+                                                <fileset dir="${classes.directory.projectg}" />
+                                                <fileset dir="${classes.directory.projecth}" />
+                                            </sourcefiles>
+                                        </group>
+                                    </structure>
+                                    <html destdir="${basedir}/target/coverage-all/html" />
+                                    <xml destfile="${basedir}/target/coverage-all/coverage-report.xml" />
+                                    <csv destfile="${basedir}/target/coverage-all/coverage-report.csv" />
+                                </report>
+
+                                <report>
+                                    <executiondata>
+                                        <fileset dir="${build.directory.projecta}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectb}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectc}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectd}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projecte}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projectg}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                        <fileset dir="${build.directory.projecth}">
+                                            <include name="jacoco.exec" />
+                                        </fileset>
+                                    </executiondata>
+                                    <structure name="Code Coverage - Unit Tests">
+                                        <group name="jacoco-multi">
+                                            <classfiles>
+                                                <fileset dir="${classes.directory.projecta}" />
+                                                <fileset dir="${classes.directory.projectb}" />
+                                                <fileset dir="${classes.directory.projectc}" />
+                                                <fileset dir="${classes.directory.projectd}" />
+                                                <fileset dir="${classes.directory.projecte}" />
+                                                <fileset dir="${classes.directory.projectg}" />
+                                                <fileset dir="${classes.directory.projecth}" />
+                                            </classfiles>
+                                            <sourcefiles encoding="UTF-8">
+                                                <fileset dir="${sources.directory.projecta}" />
+                                                <fileset dir="${sources.directory.projectb}" />
+                                                <fileset dir="${sources.directory.projectc}" />
+                                                <fileset dir="${sources.directory.projectd}" />
+                                                <fileset dir="${sources.directory.projecte}" />
+                                                <fileset dir="${classes.directory.projectg}" />
+                                                <fileset dir="${classes.directory.projecth}" />
+                                            </sourcefiles>
+                                        </group>
+                                    </structure>
+                                    <html destdir="${basedir}/target/coverage-unit/html" />
+                                    <xml destfile="${basedir}/target/coverage-unit/coverage-report.xml" />
+                                    <csv destfile="${basedir}/target/coverage-unit/coverage-report.csv" />
+                                </report>
+
+                                <report>
+                                    <executiondata>
+                                        <fileset dir="${build.directory.projectf}">
+                                            <include name="jacoco.exec" />
+                                            <include name="jacoco-spark*" />
+                                        </fileset>
+                                    </executiondata>
+                                    <structure name="Code Coverage - Integration Tests">
+                                        <group name="jacoco-multi">
+                                            <classfiles>
+                                                <fileset dir="${classes.directory.projecta}" />
+                                                <fileset dir="${classes.directory.projectb}" />
+                                                <fileset dir="${classes.directory.projectc}" />
+                                                <fileset dir="${classes.directory.projectd}" />
+                                                <fileset dir="${classes.directory.projecte}" />
+                                                <fileset dir="${classes.directory.projectf}" />
+                                            </classfiles>
+                                            <sourcefiles encoding="UTF-8">
+                                                <fileset dir="${sources.directory.projecta}" />
+                                                <fileset dir="${sources.directory.projectb}" />
+                                                <fileset dir="${sources.directory.projectc}" />
+                                                <fileset dir="${sources.directory.projectd}" />
+                                                <fileset dir="${sources.directory.projecte}" />
+                                                <fileset dir="${sources.directory.projectf}" />
+                                            </sourcefiles>
+                                        </group>
+                                    </structure>
+                                    <html destdir="${basedir}/target/coverage-system-tests/html" />
+                                    <xml destfile="${basedir}/target/coverage-system-tests/coverage-report.xml" />
+                                    <csv destfile="${basedir}/target/coverage-system-tests/coverage-report.csv" />
+                                </report>
+
+                            </target>
+
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.ant</artifactId>
+                        <version>${jacoco.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>

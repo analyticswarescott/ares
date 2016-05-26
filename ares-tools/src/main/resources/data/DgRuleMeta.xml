@@ -1,0 +1,2025 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MetaData v="5.0.1.0004">
+
+    <!--
+	 !!!!IMPORTANT!!!!
+
+	 If you modify the value of any propModifier, you will need to
+	 edit everywhere it is used in this file!  The change will not
+	 be propagated.
+	-->
+    <propertyModifiers>
+
+        <!--**********************************************
+		     data modifier bits are 16-21          
+		     THIS IS A 6 BIT MASK. This means that
+		     there can only be 6 DATA   modifiers
+		  *********************************************-->
+
+        <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR" value="0x00010000"/>
+
+        <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY" value="0x00020000"/>
+
+        <propModifier enumName="DGPROP_MODIFIER_VARIABLE" value="0x00040000"/>
+        
+        <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST" value="0x00080000"/>
+
+        <!--**********************************************
+		     rule syntax modifier bits are 22-26   
+		     THIS IS A 5 BIT MASK. This means that 
+		     there can only be 5 SYNTAX modifiers
+		  *********************************************-->
+
+        <!-- property that can reference named items -->
+        <!-- <evtSrcFileEntityFrequency name="ss_number"/> -->
+        <!-- <docPropertyString name="author"/> -->
+        <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM" value="0x00400000"/>
+
+        <!--**********************************************
+		     get operand method modifier bits are 27-31         
+		     THIS IS NOT A BIT MASK. IT IS A 5 BIT VALUE
+		     there are 5 bits available for get methods 
+		     this means that there can be 32 possible   
+		     get methods available to the rule engine   
+		  *********************************************-->
+
+        <!-- method #1 "Get entity"  (1 << 27)          -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENTITY" value="0x08000000"/>
+
+        <!-- method #2 "Get policy tag"  (2 << 27)    -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG" value="0x10000000"/>
+
+        <!-- method #3 "Get doc property"  (3 << 27)  -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP" value="0x18000000"/>
+
+        <!-- method #4 "Get Driver Running"  (4 << 27)  -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DRVRUNNING" value="0x20000000"/>
+
+        <!-- method #5 "Date or Time"  (5 << 27)  -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DATE_TIME" value="0x28000000"/>
+
+        <!-- (6 << 27) == 0x30000000 -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CLASSIFIED" value="0x30000000"/>
+
+        <!-- (7 << 27) == 0x38000000 -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CANCONTENTINSPECT" value="0x38000000"/>
+
+        <!-- (8 << 27) == 0x40000000 -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ISDNSHOSTAVAILABLE" value="0x40000000"/>
+
+        <!-- (9 << 27) == 0x48000000 -->
+        <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENVIRONMENTVAR" value="0x48000000"/>
+
+        <!-- (0xA << 27) == 0x50000000 -->
+
+    </propertyModifiers>
+
+    <propertyTypes>
+        <propType enumName="DGPROP_INT8" propName="bool"/>
+        <propType enumName="DGPROP_INT32" propName="int"/>
+        <propType enumName="DGPROP_INT64" propName="int64"/>
+        <propType enumName="DGPROP_ASTRING" propName="astring"/>
+        <propType enumName="DGPROP_WSTRING" propName="string"/>
+        <propType enumName="DGPROP_VBINARY" propName="vbinary"/>
+        <propType enumName="DGPROP_IPV4" propName="ipAddress"/>
+        <propType enumName="DGPROP_GUID" propName="md5Hash"/>
+        <propType enumName="DGPROP_INT16" propName="int16"/>
+        <propType enumName="DGPROP_MAC_ADDR" propName="macAddress"/>
+        <propType enumName="DGPROP_IPV6" propName="ipv6Address"/>
+        <propType enumName="DGPROP_BLUETOOTH" propName="bluetoothAddress"/>
+        <propType enumName="DGPROP_IRDA" propName="irdaAddress"/>
+        <propType enumName="DGPROP_REG_INT" propName="registryInt"/>
+        <propType enumName="DGPROP_REG_STRING" propName="registryString"/>
+        <propType enumName="DGPROP_DRVR_RUNNING" propName="driverRunning"/>
+        <propType enumName="DGPROP_OBJECT" propName="object"/>
+        <propType enumName="DGPROP_SHA1" propName="sha1Hash"/>
+        <propType enumName="DGPROP_SHA256" propName="sha256Hash"/>
+    </propertyTypes>
+
+    <properties>
+        <!-- agent properties -->
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_AGENT_TYPE" propName="agentType">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_ISLAPTOP" propName="agentIsLaptop">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+	<prop propType="DGPROP_INT8" platform="Mobile" enumName="DGPROP_ISMOBILEDEVICE" propName="agentIsMobileDevice">
+        <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+         </prop>
+
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_ISTERMINALSERVER" propName="agentIsTerminalServer">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_MAC_ADDR" platform="Windows,Linux,OSX" enumName="DGPROP_AGENT_GATEWAYMAC" propName="agentGatewayMac">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_IPV4" platform="Windows,Linux,OSX" enumName="DGPROP_AGENT_IPADDRESS" propName="agentIPAddress">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux,OSX" enumName="DGPROP_AGENT_CURRENT_TIME" propName="agentCurrentTime">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_AGENT_CURRENT_DATETIME" propName="agentCurrentDateTime">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT16" platform="Windows" enumName="DGPROP_AGENT_CURRENT_DAY_OF_WEEK" propName="agentCurrentDayOfWeek">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_AGENT_LAST_COMM" propName="agentLastServerComm">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_MAX_DDNA_RISK" propName="agentDDNARiskScore">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT64" enumName="DGPROP_AGENT_LAST_COMM_TIME" propName="__notvalidexternally__agentLastCommTime">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_SIMILARPROC_RUNNING" propName="similarProcessRunning">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_SIMILARPROC_SANDBOXED" propName="similarProcessVaulted">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_ANYPROC_SANDBOXED" propName="anyProcessVaulted">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_ACTIVE_VAULT_RULE_NAMES" propName="activeVaultRuleNames">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY | DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_CLIPBOARD_SANDBOXED" propName="clipboardVaulted">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CLIPBOARD_SANDBOX_RULEARRAY" propName="clipboardVaultRuleName">
+            <propModifier enumName="(DGPROP_MODIFIER_AGENT_PROPERTY | DGPROP_MODIFIER_DATA_VECTOR)"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_IS_REGISTERED" propName="agentIsRegistered">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows,OSX,Linux" enumName="DGPROP_AGENT_ADAPTER_COUNT" propName="agentAdapterCount">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_AGENT_FILE_VERSION" propName="agentFileVersion">
+            <propModifier enumName="(DGPROP_MODIFIER_AGENT_PROPERTY)"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX" enumName="DGPROP_SERVER_AVAILABLE" propName="serverAvailable">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_ENCRYPTION_EXCLUDED" propName="evtIsEncryptionExcluded">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_RULE_NAME" propName="evtRuleName">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_ROOT_RULE_NAME" propName="evtRootRuleName">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+        <!-- image properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_IMAGENAME" propName="dllImageName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_FILEPATH" propName="dllFilePath"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_IMAGEBASE" propName="dllImageBase"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_IMAGESIZE" propName="dllImageSize"/>
+        <prop propType="DGPROP_GUID"  platform="Windows" enumName="DGPROP_DLL_MD5_CONTENT_HASH" propName="dllMD5ContentHash"/>
+        <prop propType="DGPROP_SHA1"  platform="Windows" enumName="DGPROP_DLL_SHA1_CONTENT_HASH" propName="dllSHA1ContentHash"/>
+        <prop propType="DGPROP_SHA256"  platform="Windows" enumName="DGPROP_DLL_SHA256_CONTENT_HASH" propName="dllSHA256ContentHash"/>
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_DLL_IMAGE_LOAD_FLAGS" propName="dllImageLoadFlags" />
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_DLL_HASH_PACKAGE" propName="dllHashPackage" />
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_DLL_FILE_BASIC_INFO" propName="dllFileBasicInformation" />
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_CREATED_TIME" propName="dllCreatedTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_WRITE_TIME" propName="dllWriteTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_ACCESS_TIME" propName="dllAccessTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_DLL_CHANGE_TIME" propName="dllModifyTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_DLL_FILE_ATTRIBUTES" propName="dllFileAttributes"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_COMPANY_NAME" propName="dllCompanyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_PRODUCT_NAME" propName="dllProductName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_DESCRIPTION" propName="dllFileDescription"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_PRODUCT_VERSION" propName="dllProductVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_COPYRIGHT" propName="dllLegalCopyright"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DLL_FILE_VERSION" propName="dllFileVersion"/>
+
+        <!-- image load flags -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_DLL_LOAD_FLAG_LOADED_USING_REMOTE_THREAD" propName="dllLoadedUsingRemoteThread" />
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_DLL_LOAD_FLAG_LOADED_BY_APP_INIT" propName="dllLoadedByAppInit" />
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_DLL_LOAD_FLAG_LOADED_UNDER_IMPERSONATION" propName="dllLoadedUnderImpersonation" />
+        <prop propType="DGPROP_INT8" enumName="DGPROP_DLL_LOAD_FLAG_LOADED_BY_REFLECTION" propName="dllLoadedByReflection" />
+        <!-- current process properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_IMAGENAME" propName="curProcessImageName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Cloud" enumName="DGPROP_CURPROC_COMMANDLINE" propName="curProcessCmdLine"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_ORIGINAL_NAME" propName="curProcessOriginalName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_FILEPATH" propName="curProcessFilePath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_POLICY_TAG" propName="curProcessFilePolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+        <prop propType="DGPROP_GUID"  platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_CONTENT_MD5" propName="curProcessMD5ContentHash"/>
+        <prop propType="DGPROP_SHA1"  platform="Windows" enumName="DGPROP_CURPROC_CONTENT_SHA1" propName="curProcessSHA1ContentHash"/>
+        <prop propType="DGPROP_SHA256" platform="Windows" enumName="DGPROP_CURPROC_CONTENT_SHA256" propName="curProcessSHA256ContentHash"/>
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_CURPROC_HASH_PACKAGE" propName="curProcessHashPackage" />
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_CURPROC_FILE_BASIC_INFO" propName="curProcessFileBasicInformation" />
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CURPROC_CREATED_TIME" propName="curProcessCreatedTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CURPROC_WRITE_TIME" propName="curProcessModifyTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CURPROC_ACCESS_TIME" propName="curProcessAccessTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CURPROC_CHANGE_TIME" propName="curProcessChangeTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CURPROC_FILE_ATTRIBUTES" propName="curProcessFileAttributes"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_PROCESS_FLAGS" propName="curProcessProcessFlags"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_CURPROC_COMPANY_NAME" propName="curProcessCompanyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_CURPROC_PRODUCT_NAME" propName="curProcessProductName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_DESCRIPTION" propName="curProcessFileDescription"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_CURPROC_PRODUCT_VERSION" propName="curProcessProductVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_COPYRIGHT" propName="curProcessLegalCopyright"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_FILE_VERSION" propName="curProcessFileVersion"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_SANDBOXED" propName="curProcessVaulted"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_CURPROC_SAVEASACTIVE" propName="curProcessSaveAsActive"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux" enumName="DGPROP_IS_SESSION_VIRTUAL" propName="agentIsVirtualSession"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_WINDOWTITLE" propName="curProcessWindowTitle"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_ADDRESSBAR" propName="curProcessAddressBar"/>
+        <prop propType="DGPROP_IPV4" platform="Windows" enumName="DGPROP_CURPROC_TOPURLIPADDR" propName="curProcessTopUrlIPAddress" />
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_SANDBOXRULENAMEARRAY" propName="curProcessVaultRuleName">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURPROC_URLLIST" propName="curProcessURLList">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_CURPROC_NO_PROMPTING" propName="curProcessNoPrompting"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_CURPROC_PROCESS_ID" propName="curProcessID"/>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX" enumName="DGPROP_CURPROC_IS_BROWSER_PLUGIN_LOADED" propName="curProcessIsBrowserPluginLoaded" />
+
+        <!-- previous process properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PREVPROC_IMAGENAME" propName="evtSrcProcessImageName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Cloud" enumName="DGPROP_PREVPROC_COMMANDLINE" propName="evtSrcProcessCmdLine"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PREVPROC_FILEPATH" propName="evtSrcProcessFilePath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_POLICY_TAG" propName="evtSrcProcessFilePolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+        <prop propType="DGPROP_GUID" platform="Windows,Linux,OSX" enumName="DGPROP_PREVPROC_CONTENT_MD5" propName="evtSrcProcessMD5ContentHash"/>
+        <prop propType="DGPROP_SHA1"  platform="Windows" enumName="DGPROP_PREVPROC_CONTENT_SHA1" propName="evtSrcProcessSHA1ContentHash"/>
+        <prop propType="DGPROP_SHA256"  platform="Windows" enumName="DGPROP_PREVPROC_CONTENT_SHA256" propName="evtSrcProcessSHA256ContentHash"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PREVPROC_CREATED_TIME" propName="evtSrcProcessCreatedTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PREVPROC_WRITE_TIME" propName="evtSrcProcessModifyTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PREVPROC_ACCESS_TIME" propName="evtSrcProcessAccessTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PREVPROC_CHANGE_TIME" propName="evtSrcProcessChangeTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_PREVPROC_FILE_ATTRIBUTES" propName="evtSrcProcessFileAttributes"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_PROCESS_FLAGS" propName="evtSrcProcessProcessFlags"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PREVPROC_COMPANY_NAME" propName="evtSrcProcessCompanyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PREVPROC_PRODUCT_NAME" propName="evtSrcProcessProductName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_DESCRIPTION" propName="evtSrcProcessFileDescription"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PREVPROC_PRODUCT_VERSION" propName="evtSrcProcessProductVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_COPYRIGHT" propName="evtSrcProcessLegalCopyright"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_FILE_VERSION" propName="evtSrcProcessFileVersion"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_PREVPROC_SANDBOXED" propName="prevProcessVaulted"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PREVPROC_WINDOWTITLE" propName="prevProcessWindowTitle"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_ADDRESSBAR" propName="prevProcessAddressBar"/>
+        <prop propType="DGPROP_IPV4" platform="Windows" enumName="DGPROP_PREVPROC_TOPURLIPADDR" propName="evtSrcProcessTopUrlIPAddress" />
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_SANDBOXRULENAMEARRAY" propName="prevProcessVaultRuleName">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PREVPROC_URLLIST" propName="evtSrcProcessURLList">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_PREVPROC_PROCESS_ID" propName="prevProcessID"/>
+
+        <!-- parent process properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_IMAGENAME" propName="parentProcessImageName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Cloud" enumName="DGPROP_PARPROC_COMMANDLINE" propName="parentProcessCmdLine"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_FILEPATH" propName="parentProcessFilePath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_POLICY_TAG" propName="parentProcessFilePolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+        <prop propType="DGPROP_GUID" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_CONTENT_MD5" propName="parentProcessMD5ContentHash"/>
+        <prop propType="DGPROP_SHA1" platform="Windows" enumName="DGPROP_PARPROC_CONTENT_SHA1" propName="parentProcessSHA1ContentHash"/>
+        <prop propType="DGPROP_SHA256" platform="Windows" enumName="DGPROP_PARPROC_CONTENT_SHA256" propName="parentProcessSHA256ContentHash"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PARPROC_CREATED_TIME" propName="parentProcessCreatedTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PARPROC_WRITE_TIME" propName="parentProcessModifyTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PARPROC_ACCESS_TIME" propName="parentProcessAccessTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_PARPROC_CHANGE_TIME" propName="parentProcessChangeTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_PARPROC_FILE_ATTRIBUTES" propName="parentProcessFileAttributes"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_PROCESS_FLAGS" propName="parentProcessProcessFlags"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PARPROC_COMPANY_NAME" propName="parentProcessCompanyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PARPROC_PRODUCT_NAME" propName="parentProcessProductName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_DESCRIPTION" propName="parentProcessFileDescription"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_PARPROC_PRODUCT_VERSION" propName="parentProcessProductVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_COPYRIGHT" propName="parentProcessLegalCopyright"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_FILE_VERSION" propName="parentProcessFileVersion"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_SANDBOXED" propName="parentProcessVaulted"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_WINDOWTITLE" propName="parentProcessWindowTitle"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_ADDRESSBAR" propName="parentProcessAddressBar"/>
+        <prop propType="DGPROP_IPV4" platform="Windows" enumName="DGPROP_PARPROC_TOPURLIPADDR" propName="parentProcessTopUrlIPAddress" />
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_SANDBOXRULENAMEARRAY" propName="parentProcessVaultRuleName">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_PARPROC_URLLIST" propName="parentProcessURLList">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_PARPROC_PROCESS_ID" propName="parentProcessID"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_PARPROC_IS_BROWSER_PLUGIN_LOADED" propName="parentProcessIsBrowserPluginLoaded" />
+
+        <!-- Clipboard process/window properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_IMAGENAME" propName="ClipBoardProcessImageName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_FILEPATH" propName="ClipBoardProcessFilePath"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_CBPROC_CONTENT_HASH" propName="ClipBoardProcessMD5ContentHash"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_COMPANY_NAME" propName="ClipBoardProcessCompanyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_PRODUCT_NAME" propName="ClipBoardProcessProductName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_DESCRIPTION" propName="ClipBoardProcessFileDescription"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_PRODUCT_VERSION" propName="ClipBoardProcessProductVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_COPYRIGHT" propName="ClipBoardProcessLegalCopyright"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_FILE_VERSION" propName="ClipBoardProcessFileVersion"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CBPROC_WINDOWTITLE" propName="ClipBoardProcessWindowTitle"/>
+
+        <!-- Event properties -->
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile,Cloud" enumName="DGPROP_EVT_OP_TYPE" propName="evtOperationType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_PARENT_OP_TYPE" propName="evtParentOperationType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_OVERWRITE" propName="evtIsOverwrite"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_OP_ORIGIN" propName="evtOperationOriginType"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux,Mobile" enumName="DGPROP_EVT_CURRENT_USERID" propName="evtCurrentUserId"/>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_IS_DOMAINUSER" propName="evtIsDomainUser"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_PKI_AUTHENTICATED" propName="evtIsPKIAuthenticated"/>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_IS_LOCALADMIN" propName="evtIsLocalAdmin"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Mobile" enumName="DGPROP_EVT_IS_AFTER_OPERATION" propName="evtIsAfterOperation"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Mobile" enumName="DGPROP_EVT_CURRENT_RULE_ACTION" propName="evtCurrentRuleAction"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_USER_RESPONSE" propName="evtUserResponse"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_USER_SURVEY_RESPONSE_NUMBER" propName="evtUserSurveyResponseNumber"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_DISPLAY_NAME" propName="evtEventDisplayName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux" enumName="DGPROP_EVT_CUSTOM_ID" propName="evtCustomId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_CUSTOM_DATA_XML" propName="evtCustomDataXml"/>
+
+        <!-- Event File Properties -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_WAS_BLOCKED" propName="evtWasBlocked"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ANY_CLASSIFICATION" propName="evtAnyClassification"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ANY_ENCRYPTED" propName="evtAnyEncrypted"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ANY_ALERTS" propName="evtAnyAlerts"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ANY_REMOVABLE_DRIVES" propName="evtAnyRemovableDrives"/>
+        <prop propType="DGPROP_INT32" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_BUS_TYPE_SRC" propName="evtSrcBusType"/>
+        <prop propType="DGPROP_INT32" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_BUS_TYPE_DST" propName="evtDestBusType"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_DRIVE_TYPE_SRC" propName="evtSrcDriveType"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_DRIVE_TYPE_DST" propName="evtDestDriveType"/>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux,OSX,Cloud,Mobile" enumName="DGPROP_EVT_FILE_SIZE_SRC" propName="evtSrcFileSize"/>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_FILE_SIZE_DST" propName="evtDestFileSize"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_FILEPATH_SRC" propName="evtSrcFilePath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_EXTENSION_SRC" propName="evtSrcFileExt"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_CLASSIFICATION_SRC" propName="evtSrcFileClassificationRank"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_FILEPATH_DST" propName="evtDestFilePath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_EXTENSION_DST" propName="evtDestFileExt"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_CLASSIFICATION_DST" propName="evtDestFileClassificationRank"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_ENCRYPTED_SRC" propName="evtSrcFileIsEncrypted"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_ENCRYPTED_DST" propName="evtDestFileIsEncrypted"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_SRC_DRIVE_MATCHES_DST" propName="evtSrcDriveMatchesDest"/>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX" enumName="DGPROP_EVT_SUPPORT_ADS_SRC" propName="evtSrcFileSupportsADS"/>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX" enumName="DGPROP_EVT_SUPPORT_ADS_DST" propName="evtDestFileSupportsADS"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_SUPPORT_ENCR_SRC" propName="evtSrcSupportsEncrypt"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_SUPPORT_ENCR_DST" propName="evtDestSupportsEncrypt"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ENCRYPTION_TYPE_SRC" propName="evtSrcEncryptionType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ENCRYPTION_TYPE_DST" propName="evtDestEncryptionType"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Mobile" enumName="DGPROP_EVT_HASOWNER_SRC" propName="evtSrcFileHasOwner"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Mobile" enumName="DGPROP_EVT_HASOWNER_DST" propName="evtDestFileHasOwner"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_OWNERID_SRC" propName="evtSrcFileOwnerId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_OWNERID_DST" propName="evtDestFileOwnerId"/>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux" enumName="DGPROP_EVT_FILE_MODIFIED_SRC" propName="evtSrcFileModifiedTime"/>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux" enumName="DGPROP_EVT_FILE_MODIFIED_DST" propName="evtDestFileModifiedTime"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_FILETYPE_SRC" propName="evtSrcFileType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_EXT_MATCHES_FILETYPE_SRC" propName="evtExtMatchesFileType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_OPERATION_FAILED" propName="evtOperationFailed" />
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_OPERATION_STATUS" propName="evtOperationStatus" />
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_EXPEDITED" propName="evtIsExpedited" />
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_CLASSIFIED_SRC" propName="evtSrcFileIsClassified">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CLASSIFIED"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_CLASSIFIED_DST" propName="evtDestFileIsClassified">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CLASSIFIED"/>
+        </prop>
+
+        <prop propType="DGPROP_INT8" platform="Windows,OSX,Linux,Cloud" enumName="DGPROP_EVT_CANCONTENTINSPECT_SRC" propName="evtSrcFileCanContentInspect">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CANCONTENTINSPECT"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_CANCONTENTINSPECT_DST" propName="evtDestFileCanContentInspect">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_CANCONTENTINSPECT"/>
+        </prop>
+
+
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_FRIENDLY_NAME_SRC" propName="evtSrcFriendlyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_DEVICE_CLASS_SRC" propName="evtSrcDeviceClass"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_VENDOR_ID_SRC" propName="evtSrcVendorId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PRODUCT_ID_SRC" propName="evtSrcProductId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_VENDOR_SRC" propName="evtSrcVendor"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PRODUCT_SRC" propName="evtSrcProduct"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REVISION_SRC" propName="evtSrcRevision"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_SERNO_SRC" propName="evtSrcSerialNumber"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_CUSTOM_ID_SRC" propName="evtSrcCustomId"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_REMOVAL_POLICY_SRC" propName="evtSrcRemovalPolicy"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_DEVICE_GUID_SRC" propName="evtSrcDeviceGuid"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_SUPPORTS_PREDICTS_FAILURE_SRC" propName="evtSrcStorageSupportsPredictFailure"/>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_FRIENDLY_NAME_DST" propName="evtDestFriendlyName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_DEVICE_CLASS_DST" propName="evtDestDeviceClass"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_VENDOR_ID_DST" propName="evtDestVendorId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PRODUCT_ID_DST" propName="evtDestProductId"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_VENDOR_DST" propName="evtDestVendor"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PRODUCT_DST" propName="evtDestProduct"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REVISION_DST" propName="evtDestRevision"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_SERNO_DST" propName="evtDestSerialNumber"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_CUSTOM_ID_DST" propName="evtDestCustomId"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_REMOVAL_POLICY_DST" propName="evtDestRemovalPolicy"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_DEVICE_GUID_DST" propName="evtDestDeviceGuid"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_SUPPORTS_PREDICTS_FAILURE_DST" propName="evtDestStorageSupportsPredictFailure"/>
+
+        <prop propType="DGPROP_INT32" platform="Windows,Linux" enumName="DGPROP_EVT_TIMER_ID" propName="evtTimerID"/>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux" enumName="DGPROP_EVT_TIMER_TIMEOUTMS" propName="evtTimerTimeoutMS"/>
+
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HAS_CAPTURE"       propName="evtHasCapture"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HASCAPTURE_SRC"    propName="evtHasSrcCapture"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HASCAPTURE_DST"    propName="evtHasDestCapture"/>
+
+        <!-- event network properties -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_PEER_AGENT" propName="evtPeerHasAgent"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PROTOCOL_TYPE" propName="evtProtocolType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_NETWORK_OPERATION" propName="evtNetworkOperation"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_CONNECTION_TYPE" propName="evtConnectionType"/>
+        <prop propType="DGPROP_IPV4" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_ADDRESS_REMOTE" propName="evtRemoteAddress"/>
+        <prop propType="DGPROP_INT16" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PORT_REMOTE" propName="evtRemotePort"/>
+        <prop propType="DGPROP_INT16" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PORT_LOCAL" propName="evtLocalPort"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_CONNECTION_OUT" propName="evtIsOutboundConn"/>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_IS_PRIVATE" propName="evtIsPrivate"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux,Cloud,Mobile" enumName="DGPROP_EVT_DOMAIN" propName="evtDomain"/>
+        <prop propType="DGPROP_WSTRING" platform="Cloud" enumName="DGPROP_EVT_USER_DOMAIN" propName="evtUserDomain"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_URL_PATH" propName="evtUrlPath"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_ACTION_HTTP" propName="evtHTTPAction"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_URI_PATH" propName="evtUriPath"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_REPEAT_COUNT" propName="evtRepeatCount"/>
+
+        <!-- print properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_PRINTER_NAME" propName="evtPrinterName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_DOCUMENT_PATH" propName="evtDocumentName"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DRIVE_TYPE" propName="evtDriveType"/>
+
+        <!-- application data exchange properties -->
+        <prop propType="DGPROP_INT32" platform="Linux,OSX" enumName="DGPROP_EVT_SUB_TYPE" propName="evtADEType"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_SRCPROC_WINDOWTITLE" propName="evtSrcProcessWindowTitle"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_OBJECT_TYPE" propName="evtObjectType"/>
+
+        <!-- mail properties -->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_MAIL_RECIPIENTS" propName="evtMailRecipients">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_MAIL_SENDER" propName="evtMailSender"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,Cloud" enumName="DGPROP_EVT_MAIL_SUBJECT" propName="evtMailSubject"/>
+
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_MAIL_RECIPIENT_TYPES" propName="evtMailRecipientTypes">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux,Cloud" enumName="DGPROP_EVT_MAIL_ORIG_RECIPIENTS" propName="evtOriginalMailRecipients">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,OSX,Linux,Cloud" enumName="DGPROP_EVT_MAIL_ORIG_RECIPIENT_TYPES" propName="evtOriginalMailRecipientTypes">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_MAIL_HAS_CONTENT" propName="evtSecureContent"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,Cloud" enumName="DGPROP_EVT_MAIL_ATTACHMENT_SIZE" propName="evtMailAttachmentSize"/>
+        <prop propType="DGPROP_INT32" platform="Windows,Cloud" enumName="DGPROP_EVT_MAIL_TOTAL_SIZE" propName="evtMailTotalSize"/>
+
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_MAIL_SMIME_ENCRYPTED" propName="evtMailSMIMEEncrypted"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_MAIL_SMIME_SIGNED" propName="evtMailSMIMESigned"/>
+
+        <!-- adapter info properties -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_PHYSICAL_MEDIUM" propName="evtPhysicalMedium"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux" enumName="DGPROP_EVT_WIRELESS_SSID" propName="evtWirelessSSID"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_WIRELESS_AUTHENTICATION" propName="evtWirelessAuthenticationMode"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_WIRELESS_INFRASTRUCTURE" propName="evtWirelessInfrastructureMode"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_WIRELESS_ENCRYPTION" propName="evtWirelessEncryption"/>
+        <prop propType="DGPROP_MAC_ADDR" platform="Windows" enumName="DGPROP_EVT_WIRELESS_ACCESS_POINT" propName="evtWirelessAccessPoint"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_EVT_ADAPTER_NAME" propName="evtAdapterName"/>
+
+        <!-- repository event -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_DOC_REPOSITORY_EVENT_TYPE" propName="evtDocRepositoryEventType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_DOC_REPOSITORY_PRODUCT_TYPE" propName="evtDocRepositoryProductType"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_DOC_REPOSITORY_USER_NAME" propName="evtDocRepositoryName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_DOC_REPOSITORY_SERVER_NAME" propName="evtDocRepositoryServerName"/>
+
+        <!--
+        <prop propType="" propId="" enumName="" propName=""/>
+		-->
+
+        <!-- device event properties -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DEVICE_HASH" propName="evtDeviceHash"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_DEVICE_GUID" propName="evtDeviceGuid"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DEVICE_BUS_TYPE" propName="evtDeviceBusType"/>
+        <prop propType="DGPROP_INT32" platform="Windows"  enumName="DGPROP_EVT_DEVICE_REMOVAL_POLICY" propName="evtDeviceRemovalPolicy"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DEVICE_DRIVE_TYPE" propName="evtDeviceDriveType"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_DEVICE_PREDICT_FAIL" propName="evtDevicePredictFail"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_DEVICE_ID" propName="evtDeviceID"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_DEVICE_REVISION" propName="evtDeviceRevision"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_DEVICE_FRIENDLY_NAME" propName="evtDeviceFriendlyName"/>
+
+        <!-- Fixed File Info -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_SIGNATURE" propName="evtFfiSignature"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_STRUC_VERSION" propName="evtFfiStrucVersion"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_VER_MS" propName="evtFfiFileVerMS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_VER_LS" propName="evtFfiFileVerLS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_PROD_VER_MS" propName="evtFfiProdVerMS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_PROD_VER_LS" propName="evtFfiProdVerLS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_FLAGS_MASK" propName="evtFfiFileFlagsMask"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_FLAGS" propName="evtFfiFileFlags"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_OS" propName="evtFfiFileOS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_TYPE" propName="evtFfiFileType"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_SUB_TYPE" propName="evtFfiFileSubType"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_DATE_MS" propName="evtFfiFileDateMS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_FFI_FILE_DATA_LS" propName="evtFfiFileDateLS"/>
+
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_PLUGIN_GUID" propName="evtPluginGUID"/>
+        <!-- Meta Properties -->
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_CURRENT_RULE_ID" propName="currentRuleId"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_CLASS" propName="evtClass"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX,Linux" enumName="DGPROP_EVT_USER_NAME" propName="evtUserName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,OSX" enumName="DGPROP_EVT_DOMAIN_NAME" propName="evtDomainName"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_TIME" propName="evtTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_REVISION" propName="evtRevision"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_ALT_DETAIL_ID" propName="evtAltDetailID"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_DETAIL_ID" propName="evtDetailID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DEVICE" propName="evtDevice"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_PRINT" propName="evtprint"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_NUMBER_OF_ALERTS_ON_DETAIL" propName="evtNumberOfAlertsOnDetail"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_NUMBER_OF_ALERTS_ON_EVENT" propName="evtNumberOfAlertsOnEvent"/>
+
+
+        <!-- Application Remediation Event Serializer Properties -->
+
+        <!-- Registry Event -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_REGISTRY_OP_TYPE" propName="evtRegistryOperationType"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REGISTRY_SRC_PATH" propName="evtRegistrySrcPath"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REGISTRY_DEST_PATH" propName="evtRegistryDestPath"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_REGISTRY_VAL_TYPE" propName="evtRegistryValueType"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_REGISTRY_VALUE_DWORD" propName="evtRegistryValueDWORD"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_REGISTRY_VALUE_QWORD" propName="evtRegistryValueQWORD"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REGISTRY_VALUE_STRING_SZ" propName="evtRegistryValueStringSZ"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_REGISTRY_VALUE_MULTISTRING_SZ" propName="evtRegistryValueMultiStringSZ">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+        </prop>
+
+        <!-- Hook Event -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_HOOK_HOOKED_BEFORE_DG" propName="evtHookHookedBeforeDG"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_HOOK_MODULE_NAME" propName="evtHookModuleName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_HOOK_FUNCTION_NAME" propName="evtHookFunctionName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_HOOK_OWNER_MODULE" propName="evtHookOwnerModule"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_HOOK_HOOKADDRESS" propName="evtHookAddress"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HOOK_HOOKTYPE" propName="evtHookType"/>
+
+        <!-- APT Event -->
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ATP_SUBTYPE" propName="evtATPSubtype"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_ATP_CONFIDENCE_VALUE" propName="evtATPConfidenceValue"/>
+
+        <!--Variable Support-->
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_STRING" propName="varstring">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_INT" propName="varint">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT16" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_INT16" propName="varint16">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT64" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_INT64" propName="varint64">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_BOOL" propName="varbool">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT8" platform="Windows,Linux,OSX" enumName="DGPROP_VAR_INT8" propName="varint8">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_IPV4" platform="Windows" enumName="DGPROP_VAR_IPV4" propName="varipaddress">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_VAR_MD5" propName="varmd5">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_SHA1" platform="Windows" enumName="DGPROP_VAR_SHA1" propName="varsha1">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_SHA256" platform="Windows" enumName="DGPROP_VAR_SHA256" propName="varsha256">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_ARRAY_LENGTH" propName="varArrayLength">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_VAR_DISPOSE" propName="dispose">
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+
+        <!-- component list support -->
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_COMPONENTLIST_STRING" propName="componentListString">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST"/>
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_COMPONENTLIST_MD5" propName="componentListMD5">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST"/>
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_IPV4" platform="Windows" enumName="DGPROP_COMPONENTLIST_IPADDRESS" propName="componentListIpAddress">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST"/>
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_SHA1" platform="Windows" enumName="DGPROP_COMPONENTLIST_SHA1" propName="componentListSHA1">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST"/>
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_SHA256" platform="Windows" enumName="DGPROP_COMPONENTLIST_SHA256" propName="componentListSHA256">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_COMPONENT_LIST"/>
+            <propModifier enumName="DGPROP_MODIFIER_VARIABLE"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_COMPONENTLIST_VERSION" propName="componentListVersion">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+        </prop>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_COMPONENTLIST_SIZE" propName="componentListSize">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+        </prop>
+
+        <!-- Entity Frequencies -->
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX,Cloud,Mobile" enumName="DGPROP_EVT_ENTITY_FREQUENCY_SRC" propName="evtSrcFileEntityFrequency">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENTITY"/>
+        </prop>
+
+        <prop propType="DGPROP_INT32" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_ENTITY_FREQUENCY_DST" propName="evtDestFileEntityFrequency">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENTITY"/>
+        </prop>
+
+        <prop propType="DGPROP_INT32" platform="Windows,OSX" enumName="DGPROP_EVT_ENTITY_FREQUENCY_BUFFER" propName="evtBufferEntityFrequency">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENTITY"/>
+        </prop>
+
+
+
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX,Mobile" enumName="DGPROP_EVT_POLICY_TAG_SRC" propName="evtSrcFilePolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_POLICY_TAG_DST" propName="evtDestFilePolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux,OSX" enumName="DGPROP_EVT_POLICY_TAG_BUFFER" propName="evtBufferPolicyTag">
+            <propModifier enumName="DGPROP_MODIFIER_DATA_VECTOR"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_POLICYTAG"/>
+        </prop>
+
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CDPROP_INT32_SRC" propName="evtSrcDocPropertyInt">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CDPROP_STR_SRC" propName="evtSrcDocPropertyString">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CDPROP_INT64_SRC" propName="evtSrcDocPropertyDate">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CDPROP_INT32_DST" propName="evtDestDocPropertyInt">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CDPROP_STR_DST" propName="evtDestDocPropertyString">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CDPROP_INT64_DST" propName="evtDestDocPropertyDate">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DOCPROP"/>
+        </prop>
+
+        <prop propType="DGPROP_INT8" platform="Windows,OSX" enumName="DGPROP_DNS_AVAILABLE" propName="dnsHostAvailable">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ISDNSHOSTAVAILABLE"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_ENVIRONMENTVAR_STR" propName="environmentVariable">
+            <propModifier enumName="DGPROP_MODIFIER_SYNTAX_NAMEDITEM"/>
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_ENVIRONMENTVAR"/>
+        </prop>
+
+        <prop propType="DGPROP_INT8" platform="OSX" enumName="DGPROP_HOST_IS_AVAILABLE" propName="hostIsAvailable" />
+
+        <prop propType="DGPROP_OBJECT" platform="Windows,OSX" enumName="DGPROP_CURRENT_EVENT" propName="currentEvent"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_ASSOCIATED_FILES_INFO" propName="currentAssociatedFilesInfo"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_SOURCE_FILEREF" propName="currentSourceFileRef"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_DESTINATION_FILEREF" propName="currentDestinationFileRef"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_PROCESS_ENTRY" propName="currentProcessEntry"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_PARENT_PROCESS_ENTRY" propName="currentParentProcessEntry"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_SOURCE_FILE_CLASSIFICATION" propName="currentSourceFileClassification"/>
+        <prop propType="DGPROP_OBJECT" platform="Windows" enumName="DGPROP_CURRENT_DESTINATION_FILE_CLASSIFICATION" propName="currentDestinationFileClassification"/>
+
+
+
+        <!--Properties not used in Rules-->
+
+        <!--  Other File Properties (not usable in rules) -->
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_BYTES_FILE" propName="evtBytesFile"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_BYTES_READ" propName="evtBytesRead"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_BYTES_WRITTEN" propName="evtBytesWritten"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_SRC_VOL_SER_NO" propName="evtSrcVolSerNo"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DST_VOL_SER_NO" propName="evtDestVolSerNo"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_SRC_DEVICE_HASH" propName="evtSrcDeviceHash"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DST_DEVICE_HASH" propName="evtDestDeviceHash"/>
+
+
+        <!--  Other Process Properties -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_IS32BIT" propName="evtIs32Bit"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_PROCESS_OP" propName="evtProcessOP"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_PROCESS_START_TM" propName="evtProcesStartTM"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_PROCESS_END_TM" propName="evtProcessEndTM"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_PROCESS_CODE" propName="evtProcessCode"/>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CURRENT_RULE_NAME" propName="currentRuleName"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_EVENT_SIZE" propName="evtEventSize"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_EVENT_SEQ_NUM" propName="evtEventSeqNum"/>
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_TYPE" propName="evtType"/>
+        <prop propType="DGPROP_GUID" Platform="Windows" enumName="DGPROP_EVT_ID_SET" propName="evtIDSet"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_CURPROC_CODE" propName="evtCurProcCode"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_PREVPROC_CODE" propName="evtPrevProcCode"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HASH_USER_SID" propName="evtHashUserSID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_HASH_USER_GID" propName="evtHashUserGID"/>
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_THREAD_ID" propName="evtThreadID"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_ID_SESSION" propName="evtSessionID"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_END_TIME" propName="evtEndTime"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_DETAIL_CNT" propName="evtDetailCnt"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_MAGICNUM" propName="evtMagicNum"/>
+
+        <!-- Network properties -->
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_NTWK_BYTES_READ" propName="evtNetworkBytesRead"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_NTWK_BYTES_WRITTEN" propName="evtNetworkBytesWritten"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_NTWK_SESSION" propName="evtNetworkSession"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_NTWK_PROTOCOL" propName="evtNetworkProtocol"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_NTWK_REM_HOST_NAME" propName="evtNetworkRemoteHostName"/>
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_EVT_NTWK_REM_ADDR" propName="evtNetworkRemoteAddress"/>
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_EVT_NTWK_LOCAL_ADDR" propName="evtNetworkLocalAddress"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_NTWK_OUTBOUND" propName="evtNetworkOutbound"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_NTWK_OPERATION_TYPE" propName="evtNetworkOperationType"/>
+
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_PROCESS" propName="evtProcess"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_SID" propName="evtSID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_SESSION" propName="evtSession"/>
+
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_NTWK_IS_PRIVATE" propName="evtNetworkIsPrivate"/>
+
+        <!-- Logon/Logoff Props -->
+        <prop propType="DGPROP_INT32" platform="Windows,Linux" enumName="DGPROP_EVT_LOGON_OP" propName="evtLogonOperation"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux" enumName="DGPROP_EVT_USER_SID" propName="evtUserSID"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows,Linux" enumName="DGPROP_EVT_USER_INFO" propName="evtUserInfo"/>
+
+
+        <!-- Alert Tails Support Properties -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_ALERT_OFFSET" propName="evtAlertOffset"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_ALERT_MAC_ALERT_ID" propName="evtAlertMacAlertID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGRPOP_EVT_ALERT_RESULT_ACT" propName="evtAlertResultAct"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_ALERT_RESP_TEXT" propName="evtAlertRespText"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_ALERT_PASSWORD" propName="evtAlertPwd"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_ALERT_TICKETID" propName="evtAlertTicketID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_ALERT_POL_IDS" propName="evtAlertPolIDS"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGRPOP_EVT_ALARM_LEVEL" propName="evtAlarmLevel"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_EVT_ALERT_TIME" propName="evtAlertTime"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_ALERT_RULE_ID" propName="evtAlertRuleID"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_SEND_ALERT" propName="sendAlert"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_DETAIL_WAS_BLOCKED" propName="detailWasBlocked"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_DETAIL_BLOCK_CODE" propName="detailBlockCode"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_DETAIL_SURVEY_ANSWER" propName="detailSurveyAnswer"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_DETAIL_SURVEY_ID" propName="detailSurveyID"/>
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_DETAIL_ENCRYPTION_TYPE" propName="detailEncryptionType"/>
+
+        <!-- Application Action Properties -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPLICATION_OP" propName="evtApplicationOP"/>
+
+        <!-- Application Remediation Event Serializer Properties -->
+
+        <!-- Base Event -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_PROFVER" propName="evtAppRemBaseProfVer"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_TPLGUID" propName="evtAppRemBaseTplGUID"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_APPGUID" propName="evtAppRemBaseAppGUID"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_FORMGUID" propName="evtAppRemBaseFormGUID"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_APPNAME" propName="evtAppRemBaseAppName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_USERNAME" propName="evtAppRemBaseUserName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_BASE_FORMNAME" propName="evtAppRemBaseFormName"/>
+
+        <!-- user app logon event -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_LOGON" propName="evtAppRemLogOn"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_ACTION_TYPE" propName="evtAppRemActionType"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_SUCCESS" propName="evtAppRemSuccess"/>
+
+        <!-- app details -->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_TYPE" propName="evtAppRemFieldType"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_ID" propName="evtAppRemFieldID"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_SENSITIVE" propName="evtAppRemFieldSensitive"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_NAME" propName="evtAppRemFieldName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_VALUE" propName="evtAppRemFieldValue"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_EVT_APPREM_FLD_GUID" propName="evtAppRemFieldGUID"/>
+
+        <!--Classification Stream-->
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_EVT_SRC_CLASSIFICATION_STREAM" propName="evtSrcClassificationStream"/>
+
+        <!--WinInet BindStatus Activity-->
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_BINDSTATUS_CODE" propName="bindStatusCode"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_BINDSTATUS_CACHEFILENAME" propName="bindStatusCacheFileName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_BINDSTATUS_URI_SPEC" propName="bindStatusURISpec"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_BINDSTATUS_URI_HOST" propName="bindStatusURIHost"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_BINDSTATUS_FILE_SIZE" propName="bindStatusFileSize"/>
+
+        <!--File Create Activity-->
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_CREATE_FILEPATH" propName="createFilePath"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CREATE_DISPOSITION" propName="createDisposition"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CREATE_FLAGS_AND_ATTRIBS" propName="createFlagsAndAttribs"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CREATE_SHARE_MODE" propName="createShareMode"/>
+        <prop propType="DGPROP_INT32" platform="Windows" enumName="DGPROP_CREATE_DESIRED_ACCESS" propName="createDesiredAccess"/>
+        <prop propType="DGPROP_INT64" platform="Windows" enumName="DGPROP_CREATE_HANDLE" propName="createHandle"/>
+
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_EVT_CLASSIFICATION_SRC_ITEMS" propName="evtSrcClassificationItems"/>
+        <prop propType="DGPROP_VBINARY" platform="Windows" enumName="DGPROP_EVT_CLASSIFICATION_DST_ITEMS" propName="evtDestClassificationItems"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_FILEID_SRC" propName="evtSrcFileID"/>
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_EVT_FILEID_DST" propName="evtDestFileID"/>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_TIME_VALUE" propName="time">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DATE_TIME"/>
+        </prop>
+
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGPROP_DATE_TIME_VALUE" propName="dateTime">
+            <propModifier enumName="DGPROP_MODIFIER_GETOPERAND_DATE_TIME"/>
+        </prop>
+
+        <!-- File Open Hint -->
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGRPROP_OPEN_HINT_NAME" propName="openHintName"/>
+        <prop propType="DGPROP_WSTRING" platform="Windows" enumName="DGRPROP_OPEN_HINT_PATH" propName="openHintPath"/>
+
+        <!-- CD Properties -->
+        <prop propType="DGPROP_GUID" platform="Windows" enumName="DGPROP_CD_BURN_GUID_GUID" propName="evtCDBurnGuid"/>
+
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_WINDOWSCDBURNFOLDER_SRC" propName="evtSrcIsWindowsCdBurnFolder">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+        <prop propType="DGPROP_INT8" platform="Windows" enumName="DGPROP_EVT_IS_WINDOWSCDBURNFOLDER_DST" propName="evtDestIsWindowsCdBurnFolder">
+            <propModifier enumName="DGPROP_MODIFIER_AGENT_PROPERTY"/>
+        </prop>
+
+    </properties>
+
+    <constants>
+        <!-- Operation Types -->
+        <const constType="DGPROP_INT8" platform="Windows,OSX,Linux" constValue="1" userAction="USER_CD_BURN" bundleClassUA="BaseUA,CDBurn" bundleClassUAD="BaseUAD,Fake,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpCDBurn"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="2" userAction="USER_NET_TRANSFER_DOWNLOAD" bundleClassUA="BaseUA,Network" bundleClassUAD="BaseUAD, File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpNetTransferDownload"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="3" userAction="USER_NET_TRANSFER_UPLOAD" bundleClassUA="BaseUA,Network" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpNetTransferUpload"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="4" userAction="USER_NET_OP" bundleClassUA="BaseUA,Network" bundleClassUAD="BaseUAD,Fake,Network" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpNetwork"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="5" userAction="USER_FILE_ARCHIVE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileArchive"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="6" userAction="USER_FILE_EXTRACT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileExtract"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="7" userAction="USER_FILE_SAVEAS" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileSaveAs"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="8" userAction="USER_FILE_EDIT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileEdit"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="9" userAction="USER_FILE_CREATE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileCreate"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="10" userAction="USER_FILE_DELETE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileDelete"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="11" userAction="USER_FILE_COPY" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileCopy"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="12" userAction="USER_FILE_MOVE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileMove"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="13" userAction="USER_FILE_OPEN" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileOpen"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="14" userAction="USER_FILE_RENAME" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileRename"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="15" userAction="USER_FILE_READ" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileRead"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="16" userAction="USER_FILE_WRITE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileWrite"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="17" userAction="USER_FILE_RECYCLE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileRecycle"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="18" userAction="USER_FILE_RESTORE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpFileRestore"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="19" userAction="USER_FILE_SETINFORMATION" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpSetInformation"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="20" userAction="USER_FILE_CLOSE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="true" constName="constOpFileClose"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="21" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpAppDataExchange"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="21" userAction="USER_ADE_PASTE" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpAdePaste"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="22" userAction="USER_PRINT_FILE" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Print" canHaveAssociatedFileInfo="false" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpPrint"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,Cloud" constValue="23" userAction="USER_ACTION_LOGON" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Fake" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpLogon"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,Cloud" constValue="24" userAction="USER_ACTION_LOGOFF" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Fake" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpLogoff"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="25" userAction="USER_APP_LOGON" bundleClassAE="AppEv" canHaveAssociatedFileInfo="false" userActionDescription="App Remediation User Logon event (success, fail)" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpAppLogon"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="26" userAction="USER_APP_DATA_ACTION" bundleClassAE="AppEv" canHaveAssociatedFileInfo="false" userActionDescription="App Remediation Data Action event (view,add,update,delete)" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpAppDataAction"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="27" userAction="USER_APPLICATION_ACTION" bundleClassUA="BaseUA" canHaveAssociatedFileInfo="false" userActionDescription="Used for application launch events" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpAppStart"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,Cloud" constValue="28" userAction="USER_SEND_MAIL" bundleClassUA="BaseUA,Mail" bundleClassUAD="BaseUAD,Mail,File" canHaveAssociatedFileInfo="true" userActionDescription="Send Mail event (plugin)" allowPostAlerts="false" constName="constOpSendMail" hasSrcPath="true" hasDestPath="false" eventType="PluginEvent"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="29" userAction="USER_ADE_PRINTSCREEN" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" userActionDescription="ADE PRINT SCREEN (Desktop)" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAdePrintScreen"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="30" userAction="USER_ADE_PRINTPROCESS" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" userActionDescription="ADE PRINT FOCUS PROCESS (Alt + PrintScreen)" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAdePrintProcess"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="31" userAction="USER_ADE_CUT" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" userActionDescription="ADE CUT or COPY" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAdeCut"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="32" userAction="USER_FILE_CLASSIFICATION" canHaveAssociatedFileInfo="true" userActionDescription="internally used for classification" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAdeFileClassification"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="33" userAction="USER_APP_BUFFER_CLASSIFICATION" canHaveAssociatedFileInfo="false" userActionDescription="internally used for app remediation scree/buffer classification" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAppScreenBuffer"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="34" userAction="USER_FILE_DECRYPT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" userActionDescription="Manual file decryption" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileDecrypt"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="35" userAction="USER_ADE_SCREEN_CAPTURE" bundleClassUA="BaseUA,ADE" canHaveAssociatedFileInfo="true" userActionDescription="SCREEN CAPTURE" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpAdeScreenCapture"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,Cloud" constValue="36" userAction="USER_MAIL_ATTACH" bundleClassUA="BaseUA,Mail" bundleClassUAD="BaseUAD,Mail,File" canHaveAssociatedFileInfo="true" userActionDescription="Mail Attach event (plugin)" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpMailAttach"  eventType="PluginEvent"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="37" userAction="USER_MODE_EXCLUDE_ENCRYPTION" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpExcludeEncryption"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="38" userAction="USER_ADE_INSERT_FILE" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpAdeInsertFile"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="39" userAction="USER_ADE_INSERT_NEW_OBJECT" bundleClassUA="BaseUA,ADE" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="false" hasDestPath="true" allowPostAlerts="false" constName="constOpAdeInsertNewObject"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="40" userAction="USER_DOC_REPOSITORY" bundleClassUA="BaseUA,DocRepo" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="true" allowPostAlerts="false" constName="constOpDocumentRepository"/>
+        <const constType="DGPROP_INT8" platform="Mobile,Linux" constValue="41" userAction="USER_FILE_VIEW" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpFileView"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="42" userAction="DEVICE_DETECTED" bundleClassUA="BaseUA,Device" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpDeviceDetected"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="43" userAction="DEVICE_MISSING" bundleClassUA="BaseUA,Device" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpDeviceMissing"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="44" userAction="DEVICE_ADDED" bundleClassUA="BaseUA,Device" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpDeviceAdded"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="45" userAction="DEVICE_REMOVED" bundleClassUA="BaseUA,Device" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpDeviceRemoved"/>
+        <const constType="DGPROP_INT8" platform="Windows,Mobile" constValue="46" userAction="USER_APPLICATION_ACTION_EX" canHaveAssociatedFileInfo="false" hasSrcPath="false" userActionDescription="Used for application events" hasDestPath="false" allowPostAlerts="false" constName="constOpAppAction"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="47" userAction="USER_ACTION_RESERVED1" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpReserved1"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="48" userAction="USER_ACTION_RESERVED2" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpReserved2"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="49" userAction="IMAGE_LOAD" bundleClassUA="BaseUA,Image" bundleClassUAD="BaseUAD,File" canHaveAssociatedFileInfo="true" hasSrcPath="true" hasDestPath="false" allowPostAlerts="false" constName="constOpImageLoad"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="50" userAction="CUSTOM_EVENT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Fake" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpCustomEvent"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="51" userAction="TIMER_EVENT" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpTimer"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="52" userAction="REGISTRY_EVENT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Registry" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpRegistry"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="53" userAction="HOOK_EVENT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,Hook" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpHook"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="54" userAction="DEVICE_OPEN" bundleClassUA="BaseUA,Device" bundleClassUAD="BaseUAD,Fake" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpDeviceOpen"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux" constValue="55" userAction="USER_API_EVENT" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpApiEvent"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="56" userAction="USER_NET_OP_EX" bundleClassUA="BaseUA,Network" bundleClassUAD="BaseUAD,Fake,Network" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpNetworkEx"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="57" userAction="ATP_EVENT" bundleClassUA="BaseUA" bundleClassUAD="BaseUAD,ATP" canHaveAssociatedFileInfo="false" hasSrcPath="false" hasDestPath="false" allowPostAlerts="false" constName="constOpATP"/>
+        <!-- Rule Actions (see E_BLOCK_ANSWER definition in code) -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constRuleActionNone"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constRuleActionContinue"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constRuleActionBlock"/>
+        <!--<const constType="DGPROP_INT8" constValue="3" constName="constRuleActionCancelled"/>  INTERNAL USE ONLY -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="4" constName="constRuleActionSandbox"/>
+        <!-- Deprecated constant name -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="4" constName="constRuleActionVault"/>
+        <!-- Name to match DGMC -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="5" constName="constRuleActionEncypt"/>
+        <!-- SPELLED WRONG (kept for backware compat.) -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="5" constName="constRuleActionEncrypt"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="6" constName="constRuleActionClassify"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="7" constName="constRuleActionTrust"/>
+
+        <!-- Drive Types -->
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="0" constName="constDriveUnknown"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="2" constName="constDriveRemovable"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="3" constName="constDriveFixed"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="4" constName="constDriveRemote"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="5" constName="constDriveCDRom"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="6" constName="constDriveRamDisk"/>
+        <!-- Drive Type 7 used by Server as DriveUnknown -->
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="8" constName="constDriveScreen"/>
+        <const constType="DGPROP_INT32" platform="Windows,Linux,OSX" constValue="9" constName="constDriveUrl"/>
+
+        <!-- Bus Types -->
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="0" constName="constBusUnknown"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="1" constName="constBusSCSI"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="2" constName="constBusATAPI"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="3" constName="constBusATA"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="4" constName="constBus1394"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="5" constName="constBusSSA"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="6" constName="constBusFibre"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="7" constName="constBusUSB"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="8" constName="constBusRAID"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="9" constName="constBusiSCSI"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="10" constName="constBusSas"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="11" constName="constBusSata"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="12" constName="constBusSD"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="13" constName="constBusMmc"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="14" constName="constBusVirtual"/>
+        <const constType="DGPROP_INT32" platform="Windows,OSX" constValue="15" constName="constBusFileBackedVirtual"/>
+
+        <!-- connection Type -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constConnNormal"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constConnWireLess"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constConnVPN"/>
+
+        <!-- Data Exchange Type -->
+        <const constType="DGPROP_INT32" platform="Linux" constValue="0" constName="constCutPaste"/>
+        <const constType="DGPROP_INT32" platform="Linux" constValue="1" constName="constDragDrop"/>
+        <const constType="DGPROP_INT32" platform="Linux" constValue="2" constName="constPrintScreen"/>
+
+        <!-- Protocol Type -->
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="1" constName="constProtocolTCP"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="2" constName="constProtocolUDP"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="5" constName="constProtocolIrDA"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="6" constName="constProtocolBluetooth"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="7" constName="constProtocolHTTP"/>
+        <const constType="DGPROP_INT8" platform="Windows,OSX" constValue="8" constName="constProtocolDNS"/>
+
+
+        <!-- Mail Recipient Type -->
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="0" constName="constMailTO"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="1" constName="constMailCC"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX" constValue="2" constName="constMailBCC"/>
+
+        <!-- Physical Medium -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constEthernet"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constWireless"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constIrDA"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constBluetooth"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="5" constName="const1394"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="6" constName="constVPN"/>
+
+        <!-- Wireless Authentication Mode -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constOpen"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constShared"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constWPA"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constWPAPSK"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="5" constName="constWPANone"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="6" constName="constWPA2"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="7" constName="constWPA2PSK"/>
+
+        <!-- Wireless Encryption -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constWEP"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constNone"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constTKIP"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constAES"/>
+
+        <!-- Wireless Infrastructure Mode -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constAdHoc"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constAccessPoint"/>
+
+        <!-- Operation Origin -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0" constName="constOpOriginUserAction"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constOpOriginAccessCheck"/>
+
+        <!-- Day of Week -->
+        <const constType="DGPROP_INT16" platform="Windows" constValue="0" constName="constSunday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="1" constName="constMonday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="2" constName="constTuesday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="3" constName="constWednesday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="4" constName="constThursday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="5" constName="constFriday"/>
+        <const constType="DGPROP_INT16" platform="Windows" constValue="6" constName="constSaturday"/>
+
+        <!-- FC constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureUseDefault"/>
+        <!-- FC Capture Mode constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureCaptureModeDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constFileCaptureCaptureModeRecordOnly"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constFileCaptureCaptureModeRecordAndFile"/>
+        <!-- FC Capture Alg constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureCaptureAlgDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constFileCaptureCaptureAlgSinch"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constFileCaptureCaptureAlgAsinc"/>
+        <!-- FC TransferMode constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureTransferModeDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constFileCaptureTransferModeAutoUpload"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constFileCaptureTransferModeOnDemand"/>
+        <!-- FC Disposition constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureDispositionDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constFileCaptureDispositionAuto"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constFileCaptureDispositionSrc"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="3" constName="constFileCaptureDispositionDest"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="4" constName="constFileCaptureDispositionBoth"/>
+        <!-- FC Hash Enabled constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constFileCaptureHashEnabledDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constFileCaptureHashEnabledYes"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constFileCaptureHashEnabledNo"/>
+
+        <!-- DG Hash Type constants-->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0"   constName="constHashTypeDefault"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="101" constName="constHashTypeSHA512"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="102" constName="constHashTypeSHA256"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="103" constName="constHashTypeSHA1"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="104" constName="constHashTypeMD5"/>
+
+        <!-- Document Repository Event Type -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0" constName="constEvtDocRepositoryUnknown"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constEvtDocRepositoryCheckout"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constEvtDocRepositoryCheckin"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constEvtDocRepositoryView"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constEvtDocRepositoryImport"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="5" constName="constEvtDocRepositoryExport"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="6" constName="constEvtDocRepositoryDelete"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="7" constName="constEvtDocRepositoryPrint"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="8" constName="constEvtDocRepositoryEdit"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="9" constName="constEvtDocRepositoryCancelCheckout"/>
+
+        <!-- Document Repository Product Type -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0" constName="constDocRepositoryUnknown"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constDocRepositoryWebtop"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constDocRepositorySharePoint"/>
+
+        <!--Device Install State -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="0" constName="constDeviceInstallStateInserted"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constDeviceInstallStateNeedsReinstall"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constDeviceInstallStateFailedInstall"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="3" constName="constDeviceInstallStateFinishInstall"/>
+
+        <!-- Device Removal Policy -->
+        <const constType="DGPROP_INT32" platform="Windows" constValue="1" constName="constDeviceRemovalPolicyExpectNoRemoval"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="2" constName="constDeviceRemovalPolicyExpectOrderlyRemoval"/>
+        <const constType="DGPROP_INT32" platform="Windows" constValue="3" constName="constDeviceRemovalPolicyExpectSurpriseRemoval"/>
+
+        <!-- Agent Type -->
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="0" constName="constAgentTypeWindows"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="1" constName="constAgentTypeLinux"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="2" constName="constAgentTypeSolaris"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="3" constName="constAgentTypeMAC"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="4" constName="constAgentTypeIOS"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="5" constName="constAgentTypeAndroid"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="6" constName="constAgentTypeBlackBerry"/>
+        <const constType="DGPROP_INT8" platform="Windows,Linux,OSX,Mobile" constValue="7" constName="constAgentTypeWindowsMobile"/>
+
+        <!-- Registry Event Types -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0" constName="constRegistryUnknown"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constRegistryCreateKey"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constRegistryRenameKey"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constRegistryDeleteKey"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constRegistryDeleteValue"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="5" constName="constRegistrySetValue"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="6" constName="constRegistryQueryValue"/>
+
+        <!-- Registry Value Types -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0" constName="constRegistryValueTypeUnknown"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constRegistryValueTypeDWORD"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2" constName="constRegistryValueTypeQWORD"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3" constName="constRegistryValueTypeStringSZ"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4" constName="constRegistryValueTypeMultiStringSZ"/>
+
+        <!-- Encryption Types -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="0"   constName="constEncryptionTypeNone"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1"   constName="constEncryptionTypeAES256Adaptive"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="2"   constName="constEncryptionType3DESAdaptive"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="3"   constName="constEncryptionTypeStdZipAdaptive"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="4"   constName="constEncryptionTypeStdZipPassword"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="5"   constName="constEncryptionTypeAES256ZipAdaptive"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="6"   constName="constEncryptionTypeAES256ZipPassword"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="7"   constName="constEncryptionTypeAES256PasswordProtected"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="8"   constName="constEncryptionType3DESPasswordProtected"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="9"   constName="constEncryptionTypeInPolicyRaw"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="10"  constName="constEncryptionTypeDefaultEncryption"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="11"  constName="constEncryptionTypeSMIME"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="255" constName="constEncryptionTypeNTFS"/>
+
+        <!-- APT subtype Types -->
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constATPSubtypeProcessHollowing"/>
+        <const constType="DGPROP_INT8" platform="Windows" constValue="1" constName="constATPSubtypeReflectiveInjection"/>
+
+    </constants>
+
+    
+    <actionTypes>
+        <at atId="0" atStrength="0" enum="ACTION_NONE" atName="None"/>
+        <at atId="1" atStrength="10" enum="ACTION_ALERT" atName="Alert"/>
+        <at atId="2" atStrength="30" enum="ACTION_PROMPT" atName="Prompt"/>
+        <at atId="3" atStrength="100" enum="ACTION_BLOCK" atName="Block"/>
+        <at atId="4" atStrength="110" enum="ACTION_LOCKDOWN" atName="Lockdown"/>
+        <at atId="5" atStrength="90" enum="ACTION_STOP_PROCESS" atName="StopProcess"/>
+        <at atId="6" atStrength="20" enum="ACTION_FILTER_EVENT" atName="Filter"/>
+        <at atId="7" atStrength="50" enum="ACTION_SET_CLASSIFICATION" atName="Classify"/>
+        <at atId="8" atStrength="60" enum="ACTION_ENCRYPT" atName="Encrypt"/>
+        <at atId="9" atStrength="40" enum="ACTION_TRUSTED_PROCESS" atName="TrustedProcess"/>
+        <at atId="10" atStrength="80" enum="ACTION_SANDBOXED" atName="Vault"/>
+    </actionTypes>
+
+    <policyTypes>
+        <pt ptId="0" ptName="None"/>
+        <pt ptId="1" ptName="Filter"/>
+        <pt ptId="2" ptName="Trusted"/>
+        <pt ptId="3" ptName="Control"/>
+        <pt ptId="4" ptName="Encryption"/>
+        <pt ptId="5" ptName="Classification"/>
+    </policyTypes>
+
+    <ruleTypes>
+        <rt rtId="0" rtName="None"/>
+        <rt rtId="1" rtName="Filter"/>
+        <rt rtId="2" rtName="Trusted"/>
+        <rt rtId="3" rtName="Control"/>
+        <rt rtId="4" rtName="ControlProcess"/>
+        <rt rtId="5" rtName="Encryption"/>
+        <rt rtId="6" rtName="Classification"/>
+    </ruleTypes>
+
+    <ruleClass>
+        <rc rcId="0" rcName="Unknown"/>
+        <rc rcId="1" rcName="Process"/>
+        <rc rcId="2" rcName="Component"/>
+        <rc rcId="3" rcName="Core"/>
+    </ruleClass>
+
+    <showModes>
+        <showMode smId="0" smName="Hide"/>
+        <showMode smId="1" smName="Normal"/>
+        <showMode smId="2" smName="ReferencesOnly"/>
+    </showModes>
+
+    <alertLevel>
+        <al alId="0" alName="None"/>
+        <al alId="1" alName="Informational"/>
+        <al alId="2" alName="Low"/>
+        <al alId="3" alName="Medium"/>
+        <al alId="4" alName="High"/>
+        <al alId="5" alName="Critical"/>
+    </alertLevel>
+
+    <timeUnits>
+        <tu tuId="0"  tuSysTimeMultiplier="1"  tuName="onehundrednanoseconds" />
+        <tu tuId="1"  tuSysTimeMultiplier="10000"  tuName="milliseconds" />
+        <tu tuId="2"  tuSysTimeMultiplier="10000000"  tuName="seconds" />
+        <tu tuId="3"  tuSysTimeMultiplier="600000000"  tuName="minutes" />
+        <tu tuId="4"  tuSysTimeMultiplier="36000000000"  tuName="hours" />
+        <tu tuId="5"  tuSysTimeMultiplier="864000000000"  tuName="days" />
+    </timeUnits>
+
+    <logicalOperator>
+        <op opId="1" opName="or"/>
+        <op opId="2" opName="and"/>
+        <op opId="3" opName="eval"/>
+    </logicalOperator>
+
+    <returnOperator>
+        <op retOpId="1" opName="return"/>
+    </returnOperator>
+
+    <valueOperator>
+        <vop vopId="1" opName="set"/>
+        <vop vopId="2" opName="add"/>
+        <vop vopId="3" opName="sub"/>
+        <vop vopId="4" opName="setArrayItem"/>
+        <vop vopId="5" opName="getArrayItem"/>
+        <vop vopId="6" opName="dispose"/>
+        <vop vopId="7" opName="getIndexOfArrayItem"/>
+    </valueOperator>
+
+    <scriptOperator>
+        <scop scopId="1" opName="script"/>
+    </scriptOperator>
+
+    <matchFunction>
+        <fn fnId="1" fnName="regExp"/>
+        <fn fnId="2" fnName="equal"/>
+        <fn fnId="4" fnName="greaterThan"/>
+        <fn fnId="8" fnName="lessThan"/>
+        <fn fnId="16" fnName="ipMask"/>
+        <fn fnId="32" fnName="in"/>
+        <fn fnId="64" fnName="like"/>
+    </matchFunction>
+
+    <varScopes>
+        <sc scId="0" scName="global"/>
+        <sc scId="1" scName="event"/>
+        <sc scId="2" scName="process"/>
+        <sc scId="3" scName="thread"/>
+        <sc scId="4" scName="parentProcess"/>
+        <sc scId="5" scName="sourceProcess"/>
+        <sc scId="6" scName="sourceParentProcess"/>
+        <sc scId="7" scName="sourceFile"/>
+        <sc scId="8" scName="destinationFile"/>
+        <sc scId="9" scName="peristent"/>
+        <sc scId="10" scName="local"/>
+        <sc scId="11" scName="objectProperty"/>
+        <sc scId="-1" scName="illegal"/>
+    </varScopes>
+
+    <contextFunction>
+        <cfn cId="1" cnName="queryProcessOpenFile"/>
+        <cfn cId="2" cnName="queryProcessClosedFile"/>
+        <cfn cId="3" cnName="queryProcessOpenConnection"/>
+        <cfn cId="4" cnName="queryProcessHasFocus"/>
+        <cfn cId="5" cnName="queryParentProcess"/>
+        <cfn cId="6" cnName="queryProcessLoadedDLL"/>
+        <cfn cId="7" cnName="queryProcessLoadedCOM"/>
+    </contextFunction>
+  
+    <!-- =================================================================== -->
+    <!--                   Bundle Elements                                   -->
+    <!-- =================================================================== -->
+  
+    <!-- Device Reference -->
+  
+    <bundleClassDEV element="dev">
+        <class name="RefDevice">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="dh" type="DGPROP_GUID" desc="device guid"/>
+          <attrib name="devClass" type="DGPROP_WSTRING" base64Encode="false" desc="device class"/>
+          <attrib name="prdName" type="DGPROP_WSTRING" base64Encode="false" desc="product name"/>
+          <attrib name="prdID" type="DGPROP_WSTRING" base64Encode="false" desc="product ID"/>
+          <attrib name="serNum" type="DGPROP_WSTRING" base64Encode="false" desc="serial number"/>
+          <attrib name="vendor" type="DGPROP_WSTRING" base64Encode="false" desc="vendor name"/>
+          <attrib name="vendorID" type="DGPROP_WSTRING" base64Encode="false" desc="vendor ID"/>
+          <attrib name="customID" type="DGPROP_WSTRING" base64Encode="false" desc="custom ID"/>
+          <attrib name="friendlyName" type="DGPROP_WSTRING" base64Encode="false" desc="friendly name"/>
+          <attrib name="bt" type="DGPROP_INT64" desc="storage bus type"/>
+          <attrib name="remPolicy" type="DGPROP_INT64" desc="storage removal policy"/>
+          <attrib name="dt" type="DGPROP_INT64" desc="drive type"/>
+          <attrib name="supPredFail" type="DGPROP_INT8" desc="supports predict failure"/>
+        </class>
+    </bundleClassDEV>
+  
+     <!-- Image Reference -->
+  
+    <bundleClassDI element="di">
+        <class name="RefImage">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="imageMD5" type="DGPROP_GUID" desc="MD5 hash"/>
+          <attrib name="imageSHA1" type="DGPROP_SHA1" desc="SHA1 hash"/>
+          <attrib name="imageSHA256" type="DGPROP_SHA256" desc="SHA256 hash"/>
+          <attrib name="imageName" type="DGPROP_WSTRING" base64Encode="true" desc="image name"/>
+          <attrib name="imageSize" type="DGPROP_INT64" desc="image size"/>
+          <attrib name="pf" type="DGPROP_WSTRING" base64Encode="false" desc="process flags"/>
+          <attrib name="fcl" type="DGPROP_INT64" desc="local creation time"/>
+          <attrib name="fml" type="DGPROP_INT64" desc="local modify time"/>
+          <attrib name="cn" type="DGPROP_WSTRING" base64Encode="false" desc="company name"/>
+          <attrib name="pn" type="DGPROP_WSTRING" base64Encode="false" desc="product name"/>
+          <attrib name="fd" type="DGPROP_WSTRING" base64Encode="false" desc="file description"/>
+          <attrib name="fv" type="DGPROP_WSTRING" base64Encode="false" desc="file version"/>
+          <attrib name="pv" type="DGPROP_WSTRING" base64Encode="false" desc="product version"/>
+          <attrib name="lc" type="DGPROP_WSTRING" base64Encode="false" desc="legal copyright"/>
+        </class>
+    </bundleClassDI>
+  
+      <!-- Process Reference -->
+  
+     <bundleClassPI element="pi">
+        <class name="RefProcess">
+          <attrib name="gid" type="DGPROP_WSTRING" base64Encode="true" desc="group ID used with PKI"/>
+          <attrib name="ema" type="DGPROP_WSTRING" base64Encode="true" desc="email address"/>
+          <attrib name="pki" type="DGPROP_INT8" desc="PKI authenticated?"/>
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="ph" type="DGPROP_GUID" base64Encode="false" desc="process hash"/>
+          <attrib name="pph" type="DGPROP_GUID" base64Encode="false" desc="parent process hash"/>
+          <attrib name="sesid" type="DGPROP_WSTRING" base64Encode="false" desc="user session ID"/>
+          <attrib name="pid" type="DGPROP_INT32" desc="processID"/>
+          <attrib name="psu" type="DGPROP_INT64" desc="process start time"/>
+          <attrib name="peu" type="DGPROP_INT64" desc="process end time"/>
+          <attrib name="psl" type="DGPROP_INT64" desc="local start time"/>
+          <attrib name="pel" type="DGPROP_INT64" desc="local end time"/>
+          <attrib name="pf" type="DGPROP_WSTRING" base64Encode="false" desc="process flags"/>
+          <attrib name="fcl" type="DGPROP_INT64" desc="local creation time"/>
+          <attrib name="fml" type="DGPROP_INT64" desc="local modify time"/>
+          <attrib name="sid" type="DGPROP_WSTRING" base64Encode="true" desc="user SID"/>
+          <attrib name="dn" type="DGPROP_WSTRING" base64Encode="true" desc="user domain"/>
+          <attrib name="un" type="DGPROP_WSTRING" base64Encode="true" desc="user name"/>
+          <attrib name="in" type="DGPROP_WSTRING" base64Encode="true" desc="process image name"/>
+          <attrib name="fp" type="DGPROP_WSTRING" base64Encode="false" desc="process path"/>
+          <attrib name="MD5" type="DGPROP_GUID" desc="MD5 hash"/>
+          <attrib name="SHA1" type="DGPROP_SHA1" desc="SHA1 hash"/>
+          <attrib name="SHA256" type="DGPROP_SHA256" desc="SHA256"/>
+          <attrib name="cn" type="DGPROP_WSTRING" base64Encode="false" desc="company name"/>
+          <attrib name="pn" type="DGPROP_WSTRING" base64Encode="false" desc="product name"/>
+          <attrib name="fd" type="DGPROP_WSTRING" base64Encode="false" desc="file description"/>
+          <attrib name="fv" type="DGPROP_WSTRING" base64Encode="false" desc="file version"/>
+          <attrib name="pv" type="DGPROP_WSTRING" base64Encode="false" desc="product version"/>
+          <attrib name="lc" type="DGPROP_WSTRING" base64Encode="false" desc="legal copyright"/>
+          <attrib name="ps" type="DGPROP_INT8" desc="always 0 ???"/>
+          <attrib name="vs" type="DGPROP_INT8" desc="is virtual session?"/>
+          <attrib name="v" type="DGPROP_INT32" desc="bundle version"/>
+          <attrib name="t" type="DGPROP_WSTRING" base64Encode="false" desc="x86 or x64"/>
+        </class>
+    </bundleClassPI>
+
+     <!-- User Action -->
+  
+    <bundleClassUA element="ua">
+        <class name="ADE">
+          <attrib name="sph" type="DGPROP_GUID" desc="source process ID"/>
+          <attrib name="obj" type="DGPROP_WSTRING" base64Encode="false" desc="ole object type"/>
+        </class>
+        <class name="BaseUA">
+          <attrib name="ot" type="DGPROP_INT8" desc="event type"/>
+          <attrib name="ph" type="DGPROP_GUID" desc="process hash"/>
+          <attrib name="in" type="DGPROP_WSTRING" base64Encode="true" desc="process image name"/>
+          <attrib name="md5" type="DGPROP_GUID" desc="process MD5 hash"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="sesid" type="DGPROP_GUID" desc="session ID"/>
+          <attrib name="sid" type="DGPROP_WSTRING" base64Encode="true" desc="user SID"/>
+          <attrib name="un" type="DGPROP_WSTRING" base64Encode="true" desc="user name"/>
+          <attrib name="esl" type="DGPROP_INT64" desc="local start time"/>
+          <attrib name="esu" type="DGPROP_INT64" desc="event time"/>
+          <attrib name="ob" type="DGPROP_INT8" desc="is outbound?"/>
+          <attrib name="pt" type="DGPROP_INT32" desc="protocol type"/>
+          <attrib name="st" type="DGPROP_INT32" desc="subtype"/>
+          <attrib name="eel" type="DGPROP_INT64" desc="local end time"/>
+          <attrib name="eeu" type="DGPROP_INT64" desc="event end time"/>
+          <attrib name="gid" type="DGPROP_WSTRING" base64Encode="true" desc="group ID used with PKI"/>
+          <attrib name="ema" type="DGPROP_WSTRING" base64Encode="true" desc="email address"/>
+          <attrib name="pki" type="DGPROP_INT8" desc="PKI authenticated?"/>
+          <attrib name="aa" type="DGPROP_INT8" desc="any alerts?"/>
+          <attrib name="ar" type="DGPROP_INT8" desc="any removable drives?"/>
+          <attrib name="dc" type="DGPROP_INT32" desc="detail count"/>
+          <attrib name="tfs" type="DGPROP_INT64" desc="total file sizes"/>
+          <attrib name="vs" type="DGPROP_INT8" desc="is virtual session?"/>
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="dn" type="DGPROP_WSTRING" base64Encode="true" desc="user domain"/>
+          <attrib name="ae" type="DGPROP_INT8" desc="any encrypted?"/>
+          <attrib name="hc" type="DGPROP_INT8" desc="any classification?"/>
+          <attrib name="md" type="DGPROP_INT8" desc="is laptop?"/>
+          <attrib name="wb" type="DGPROP_INT8" desc="was blocked?"/>
+          <attrib name="cf" type="DGPROP_INT8" desc="has file capture?"/>
+          <attrib name="sc" type="DGPROP_INT8" desc="capture status"/>
+          <attrib name="la" type="DGPROP_INT8" desc="is local admin?"/>
+          <attrib name="display" type="DGPROP_WSTRING" base64Encode="false" desc="display name"/>
+        </class>
+        <class name="CDBurn">
+          <attrib name="burnid" type="DGPROP_GUID" desc="CD burn guid"/>
+        </class>
+        <class name="Device">
+          <attrib name="dh" type="DGPROP_GUID" desc="device guid"/>
+        </class>
+        <class name="DocRepo">
+          <attrib name="drpt" type="DGPROP_INT8" desc="product type"/>
+          <attrib name="appun" type="DGPROP_WSTRING" base64Encode="false" desc="user name"/>
+          <attrib name="drsn" type="DGPROP_WSTRING" base64Encode="false" desc="server name"/>
+        </class>
+        <class name="Image">
+          <attrib name="pid" type="DGPROP_INT32" desc="process ID"/>
+          <attrib name="ldfrt" type="DGPROP_INT8" desc="using remote thread?"/>
+          <attrib name="ldfai" type="DGPROP_INT8" desc="loaded by AppInit?"/>
+          <attrib name="ldfui" type="DGPROP_INT8" desc="loaded under impersonation?"/>
+          <attrib name="ldfrf" type="DGPROP_INT8" desc="image loaded by reflection?"/>
+          <attrib name="imageMD5" type="DGPROP_GUID" desc="MD5 hash"/>
+          <attrib name="imageSHA1" type="DGPROP_SHA1" desc="SHA1 hash"/>
+          <attrib name="imageSHA256" type="DGPROP_SHA256" desc="SHA256 hash"/>
+          <attrib name="imageName" type="DGPROP_WSTRING" base64Encode="true" desc="DLL image name"/>
+          <attrib name="imageBase" type="DGPROP_INT64" desc="image base"/>
+          <attrib name="pf" type="DGPROP_WSTRING" base64Encode="false" desc="process flags"/>
+          <attrib name="fcl" type="DGPROP_INT64" desc="local creation time"/>
+          <attrib name="fml" type="DGPROP_INT64" desc="local modify time"/>
+        </class>
+        <class name="Mail">
+          <attrib name="hn" type="DGPROP_WSTRING" base64Encode="false" desc="remote host name"/>
+          <attrib name="ra" type="DGPROP_WSTRING" base64Encode="false" desc="remote address"/>
+          <attrib name="rp" type="DGPROP_INT32" desc="remote port"/>
+          <attrib name="lp" type="DGPROP_INT32" desc="local port"/>
+          <attrib name="sph" type="DGPROP_WSTRING" base64Encode="false" desc="source process ID - always empty string"/>
+          <attrib name="ms" type="DGPROP_WSTRING" base64Encode="false" desc="sender address"/>
+          <attrib name="msb" type="DGPROP_WSTRING" base64Encode="false" desc="mail subject"/>
+          <attrib name="sme" type="DGPROP_INT8" desc="is SMIME Enc?"/>
+          <attrib name="sms" type="DGPROP_INT8" desc="is SMIME Sig?"/>
+        </class>
+        <class name="Network">
+          <attrib name="hn" type="DGPROP_WSTRING" base64Encode="false" desc="remote host name"/>
+          <attrib name="up" type="DGPROP_WSTRING" base64Encode="false" desc="URL path"/>
+          <attrib name="sa" type="DGPROP_WSTRING" base64Encode="false" desc="src address"/>
+          <attrib name="ra" type="DGPROP_WSTRING" base64Encode="false" desc="remote address"/>
+          <attrib name="rp" type="DGPROP_INT32" desc="remote port"/>
+          <attrib name="lp" type="DGPROP_INT32" desc="local port"/>
+          <attrib name="pa" type="DGPROP_INT8" desc="is private?"/>
+          <attrib name="wi" type="DGPROP_INT8" desc="wireless lan?"/>
+          <attrib name="pm" type="DGPROP_OBJECT" desc="physical medium"/>
+          <attrib name="ssid" type="DGPROP_WSTRING" base64Encode="false" desc="???"/>
+          <attrib name="wam" type="DGPROP_INT8" desc="wireless authentication mode"/>
+          <attrib name="wif" type="DGPROP_INT8" desc="wireless infrastructure mode"/>
+          <attrib name="we" type="DGPROP_INT8" desc="encryption status"/>
+          <attrib name="wap" type="DGPROP_WSTRING" base64Encode="false" desc="access point"/>
+          <attrib name="ad" type="DGPROP_WSTRING" base64Encode="false" desc="adapter name"/>
+        </class>
+    </bundleClassUA>
+
+    <!-- User Action Detail-->
+
+     <bundleClassUAD element="uad">
+        <class name="ATP">
+          <attrib name="atpst" type="DGPROP_INT32" desc="subtype"/>
+          <attrib name="atpsc" type="DGPROP_INT32" desc="score"/>
+        </class>
+        <class name="BaseUAD">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="ot" type="DGPROP_INT8" desc="detail type"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="medid" type="DGPROP_GUID" desc="machine event detail ID"/>
+          <attrib name="svn" type="DGPROP_INT32" desc="src volume serial number"/>
+          <attrib name="dvn" type="DGPROP_INT32" desc="dst volume serial number"/>
+        </class>
+       <class name="Fake">
+          <attrib name="sir" type="DGPROP_INT32" desc="src is removable? always false"/>
+          <attrib name="dir" type="DGPROP_INT32" desc="dst is removable? always false"/>
+        </class>
+        <class name="File">
+          <attrib name="sdh" type="DGPROP_GUID" desc="src device guid"/>
+          <attrib name="sdt" type="DGPROP_INT32" desc="src drive type"/>
+          <attrib name="sbt" type="DGPROP_INT32" desc="src bus type"/>
+          <attrib name="sp" type="DGPROP_WSTRING" base64Encode="false" desc="src path"/>
+          <attrib name="sir" type="DGPROP_INT8" desc="src is removable drive"/>
+          <attrib name="ddh" type="DGPROP_GUID" desc="dst device guid"/>
+          <attrib name="ddt" type="DGPROP_INT32" desc="dst drive type"/>
+          <attrib name="dbt" type="DGPROP_INT32" desc="dst bus type"/>
+          <attrib name="dp" type="DGPROP_WSTRING" base64Encode="false" desc="dst path"/>
+          <attrib name="dir" type="DGPROP_INT8" desc="dst is removable drive?"/>
+          <attrib name="br" type="DGPROP_INT64" desc="bytes read"/>
+          <attrib name="bw" type="DGPROP_INT64" desc="bytes written"/>
+          <attrib name="fs" type="DGPROP_INT64" desc="file size"/>
+          <attrib name="sea" type="DGPROP_INT8" desc="src is encrypted?"/>
+          <attrib name="dea" type="DGPROP_INT8" desc="dst is encrypted?"/>
+          <attrib name="sfc" type="DGPROP_INT32" desc="src classification"/>
+          <attrib name="dfc" type="DGPROP_INT32" desc="dst clasification"/>
+          <attrib name="sfi" type="DGPROP_GUID" desc="src file ID"/>
+          <attrib name="dfi" type="DGPROP_GUID" desc="dst file ID"/>
+          <attrib name="scf" type="DGPROP_INT8" desc="src has capture?"/>
+          <attrib name="dcf" type="DGPROP_INT8" desc="dst has capture?"/>
+          <attrib name="sc" type="DGPROP_INT8" desc="src capture status"/>
+          <attrib name="opf" type="DGPROP_INT8" desc="operation failed?"/>
+          <attrib name="ops" type="DGPROP_INT32" desc="operation status"/>
+        </class>
+        <class name="Hook">
+         <attrib name="hkb4" type="DGPROP_INT8" desc="hooked before DG"/>
+         <attrib name="hkby" type="DGPROP_INT8" desc="hooked by - always 0"/>
+         <attrib name="hkmn" type="DGPROP_WSTRING" base64Encode="false" desc="module name"/>
+         <attrib name="hkfn" type="DGPROP_WSTRING" base64Encode="false" desc="function name"/>
+         <attrib name="hkom" type="DGPROP_WSTRING" base64Encode="false" desc="hook owner module"/>
+         <attrib name="hkad" type="DGPROP_WSTRING" base64Encode="false" desc="hook address"/>
+        </class>
+        <class name="Mail">
+          <attrib name="sesdid" type="DGPROP_GUID" desc="user session ID"/>
+          <attrib name="mr" type="DGPROP_WSTRING" base64Encode="false" desc="recipient"/>
+          <attrib name="mrt" type="DGPROP_INT32" desc="recipient type"/>
+          <attrib name="mrs" type="DGPROP_INT32" desc="recipient status"/>
+          <attrib name="sc" type="DGPROP_INT8" desc="has screen capture?"/>
+          <attrib name="cf" type="DGPROP_INT8" desc="has file capture?"/>
+        </class>
+        <class name="Network">
+          <attrib name="br" type="DGPROP_INT64" desc="bytes read - always 0"/>
+          <attrib name="bw" type="DGPROP_INT64" desc="bytes written - always 0"/>
+        </class>
+        <class name="Print">
+          <attrib name="ot" type="DGPROP_OBJECT" desc="file detail"/>
+          <attrib name="sdh" type="DGPROP_GUID" desc="always null guid"/>
+          <attrib name="sdt" type="DGPROP_INT8" desc="is removable drive?"/>
+          <attrib name="sbt" type="DGPROP_INT32" desc="always 0"/>
+          <attrib name="sir" type="DGPROP_INT32" desc="is removable drive?"/>
+          <attrib name="sp" type="DGPROP_WSTRING" base64Encode="false" desc="file path"/>
+          <attrib name="ddh" type="DGPROP_GUID" desc="always null guid"/>
+          <attrib name="fs" type="DGPROP_INT64" desc="src file size"/>
+          <attrib name="pn" type="DGPROP_WSTRING" base64Encode="false" desc="printer name"/>
+          <attrib name="sea" type="DGPROP_INT8" desc="src encryption algorithm"/>
+          <attrib name="sfc" type="DGPROP_INT32" desc="src classification"/>
+          <attrib name="sfi" type="DGPROP_GUID" desc="src file ID"/>
+          <attrib name="scf" type="DGPROP_INT8" desc="has file capture?"/>
+          <attrib name="sc" type="DGPROP_OBJECT" desc="capture status"/>
+        </class>
+        <class name="Registry">
+          <attrib name="regsp" type="DGPROP_WSTRING" base64Encode="false" desc="src registry path"/>
+          <attrib name="regdp" type="DGPROP_WSTRING" base64Encode="false" desc="dst registry path"/>
+          <attrib name="regvt" type="DGPROP_OBJECT" desc="registry value type"/>
+          <attrib name="regv" type="DGPROP_WSTRING" base64Encode="false" desc="registry value"/>
+        </class>
+     </bundleClassUAD>
+
+      <!-- Application Event -->
+
+      <bundleClassAE element="ae">
+        <class name="AppEv">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="ph" type="DGPROP_GUID" desc="process hash"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="sesdid" type="DGPROP_GUID" desc="user session ID"/>
+          <attrib name="sid" type="DGPROP_WSTRING" base64Encode="false" desc="user SID"/>
+          <attrib name="dn" type="DGPROP_WSTRING" base64Encode="false" desc="user domain"/>
+          <attrib name="un" type="DGPROP_WSTRING" base64Encode="false" desc="user name"/>
+          <attrib name="esu" type="DGPROP_INT64" desc="event time start UTC"/>
+          <attrib name="eeu" type="DGPROP_INT64" desc="event time end UTC"/>
+          <attrib name="esl" type="DGPROP_INT64" desc="local start time"/>
+          <attrib name="eel" type="DGPROP_INT64" desc="local end time"/>
+          <attrib name="ot" type="DGPROP_INT8" desc="user action"/>
+          <attrib name="pv" type="DGPROP_INT32" desc="profile version"/>
+          <attrib name="tid" type="DGPROP_GUID" desc="template guid"/>
+          <attrib name="aid" type="DGPROP_GUID" desc="app guid"/>
+          <attrib name="fid" type="DGPROP_GUID" desc="form guid"/>
+          <attrib name="apn" type="DGPROP_WSTRING" base64Encode="false" desc="app name"/>
+          <attrib name="aun" type="DGPROP_WSTRING" base64Encode="false" desc="user name"/>
+          <attrib name="afn" type="DGPROP_WSTRING" base64Encode="false" desc="form name"/>
+          <attrib name="ls" type="DGPROP_INT32" desc="status"/>
+          <attrib name="da" type="DGPROP_INT32" desc="data action"/>
+        </class>
+      </bundleClassAE>
+
+      <!-- Application Event Detail-->
+
+      <bundleClassAED element="aed">
+        <class name="AppD">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="ot" type="DGPROP_INT8" desc="user action"/>
+          <attrib name="ft" type="DGPROP_INT32" desc="app remediation type ???"/>
+          <attrib name="fid" type="DGPROP_INT32" desc="app remdiation id ???"/>
+          <attrib name="fs" type="DGPROP_INT32" desc="sensitive"/>
+          <attrib name="fn" type="DGPROP_WSTRING" base64Encode="false" desc="field name"/>
+          <attrib name="fv" type="DGPROP_WSTRING" base64Encode="false" desc="field value"/>
+          <attrib name="fg" type="DGPROP_GUID" desc="field guid"/>
+        </class>
+      </bundleClassAED>
+  
+      <!-- Event Classification-->
+  
+      <bundleClassCA element="ca">
+        <class name="CLA">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event id"/>
+          <attrib name="ci" type="DGPROP_GUID" desc="raw guid"/>
+          <attrib name="civ" type="DGPROP_GUID" desc="versioned guid"/>
+          <attrib name="ct" type="DGPROP_OBJECT" desc="file classification type"/>
+          <attrib name="tc" type="DGPROP_INT32" desc="???"/>
+          <attrib name="cn" type="DGPROP_WSTRING" base64Encode="false" desc="always empty string ???"/>
+          <attrib name="partid" type="DGPROP_INT32" desc="always 0 ???"/>
+        </class>
+      </bundleClassCA>
+  
+      <!-- Event Classification Detatil-->
+  
+      <bundleClassCAD element="cad">
+        <class name="CLD">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="medid" type="DGPROP_GUID" desc="machine event detatil ID"/>
+          <attrib name="ci" type="DGPROP_GUID" desc="raw guid"/>
+          <attrib name="civ" type="DGPROP_GUID" desc="versioned guid"/>
+          <attrib name="ct" type="DGPROP_INT8" desc="file classification type"/>
+          <attrib name="tc" type="DGPROP_INT32" desc="entity frequency"/>
+          <attrib name="fid" type="DGPROP_GUID" desc="src file ID"/>
+        </class>
+      </bundleClassCAD>
+  
+      <!-- Scanner Classification -->
+  
+      <bundleClassMF element="mf">
+        <class name="CE">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="fi" type="DGPROP_GUID" desc="file ID"/>
+          <attrib name="fp" type="DGPROP_WSTRING" base64Encode="false" desc="file path"/>
+          <attrib name="fo" type="DGPROP_INT8" desc="file deleted?"/>
+          <attrib name="hc" type="DGPROP_INT8" desc="has classificaion?"/>
+          <attrib name="ea" type="DGPROP_INT8" desc="encryption type"/>
+          <attrib name="fs" type="DGPROP_INT64" desc="file size"/>
+          <attrib name="ws" type="DGPROP_INT8" desc="was content inspected?"/>
+          <attrib name="fc" type="DGPROP_INT32" desc="result code"/>
+        </class>
+      </bundleClassMF>
+  
+      <!-- Scanner Classification Details-->
+  
+      <bundleClassMFD element="mfd">
+        <class name="CED">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="fi" type="DGPROP_GUID" desc="file ID"/>
+          <attrib name="ci" type="DGPROP_GUID" desc="classification ID"/>
+          <attrib name="civ" type="DGPROP_GUID" desc="versioned ID"/>
+          <attrib name="ct" type="DGPROP_INT32" desc="classification type"/>
+          <attrib name="tc" type="DGPROP_INT32" desc="frequency"/>
+        </class>
+      </bundleClassMFD>
+  
+      <!-- Scanner Classification Counts-->
+  
+      <bundleClassSE element="se">
+        <class name="SE">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="el" type="DGPROP_INT64" desc="local time"/>
+          <attrib name="eu" type="DGPROP_INT64" desc="UTC time"/>
+          <attrib name="ci" type="DGPROP_GUID" desc="classification ID"/>
+          <attrib name="civ" type="DGPROP_GUID" desc="versioned ID"/>
+          <attrib name="ct" type="DGPROP_INT32" desc="classification type"/>
+          <attrib name="sc" type="DGPROP_INT32" desc="count"/>
+          <attrib name="sce" type="DGPROP_INT32" desc="encryption count"/>
+          <attrib name="scf" type="DGPROP_INT32" desc="tag count"/>
+          <attrib name="sfe" type="DGPROP_INT32" desc="encrypt tag count"/>
+          <attrib name="md" type="DGPROP_INT8" desc="is laptop?"/>
+        </class>
+      </bundleClassSE>
+  
+      <!-- Alert-->
+ 
+      <bundleClassAlert element="alert">
+        <class name="AL">
+          <attrib name="aid" type="DGPROP_GUID" desc="alert ID"/>
+          <attrib name="rid" type="DGPROP_GUID" desc="rule ID"/>
+          <attrib name="meid" type="DGPROP_GUID" desc="machine event ID"/>
+          <attrib name="medid" type="DGPROP_GUID" desc="machine event detail ID"/>
+          <attrib name="al" type="DGPROP_INT32" desc="alarm level"/>
+          <attrib name="at" type="DGPROP_INT32" desc="result action"/>
+          <attrib name="ur" type="DGPROP_WSTRING" base64Encode="false" desc="response text"/>
+          <attrib name="etu" type="DGPROP_INT64" desc="alert time UTC"/>
+          <attrib name="etl" type="DGPROP_INT64" desc="alert time local"/>
+          <attrib name="wb" type="DGPROP_INT8" desc="was blocked?"/>
+          <attrib name="bc" type="DGPROP_INT32" desc="block code"/>
+          <attrib name="svid" type="DGPROP_GUID" desc="survey ID"/>
+          <attrib name="ss" type="DGPROP_INT32" desc="survey answer"/>
+        </class>
+      </bundleClassAlert>
+  
+      <!-- Alert Policy-->
+  
+      <bundleClassAlertPolicy element="p">
+        <class name="AP">
+          <attrib name="pid" type="DGPROP_GUID" desc="policy ID"/>
+          <attrib name="rpid" type="DGPROP_GUID" desc="raw policy ID"/>
+        </class>
+      </bundleClassAlertPolicy>
+
+      <!-- Mail Encryption-->
+      
+      <bundleClassEncryptionPass element="ep">
+        <class name="EP">
+          <attrib name="seq" type="DGPROP_INT32" desc="sequence number"/>
+          <attrib name="eu" type="DGPROP_INT64" desc="start time UTC"/>
+          <attrib name="el" type="DGPROP_INT64" desc="start time local"/>
+          <attrib name="ti" type="DGPROP_WSTRING" base64Encode="false" desc="ticket ID"/>
+          <attrib name="ms" type="DGPROP_WSTRING" base64Encode="false" desc="sender mail address"/>
+          <attrib name="mr" type="DGPROP_WSTRING" base64Encode="false" desc="recipient mail address"/>
+          <attrib name="mrt" type="DGPROP_INT32" desc="recipient mail type"/>
+          <attrib name="fn" type="DGPROP_WSTRING" base64Encode="false" desc="file name"/>
+          <attrib name="pwd" type="DGPROP_WSTRING" base64Encode="false" desc="password"/>
+        </class>
+      </bundleClassEncryptionPass>
+  
+  
+
+    <!-- =================================================================== -->
+    <!--                   Published and Validated Functions                 -->
+    <!-- =================================================================== -->
+    <functionValidators>
+
+        <functionValidator name="DG_SetEventDisplayName" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="event" propType="DGPROP_OBJECT" />
+                <parameter name="displayName" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_SetEventCustomId" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="event" propType="DGPROP_OBJECT" />
+                <parameter name="customId" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_GenerateCustomEvent" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="processID" propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_GenerateCustomEventEx" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="processID" propType="DGPROP_INT32" />
+                <parameter name="customId" propType="DGPROP_WSTRING" />
+                <parameter name="displayName" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_SetTimerEvent" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="processID" propType="DGPROP_INT32" />
+                <parameter name="timeoutMS" propType="DGPROP_INT64" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_KillTimerEvent" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="timerID" propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_ResetFileClassification" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePath" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_DeleteFileClassification" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePath" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_RemoveFileClassificationTags" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePathsToDeclassify" propType="DGPROP_WSTRING"/>
+                <parameter name="fileTagsToRemove" propType="DGPROP_WSTRING"/>
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_EncryptFile" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePath" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_DecryptFile" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePath" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_AddRemoveDGEExtension" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="filePath" propType="DGPROP_WSTRING" />
+                <parameter name="bRemoveExtension" propType="DGPROP_INT8" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_RequestRiskAnalysis" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="priority" propType="DGPROP_WSTRING" />
+                <parameter name="riskThreshold" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DgMaster_IsFeatureEnabled" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="featureBits" propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DgMaster_IsStealthOn" platform="Windows" driverName="dgmaster.sys">
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DgMaster_IsTamperResistOn" platform="Windows" driverName="dgmaster.sys">
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DgMaster_IsAgentRunning" platform="Windows" driverName="dgmaster.sys">
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="processCache_TestFunction" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="event" propType="DGPROP_OBJECT" />
+                <parameter name="fileRef" propType="DGPROP_OBJECT" />
+                <parameter name="boolVal" propType="DGPROP_INT8" />
+                <parameter name="intVal" propType="DGPROP_INT32" />
+                <parameter name="intVal64" propType="DGPROP_INT64" />
+                <parameter name="strRefPtr1" propType="DGPROP_WSTRING" />
+                <parameter name="strRefPtr2" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <!--<prop propType="DGPROP_GUID" enumName="DGPROP_CURRENT_RULE_ID" propName="currentRuleId"/>-->
+        <functionValidator name="DG_CaptureFile" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="currentAssociatedFilesInfo" propType="DGPROP_OBJECT" />
+                <parameter name="currentRuleId"              propType="DGPROP_GUID" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+                <parameter name="intVal"                     propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_TransferScreens" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="currentAssociatedFilesInfo" propType="DGPROP_OBJECT" />
+                <parameter name="currentRuleId"              propType="DGPROP_GUID" />
+                <parameter name="intValBefore"               propType="DGPROP_INT32" />
+                <parameter name="intValAfter"                propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_SCStart" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="currentAssociatedFilesInfo" propType="DGPROP_OBJECT" />
+                <parameter name="currentRuleId"              propType="DGPROP_GUID" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_SCStop" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="currentAssociatedFilesInfo" propType="DGPROP_OBJECT" />
+                <parameter name="currentRuleId"              propType="DGPROP_GUID" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+        <functionValidator name="DG_SetProcessFlags" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="flags"                      propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_SetTimedProcessFlags" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="flags"                      propType="DGPROP_WSTRING" />
+                <parameter name="timeoutMS"                  propType="DGPROP_INT64" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_ClearProcessFlags" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="currentEvent"               propType="DGPROP_OBJECT" />
+                <parameter name="flags"                      propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_StrTok" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="sourceString" propType="DGPROP_WSTRING" />
+                <parameter name="token" propType="DGPROP_WSTRING" />
+                <parameter name="outputArray" propType="DGPROP_WSTRING" out="1"/>
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_String_SplitPath" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="path" propType="DGPROP_WSTRING"/>
+                <parameter name="drive" propType="DGPROP_WSTRING" out="1"/>
+                <parameter name="directory" propType="DGPROP_WSTRING" out="1"/>
+                <parameter name="fileName" propType="DGPROP_WSTRING" out="1"/>
+                <parameter name="extension" propType="DGPROP_WSTRING" out="1"/>
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_KillProcess" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="processId"            propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_SetRegistryKeyEvents" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="keys"            propType="DGPROP_WSTRING" />
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_RemoveRegistryKeyEvents" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="keys"            propType="DGPROP_WSTRING" />
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_SetRegistryValueEvents" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="values"            propType="DGPROP_WSTRING" />
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_RemoveRegistryValueEvents" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="values"            propType="DGPROP_WSTRING" />
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_TagFile" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="fileName" propType="DGPROP_WSTRING" />
+                <parameter name="tag" propType="DGPROP_WSTRING" />
+            </parameters>
+        </functionValidator>
+
+        <functionValidator name="DG_IsProcessActive" platform="Windows,Linux" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="processId" propType="DGPROP_INT32" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_RefreshEventClassification" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="event" propType="DGPROP_OBJECT" />
+            </parameters>
+            <return propType="DGPROP_INT8" />
+        </functionValidator>
+
+        <functionValidator name="DG_Scan" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="ruleID" propType="DGPROP_GUID" />
+                <parameter name="commands" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+        
+        <functionValidator name="DG_Quarantine" platform="Windows" driverName="dgmaster.sys">
+            <parameters>
+                <parameter name="ruleID" propType="DGPROP_GUID" />
+                <parameter name="filePaths" propType="DGPROP_WSTRING" />
+            </parameters>
+            <return propType="DGPROP_INT32" />
+        </functionValidator>
+
+    </functionValidators>
+
+
+</MetaData>

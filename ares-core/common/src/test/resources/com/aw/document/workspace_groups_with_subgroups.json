@@ -1,0 +1,169 @@
+[
+  {
+    "display_name": "Second Workspace",
+    "name": "workspace-default1",
+    "author": "7653f681-0662-4857-85da-07f106fbd809",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "all",
+    "grouping": ""
+  },
+
+  {
+    "display_name": "Default Workspace2",
+    "name": "workspace-default2",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default1"
+  },
+
+  {
+    "display_name": "Default Workspace3",
+    "name": "workspace-default3",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default1"
+  },
+
+  {
+    "display_name": "Default Workspace4",
+    "name": "workspace-default4",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default1"
+  },
+
+  {
+    "display_name": "Default Workspace5",
+    "name": "workspace-default5",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default4"
+  },
+
+  {
+    "display_name": "Default Workspace6",
+    "name": "workspace-default6",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default4"
+  },
+
+  {
+    "display_name": "Default Workspace7",
+    "name": "workspace-default7",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": ""
+  },
+
+  {
+    "display_name": "Default Workspace8",
+    "name": "workspace-default8",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default7"
+  },
+
+  {
+    "display_name": "Default Workspace9",
+    "name": "workspace-default9",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default7"
+  },
+
+  {
+    "display_name": "Default Workspace10",
+    "name": "workspace-default10",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": ""
+  },
+
+  {
+    "display_name": "Default Workspace11",
+    "name": "workspace-default11",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default10"
+  },
+
+  {
+    "display_name": "Default Workspace12",
+    "name": "workspace-default12",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default11"
+  },
+
+  {
+    "display_name": "Default Workspace13",
+    "name": "workspace-default13",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": ""
+  },
+
+  {
+    "display_name": "Default Workspace14",
+    "name": "workspace-default14",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": ""
+  }
+]

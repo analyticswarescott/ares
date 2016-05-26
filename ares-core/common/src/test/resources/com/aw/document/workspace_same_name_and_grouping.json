@@ -1,0 +1,25 @@
+[
+  {
+    "display_name": "First Workspace",
+    "name": "workspace-default1",
+    "author": "7653f681-0662-4857-85da-07f106fbd809",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "all",
+    "grouping": "workspace-default2"
+  },
+
+  {
+    "display_name": "Second Workspace2",
+    "name": "workspace-default2",
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "tenant":"1",
+    "perm_read": "all",
+    "perm_write": "author",
+    "grouping": "workspace-default1"
+  }
+]

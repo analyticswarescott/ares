@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/dgRuleMeta/"
+		targetNamespace="http://www.digitalguardian.com/xsd/dgRuleMeta/"
+		xmlns:dg="http://www.digitalguardian.com/xsd/dgRuleMeta/">
+
+	<complexType name="bundle">
+		<sequence>
+			<element ref="dg:class" minOccurs="1" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<element name="constants">
+		<complexType>
+			<sequence>
+				<element ref="dg:const" minOccurs="1" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="bundleClassDEV" type="dg:bundle"/>
+	<element name="bundleClassDI" type="dg:bundle"/>
+	<element name="bundleClassPI" type="dg:bundle"/>
+	<element name="bundleClassUA" type="dg:bundle"/>
+	<element name="bundleClassUAD" type="dg:bundle"/>
+	<element name="bundleClassAlert" type="dg:bundle"/>
+	<element name="bundleClassAlertPolicy" type="dg:bundle"/>
+
+	<element name="class">
+		<complexType>
+			<sequence>
+				<element ref="dg:attrib" minOccurs="1" maxOccurs="unbounded"/>
+			</sequence>
+			<attribute name="name"/>
+		</complexType>
+	</element>
+
+	<element name="attrib">
+		<complexType>
+			<attribute name="name" type="string"/>
+			<attribute name="type" type="string"/>
+			<attribute name="desc" type="string"/>
+		</complexType>
+	</element>
+
+	<element name="const">
+		<complexType>
+			<attribute name="constType" type="string"/>
+			<attribute name="platform" type="string"/>
+			<attribute name="constValue" type="int"/>
+			<attribute name="userAction" type="string"/>
+			<attribute name="bundleClassUA" type="string"/>
+			<attribute name="bundleClassUAD" type="string"/>
+			<attribute name="canHaveAssociatedFileInfo" type="boolean"/>
+			<attribute name="hasSrcPath" type="boolean"/>
+			<attribute name="hasDestPath" type="boolean"/>
+			<attribute name="allowPostAlerts" type="boolean"/>
+			<attribute name="constName" type="string"/>
+		</complexType>
+	</element>
+
+	<element name="MetaData">
+		<complexType>
+			<sequence>
+				<element ref="dg:propertyModifiers" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:propertyTypes" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:properties" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:constants" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:actionTypes" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:policyTypes" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:ruleTypes" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:ruleClass" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:showModes" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:alertLevel" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:timeUnits" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:logicalOperator" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:returnOperator" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:valueOperator" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="dg:bundleClassDEV" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassDI" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassPI" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassUA" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassUAD" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassAlert" minOccurs="1" maxOccurs="1"/>
+				<element ref="dg:bundleClassAlertPolicy" minOccurs="1" maxOccurs="1"/>
+			</sequence>
+			<attribute name="v" type="string"/>
+		</complexType>
+	</element>
+
+	<!--============================ Unused stuff below =============================-->
+
+	<element name="propertyModifiers">
+	</element>
+
+	<element name="propertyTypes">
+	</element>
+
+	<element name="properties">
+	</element>
+
+	<element name="actionTypes">
+	</element>
+
+	<element name="policyTypes">
+	</element>
+
+	<element name="ruleTypes">
+	</element>
+
+	<element name="ruleClass">
+	</element>
+
+	<element name="showModes">
+	</element>
+
+	<element name="alertLevel">
+	</element>
+
+	<element name="timeUnits">
+	</element>
+
+	<element name="logicalOperator">
+	</element>
+
+	<element name="returnOperator">
+	</element>
+
+	<element name="valueOperator">
+	</element>
+
+	<!-- ... many more we don't need for now ... -->
+
+</schema>

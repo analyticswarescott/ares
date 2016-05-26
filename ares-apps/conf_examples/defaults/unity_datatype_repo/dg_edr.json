@@ -1,0 +1,331 @@
+{
+    "version": 1,
+    "author": "aw",
+    "description": "",
+    "body": {
+        "resolvers": [{
+             "type" : "com.aw.unity.json.DefaultJSONDataTypeResolver",
+             "mappings": [{
+                    "path": ["dg_utype"],
+                    "value": "on_disk_executable",
+                    "data_type": "on_disk_executable"
+             }]
+        }],
+        "types": [
+
+
+                {
+                    "name" : "edr_certs",
+                    "field_refs": [
+                        {
+                            "name": "edr_cert_d",
+                            "path": [ "Digest" ]
+                        },
+                        {
+                            "name": "edr_cert_da",
+                            "path": [ "DigestAlgorithm" ]
+                        },
+                        {
+                            "name": "edr_cert_i",
+                            "path": [ "Issuer" ]
+                        },
+                        {
+                            "name" : "edr_cert_ser",
+                            "path": [ "Serial" ]
+                        },
+                        {
+                            "name": "edr_cert_sub",
+                            "path": [ "Subject" ]
+                        },
+                        {
+                            "name": "edr_cert_th",
+                            "path": [ "Thumbprint" ]
+                        },
+                        {
+                            "name": "edr_cert_th_alg",
+                            "path": [ "ThumbprintAlgorithm" ]
+                        },
+                        {
+                            "name": "edr_cf",
+                            "path": [ "ValidFrom" ]
+                        },
+                        {
+                            "name": "edr_ct",
+                            "path": [ "ValidTo" ]
+                        }
+                    ],
+                    "tags" : [
+                    	"edr"
+                    ]
+                },
+
+
+             {
+                "name": "on_disk_executable",
+                "display_name": "on disk executable",
+                "id_field" : "dg_guid",
+                "description": "Executables on disk found during a scan",
+                "field_refs": [
+                    {
+			            "name": "dg_guid",
+                        "path": [ "dg_guid" ]
+                    },
+                    {
+                        "name": "dg_time",
+                        "path": [ "dg_time" ]
+                    },
+                    {
+                        "name": "edr_bla",
+                        "path": [ "BaseLoadAddress" ]
+                    },
+                    {
+                        "name": "edr_sid",
+                        "path": [ "edr_sid" ]
+                    },
+                    {
+                        "name": "dg_mid",
+                        "path": [ "dg_mid" ]
+                    },
+                    {
+			            "name": "edr_rva",
+                        "path": [ "EntryPointRVA" ]
+                    },
+                    {
+			            "name": "edr_at",
+                        "path": [ "FileAttributes" ]
+                    },
+                    {
+			            "name": "dg_file_path",
+                        "path": [ "FilePath" ]
+                    },
+                    {
+			            "name": "dg_file_size",
+                        "path": [ "FileSize" ]
+                    },
+                    {
+                        "name": "dg_file_ext",
+                        "path": [ "dg_ext" ]
+                    },
+                    {
+                        "name": "dg_file_md5",
+                        "path": [ "HashCodes", "MD5" ]
+                    },
+                    {
+                        "name": "dg_file_sha1",
+                        "path": [ "HashCodes", "SHA1" ]
+                    },
+                    {
+                        "name": "dg_file_sha256",
+                        "path": [ "HashCodes", "SHA256" ]
+                    },
+                    {
+			            "name": "edr_se",
+                        "path": [ "IsSelfExtractingArchive" ]
+                    },
+                    {
+			            "name": "edr_im",
+                        "path": [ "Imports" ]
+                    },
+                    {
+			            "name": "edr_ex",
+                        "path": [ "Exports" ]
+                    },
+                    {
+                        "name": "dg_file_create",
+                        "path": [ "Timestamps", "CreationTime" ]
+                    },
+                    {
+                        "name": "dg_file_modify",
+                        "path": [ "Timestamps", "LastWriteTime" ]
+                    },
+                    {
+			            "name": "edr_file_access",
+                        "path": [ "Timestamps", "LastAccessTime" ]
+                    },
+                    {
+			            "name": "edr_ft",
+                        "path": [ "Type" ]
+                    },
+                    {
+			            "name": "edr_cn",
+                        "path": [ "Version", "CompanyName" ]
+                    },
+                    {
+			            "name": "dg_fv",
+                        "path": [ "Version", "FileVersion" ]
+                    },
+                    {
+			            "name": "edr_in",
+                        "path": [ "Version", "InternalName" ]
+                    },
+                    {
+			            "name": "edr_cr",
+                        "path": [ "Version", "LegalCopyright" ]
+                    },
+                    {
+			            "name": "edr_of",
+                        "path": [ "Version", "OriginalFilename" ]
+                    },
+                    {
+			            "name": "dg_pn",
+                        "path": [ "Version", "ProductName" ]
+                    },
+                    {
+			            "name": "dg_pv",
+                        "path": [ "Version", "ProductVersion" ]
+                    },
+                    {
+                        "name" : "edr_certs",
+                        "path" : [ "DigitalCertificate" ]
+                    }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            },
+
+            {
+                "name": "edr_key_val",
+                "display_name": "EDR Key/Value",
+                "description": "EDR Key/Value",
+                "field_refs" : [
+                    { "name": "edr_key" },
+                    { "name": "edr_val" }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            },
+
+            {
+                "name": "windows_registry",
+                "display_name": "Windows Registry Entries",
+                "id_field" : "dg_guid",
+                "description": "Windows registry entries",
+                "field_refs": [
+                    {
+			            "name": "dg_guid",
+                        "path": [ "dg_guid" ]
+                    },
+                    {
+			            "name": "dg_time",
+                        "path": [ "dg_time" ]
+                    },
+                    {
+			            "name": "edr_sid",
+                        "path": [ "edr_sid" ]
+                    },
+                    {
+			            "name": "dg_mid",
+                        "path": [ "dg_mid" ]
+                    },
+                    {
+                        "name": "edr_regkey",
+                        "path": [ "edr_regkey" ]
+                    },
+                    {
+                        "name": "edr_key_val"
+                    }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            },
+
+            {
+                "name": "running_process",
+                "display_name": "Running processes",
+                "id_field" : "dg_guid",
+                "description": "Running process during a scan",
+                "field_refs": [
+                    {
+			            "name": "dg_guid",
+                        "path": [ "dg_guid" ]
+                    },
+                    {
+			            "name": "dg_time",
+                        "path": [ "dg_time" ]
+                    },
+                    {
+			            "name": "edr_sid",
+                        "path": [ "edr_sid" ]
+                    },
+                    {
+			            "name": "dg_mid",
+                        "path": [ "dg_mid" ]
+                    },
+                    {
+                        "name": "edr_clf",
+                        "path": [ "ClosedFiles" ]
+                    },
+                    {
+                        "name": "edr_opf",
+                        "path": [ "OpenFiles" ]
+                    },
+                    {
+                        "name": "edr_ppid",
+                        "path": [ "ParentProcID" ]
+                    },
+                    {
+                        "name": "edr_pid",
+                        "path": [ "ProcessID" ]
+                    },
+                    {
+                        "name": "edr_procname",
+                        "path": [ "ProcessName" ]
+                    }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            },
+
+            {
+                "name": "wmi_data",
+                "display_name": "Windows WMI Data",
+                "id_field" : "dg_guid",
+                "description": "Windows WMI Data from an EDR Scan",
+                "field_refs": [
+                    { "name": "dg_guid" },
+                    { "name": "dg_time" },
+                    { "name": "edr_sid" },
+                    { "name": "dg_mid" },
+                    { "name": "edr_wmi_type" },
+                    { "name": "edr_key_val" }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            },
+
+            {
+                "name": "windows_log",
+                "display_name": "Windows Log Data",
+                "id_field" : "dg_guid",
+                "description": "Windows Log Data from an EDR Scan",
+                "field_refs": [
+                    { "name": "dg_guid" },
+                    { "name": "dg_time" },
+                    { "name": "edr_sid" },
+                    { "name": "dg_mid" },
+                    { "name": "edr_win_name" },
+                    { "name": "edr_win_guid" },
+                    { "name": "edr_win_eventid" },
+                    { "name": "edr_win_version" },
+                    { "name": "edr_win_level" },
+                    { "name": "edr_win_task" },
+                    { "name": "edr_win_opcode" },
+                    { "name": "edr_win_keywords" },
+                    { "name": "edr_win_eventrecordid" },
+                    { "name": "edr_win_channel" },
+                    { "name": "edr_win_computer" },
+                    { "name": "edr_key_val" }
+                ],
+                "tags" : [
+                	"edr"
+                ]
+            }
+
+       ]
+    }
+}

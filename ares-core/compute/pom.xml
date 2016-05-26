@@ -1,0 +1,235 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ares-core</groupId>
+		<artifactId>ares-core-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+    <artifactId>ares-compute</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+
+        <plugins>
+
+	         <plugin>
+	            <artifactId>maven-dependency-plugin</artifactId>
+	            <executions>
+	              <execution>
+	                <phase>package</phase>
+	                <goals>
+	                  <goal>copy-dependencies</goal>
+	                </goals>
+	                <configuration>
+	                   <silent>true</silent>
+	                  <outputDirectory>target/lib</outputDirectory>
+	                </configuration>
+	              </execution>
+	            </executions>
+	          </plugin>
+
+			 <!-- generate the classpath -->
+             <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>2.10</version>
+               <executions>
+                 <execution>
+                   <id>build-classpath</id>
+                   <phase>validate</phase>
+                   <goals>
+                     <goal>build-classpath</goal>
+                   </goals>
+                   <configuration>
+                        <outputFile>target/stream.classpath</outputFile>
+                        <prefix>$SPARK_LIB_HOME</prefix>
+                        <pathSeparator>:</pathSeparator>
+                        <fileSeparator>/</fileSeparator>
+                        <excludeArtifactIds>javax.servlet</excludeArtifactIds>
+                   </configuration>
+                 </execution>
+               </executions>
+             </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+		<dependency>
+			<groupId>ares-core</groupId>
+			<artifactId>ares-incident</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ares-core</groupId>
+			<artifactId>ares-alert</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+        <dependency>
+			<groupId>ares-core</groupId>
+			<artifactId>ares-common</artifactId>
+			<version>${project.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>jackson-annotations</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jackson-databind</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jackson-core</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>servlet-api</artifactId>
+            		<groupId>javax.servlet</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-core</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-json</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-spring</artifactId>
+            		<groupId>com.sun.jersey.contribs</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-server</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-multipart</artifactId>
+            		<groupId>com.sun.jersey.contribs</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-servlet</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>ares-core</groupId>
+			<artifactId>ares-data</artifactId>
+			<version>${project.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>jackson-annotations</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jackson-databind</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jackson-core</artifactId>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>elasticsearch</artifactId>
+            		<groupId>org.elasticsearch</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.10</artifactId>
+            <version>${spark.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>javax.servlet</artifactId>
+            		<groupId>org.eclipse.jetty.orbit</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-core</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>jersey-server</artifactId>
+            		<groupId>com.sun.jersey</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.10</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.10</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka_2.10</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.2</version>
+            <type>jar</type>
+            <optional>false</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+
+        <dependency>
+        	<groupId>org.apache.commons</groupId>
+        	<artifactId>commons-csv</artifactId>
+        	<version>1.2</version>
+        </dependency>
+
+		<!-- common unit test code -->
+		<dependency>
+		  <groupId>ares-core</groupId>
+		  <artifactId>ares-common</artifactId>
+		  <version>${project.version}</version>
+		  <type>test-jar</type>
+		  <scope>test</scope>
+		</dependency>
+
+		<!-- test zk server -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-test</artifactId>
+			<version>2.9.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.apache.kafka</groupId>
+		    <artifactId>kafka_2.10</artifactId>
+		    <version>0.8.2.1</version>
+		    <classifier>test</classifier>
+		    <scope>test</scope>
+		</dependency>
+
+    </dependencies>
+</project>

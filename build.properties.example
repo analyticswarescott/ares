@@ -1,0 +1,13 @@
+# change this to deploy to a different server
+deploy.host=ubuntu
+deploy.username=root
+deploy.password=root
+
+# set this to the location of the core directory that contains hadoop, etc.
+infrastructure.dir=thirdparty
+infrastructure.source.url=smb://IT-FS001.verdasys.com/Departmental/Engineering/AnalyticsWare/thirdparty.tar.gz
+archive.dir=archive
+
+remote.deploy.archive.dir=/tmp
+remote.deploy.service.user=dgservice
+remote.deploy.service.group=dgservice

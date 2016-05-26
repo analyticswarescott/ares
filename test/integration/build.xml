@@ -1,0 +1,72 @@
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="streams" default="default" basedir=".">
+
+    <property environment="env"/>
+
+    <path id="maven-ant-tasks.classpath" path="../../dg2/lib/maven-ant-tasks-2.1.3.jar"/>
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+             uri="antlib:org.apache.maven.artifact.ant"
+             classpathref="maven-ant-tasks.classpath"/>
+
+    <description>
+    </description>
+
+    <artifact:dependencies filesetId="dependency.fileset" pathId="dependency.classpath">
+        <pom file="elastic/pom.xml"/>
+    </artifact:dependencies>
+
+    <path id="core.classpath">
+        <path refid="dependency.classpath"/>
+        <fileset dir="${basedir}/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- build properties -->
+    <property name="src" value="./src"/>
+    <property name="install.es" value="elastic_test"/>
+    <property name="install.spark" value="spark_test"/>
+
+    <target name="default" depends="init,install"/>
+
+    <target name="init">
+        <mkdir dir="${install.es}"/>
+    </target>
+
+	 <target name="spark.check">
+	    <condition property="spark.dir.exists">
+	      <available file="${install.spark}" type="dir"/>
+	    </condition>
+	  </target>
+
+	<target name="install" depends="install.spark" description="create elasticsearch">
+
+    	<!-- clean / recreate elasticsearch -->
+    	<delete dir="${install.es}" quiet="true"/>
+
+        <mkdir dir="${install.es}/lib"/>
+        <copy todir="${install.es}/lib">
+            <fileset refid="dependency.fileset"/>
+            <!-- This mapper strips off all leading directory information -->
+            <mapper type="flatten"/>
+        </copy>
+
+    </target>
+
+	<target name="install.spark" depends="spark.check" unless="spark.dir.exists">
+
+		<!-- untar spark if we need to -->
+		<get src="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz" dest="spark.tar.gz"/>
+
+		<untar src="spark.tar.gz" dest="." compression="gzip"/>
+
+		<move file="./spark-1.6.0-bin-hadoop2.6" tofile="./spark_test"/>
+
+		<chmod perm="+x" type="file">
+		  <fileset dir="./spark_test">
+		    <include name="**/*"/>
+		  </fileset>
+		</chmod>
+
+	</target>
+
+</project>

@@ -1,0 +1,21 @@
+{
+	"display_name": "Process Kafka inline bundles",
+	"description": " This processor handles bundles that are embedded within the kafka messages themselves",
+	"author": "aw",
+	"body_class": "com.aw.common.spark.StreamDef",
+	"body": {
+		"tenant": true,
+		"system": false,
+		"target_driver": "driver30sec",
+		"processor_id": "incoming_bundle_kafka",
+		"source_topic": [
+			"bundle"
+		],
+		"dest_topic" : "ready_for_archive",
+		"config_data": {
+			"error_topic": "BundleError",
+			"processor_class": "com.aw.compute.streams.processor.KafkaJSONBundleProcessor"
+		}
+	}
+}
+

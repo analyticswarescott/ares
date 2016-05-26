@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.digitalguardian.com/xsd/configuration/">
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.name.dir</name>
+        <value>/opt/dg/data/hadoop/name</value>
+    </property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/opt/dg/data/hadoop/data</value>
+    </property>
+    <property>
+        <name>dfs.tmp.dir</name>
+        <value>/opt/dg/data/hadoop/tmp</value>
+    </property>
+    <property>
+        <name>mapred.child.java.opts</name>
+        <value>-Xmx1024m</value>
+    </property>
+    <property>
+        <name>dfs.namenode.rpc-bind-host</name>
+        <value>0.0.0.0</value>
+        <description>The actual address the RPC server will bind to. If this optional address is
+            set, it overrides only the hostname portion of dfs.namenode.rpc-address.
+            It can also be specified per name node or name service for HA/Federation.
+            This is useful for making the name node listen on all interfaces by
+            setting it to 0.0.0.0.</description>
+    </property>
+    <property>
+        <name>dfs.namenode.servicerpc-bind-host</name>
+        <value>0.0.0.0</value>
+        <description>The actual address the service RPC server will bind to. If this optional address is
+            set, it overrides only the hostname portion of dfs.namenode.servicerpc-address.
+            It can also be specified per name node or name service for HA/Federation.
+            This is useful for making the name node listen on all interfaces by
+            setting it to 0.0.0.0.</description>
+    </property>
+    <property>
+        <name>dfs.namenode.http-bind-host</name>
+        <value>0.0.0.0</value>
+        <description>The actual adress the HTTP server will bind to. If this optional address
+            is set, it overrides only the hostname portion of dfs.namenode.http-address.
+            It can also be specified per name node or name service for HA/Federation.
+            This is useful for making the name node HTTP server listen on all
+            interfaces by setting it to 0.0.0.0.</description>
+    </property>
+    <property>
+        <name>dfs.namenode.https-bind-host</name>
+        <value>0.0.0.0</value>
+        <description>The actual adress the HTTPS server will bind to. If this optional address
+            is set, it overrides only the hostname portion of dfs.namenode.https-address.
+            It can also be specified per name node or name service for HA/Federation.
+            This is useful for making the name node HTTPS server listen on all
+            interfaces by setting it to 0.0.0.0.</description>
+    </property>
+    <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/opt/dg/data/hadoop/journal</value>
+    </property>
+    <property>
+        <name>dfs.client.failover.proxy.provider.mycluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+    <property>
+        <name>dfs.nameservices</name>
+        <value>dg</value>
+    </property>
+    <property>
+        <name>dfs.ha.namenodes.dg</name>
+        <value>localhost</value>
+    </property>
+    <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>shell(/bin/true)</value>
+    </property>
+    <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+    </property>
+</configuration>

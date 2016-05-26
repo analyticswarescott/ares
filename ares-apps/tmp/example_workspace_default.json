@@ -1,0 +1,57 @@
+{
+  "tenant_id": "1",
+  "author": "aw",
+  "description": "Default Workspace desc  ",
+  "version_date": "2015-10-21 17:11:15.77",
+  "body": {
+    "filter": {},
+    "elements": [
+      {
+        "layout": {
+          "size": {
+            "x": 2,
+            "y": 1
+          },
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "id": 2
+      },
+      {
+        "layout": {
+          "size": {
+            "x": 4,
+            "y": 3
+          },
+          "position": {
+            "x": 1,
+            "y": 0
+          }
+        },
+        "id": 3
+      }
+    ],
+    "scrollable": true
+  },
+  "type": "workspace",
+  "display_name": "Default Workspace ",
+  "version": 1,
+  "grouping": [
+    ""
+  ],
+  "dependencies_guid": [
+    ""
+  ],
+  "deleted": false,
+  "dependencies_name": [
+    ""
+  ],
+  "name": "workspace-default",
+  "perm_read": "author",
+  "id": "26f939ba-13a2-497d-80ce-dd77fae58f29",
+  "version_author": "dg",
+  "is_current": true,
+  "perm_write": "author"
+}

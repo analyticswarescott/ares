@@ -1,0 +1,169 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ares-core</groupId>
+		<artifactId>ares-core-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ares-data</artifactId>
+	<packaging>jar</packaging>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test/src</testSourceDirectory>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>ares-core</groupId>
+			<artifactId>ares-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+			<type>jar</type>
+			<optional>false</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
+		<!--  OData Dependencies-->
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>olingo-odata2-core</artifactId>
+            <version>2.0.4</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>javax.ws.rs-api</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+
+		<!-- common unit test code -->
+		<dependency>
+		  <groupId>ares-core</groupId>
+		  <artifactId>ares-common</artifactId>
+		  <version>${project.version}</version>
+		  <type>test-jar</type>
+		  <scope>test</scope>
+		</dependency>
+
+<!--
+
+	For anyone who wants to mess around with trying to stub final methods etc - this is a starting point
+	to get the required powermockito jars - issues arise around code coverage that could theoretically be
+	addressed but it gets pretty messy so I'm avoiding the use of this for now
+
+		<dependency>
+		    <groupId>org.powermock</groupId>
+		    <artifactId>powermock-api-mockito</artifactId>
+		    <version>1.5.5</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.powermock</groupId>
+		    <artifactId>powermock-module-testng</artifactId>
+		    <version>1.5.5</version>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.testng</groupId>
+		            <artifactId>testng</artifactId>
+		        </exclusion>
+		        <exclusion>
+		            <groupId>org.powermock</groupId>
+		            <artifactId>powermock-core</artifactId>
+		        </exclusion>
+		        <exclusion>
+		            <groupId>org.powermock</groupId>
+		            <artifactId>powermock-reflect</artifactId>
+		        </exclusion>
+		    </exclusions>
+		    <scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>
+				powermock-module-test-mockito-junit4
+			</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-javaagent</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-rule-agent</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+
+-->
+
+
+	</dependencies>
+
+</project>

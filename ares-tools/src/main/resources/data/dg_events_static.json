@@ -1,0 +1,59 @@
+{
+	"types": [
+		
+		{
+			"description": "alert policy information",
+			"display_name": "alert policy",
+			"field_refs": [
+				 { "name": "p_pid" },
+				 { "name": "p_rpid" }
+			],
+			"name": "policy",
+			"tags": [
+				"event", "alert"
+			]
+		},
+	
+		{
+			"description": "an alert from a dg agent",
+			"display_name": "alert",
+			"field_refs": [
+				 { "name": "alert_ur" },
+				 { "name": "alert_bc" },
+				 { "name": "alert_ss" },
+				 { "name": "alert_rid" },
+				 { "name": "alert_etu" },
+				 { "name": "alert_medid" },
+				 { "name": "alert_wb" },
+				 { "name": "alert_etl" },
+				 { "name": "alert_aid" },
+				 { "name": "alert_al" },
+				 { "name": "alert_svid" },
+				 { "name": "alert_at" },
+				 { "name": "alert_meid" },
+				 { "name" : "dg_policy" }
+			],
+			"id_field": "alert_aid",
+			"name": "alert",
+			"tags": [
+				"event", "alert"
+			]
+		},
+		
+		{
+			"description": "custom data within an event from an agent",
+			"display_name": "custom data",
+			"field_refs": [
+				 { "name": "dg_name" },
+				 { "name": "dg_values" },
+				 { "name": "dg_scope" },
+				 { "name": "dg_type" }
+			],
+			"name": "custom_data",
+			"tags": [
+				"event"
+			]
+		}
+
+	]
+}

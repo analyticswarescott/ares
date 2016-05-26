@@ -1,0 +1,2049 @@
+{
+	"name": "workspace_tree",
+	"documents": [
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_4",
+			"id": "0a92c1a8-668c-4329-8117-5924bed9b1a9",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_4",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_4",
+			"version_author": "author_14",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"129705296"
+			],
+			"dependencies_name": [
+				"1745545249"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [],
+			"name": "document_7",
+			"id": "761ce68c-45c3-48c4-8775-8fe0176fb7a5",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_7",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_7",
+			"version_author": "author_12",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"903461781"
+			],
+			"dependencies_name": [
+				"948187959"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag9",
+				"tag10",
+				"tag11"
+			],
+			"name": "document_9",
+			"id": "63e1f279-a800-4ec9-88ea-22a72001414e",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_9",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_9",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"830135539"
+			],
+			"dependencies_name": [
+				"1557135142"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag7",
+				"tag8"
+			],
+			"name": "document_10",
+			"id": "96b49386-fe28-4acb-8098-e9a30cddc61a",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_10",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_10",
+			"version_author": "author_6",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"479616549"
+			],
+			"dependencies_name": [
+				"1468670504"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag7",
+				"tag8"
+			],
+			"name": "document_12",
+			"id": "0d9306ea-bd5f-4e73-93c6-158654a88c9a",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_12",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_12",
+			"version_author": "author_6",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"370798821"
+			],
+			"dependencies_name": [
+				"1676126912"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag5",
+				"tag6",
+				"tag4"
+			],
+			"name": "document_18",
+			"id": "3f2d360c-abec-4999-8bca-de2a7bea074b",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_18",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_18",
+			"version_author": "author_5",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1366158663"
+			],
+			"dependencies_name": [
+				"1050526110"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_23",
+			"id": "14beebd2-31f1-45d2-9f79-0fe0e94e22d4",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_23",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_23",
+			"version_author": "author_7",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"277168606"
+			],
+			"dependencies_name": [
+				"2146897017"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_25",
+			"id": "4ae98e69-2c50-4aca-abf7-3ba794c6ca9e",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_25",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_25",
+			"version_author": "author_12",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1195350726"
+			],
+			"dependencies_name": [
+				"338423179"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [],
+			"name": "document_26",
+			"id": "6d3d6d3e-b846-423f-ab3a-2f11d7fd95c1",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_26",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_26",
+			"version_author": "author_6",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"852276479"
+			],
+			"dependencies_name": [
+				"1453450196"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag5",
+				"tag6",
+				"tag4"
+			],
+			"name": "document_28",
+			"id": "6e771546-64bd-4af9-a56d-9a0d582eaf67",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_28",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_28",
+			"version_author": "author_9",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"202952894"
+			],
+			"dependencies_name": [
+				"1445091506"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_30",
+			"id": "41ec5708-0a5c-4dc8-93e6-a531fcab8d76",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_30",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_30",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1229097435"
+			],
+			"dependencies_name": [
+				"894339802"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [],
+			"name": "document_31",
+			"id": "84bd55d8-3606-458a-93e3-4bbc4939ec0e",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_31",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_31",
+			"version_author": "author_14",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"891206323"
+			],
+			"dependencies_name": [
+				"181949877"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_38",
+			"id": "60f98fbe-31d9-4ef0-88a2-e36fe626af18",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_38",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_38",
+			"version_author": "author_9",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"515257023"
+			],
+			"dependencies_name": [
+				"1766344687"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [],
+			"name": "document_41",
+			"id": "33d5b5ac-a87f-48b6-ae11-f9e47b775bc7",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_41",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_41",
+			"version_author": "author_14",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1875408441"
+			],
+			"dependencies_name": [
+				"1618116047"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag7",
+				"tag8"
+			],
+			"name": "document_44",
+			"id": "a4d5f4d4-63f1-49c9-a421-ed38565e8e7b",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_44",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_44",
+			"version_author": "author_9",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"26050782"
+			],
+			"dependencies_name": [
+				"1635355584"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [],
+			"name": "document_45",
+			"id": "a7903003-8183-4b2d-a4b1-7c4088f0cadb",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_45",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_45",
+			"version_author": "author_13",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"2109976644"
+			],
+			"dependencies_name": [
+				"2074441020"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag9",
+				"tag10",
+				"tag11"
+			],
+			"name": "document_46",
+			"id": "35d92539-f478-4fe1-b686-a87270ae6ddc",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_46",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_46",
+			"version_author": "author_14",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1108154167"
+			],
+			"dependencies_name": [
+				"492233420"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag9",
+				"tag10",
+				"tag11"
+			],
+			"name": "document_48",
+			"id": "769fe147-8de9-4fa5-9bcf-c9e6d9331499",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_48",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_48",
+			"version_author": "author_13",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"160325049"
+			],
+			"dependencies_name": [
+				"160390571"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag5",
+				"tag6",
+				"tag4"
+			],
+			"name": "document_55",
+			"id": "f9541b95-e34e-41f5-af0b-b37bbc4d3038",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_55",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_55",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1794983370"
+			],
+			"dependencies_name": [
+				"266327832"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag7",
+				"tag8"
+			],
+			"name": "document_58",
+			"id": "6e7bf7b9-c4e7-4a86-897f-ecb50b84cb76",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_58",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_58",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"2008621763"
+			],
+			"dependencies_name": [
+				"1236922330"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag9",
+				"tag10",
+				"tag11"
+			],
+			"name": "document_64",
+			"id": "9b96f2c6-9d67-4150-8923-94729fbd0427",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_64",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_64",
+			"version_author": "author_9",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"990192202"
+			],
+			"dependencies_name": [
+				"1935945915"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_69",
+			"id": "d611b37f-eb23-4a30-961c-7fccb2e60eef",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_69",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_69",
+			"version_author": "author_13",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1242317829"
+			],
+			"dependencies_name": [
+				"498499728"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_70",
+			"id": "1254cea1-ad59-4b40-9ff8-84b97dfc95d5",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_70",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_70",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"2121313351"
+			],
+			"dependencies_name": [
+				"701604939"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_71",
+			"id": "b8716411-5d5d-401d-a917-b7e1d242fc74",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_71",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_71",
+			"version_author": "author_9",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"316509405"
+			],
+			"dependencies_name": [
+				"1469513887"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag5",
+				"tag6",
+				"tag4"
+			],
+			"name": "document_73",
+			"id": "f045b0d1-17a6-4d07-b807-66e8bc31533c",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_73",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_73",
+			"version_author": "author_7",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"1651840154"
+			],
+			"dependencies_name": [
+				"34080364"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag7",
+				"tag8"
+			],
+			"name": "document_74",
+			"id": "de9c57c4-a524-44ce-beca-6f6ae613246d",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_74",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_74",
+			"version_author": "author_5",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"315512982"
+			],
+			"dependencies_name": [
+				"754000248"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_82",
+			"id": "6240af0c-cdff-4847-9798-aaf7d3983ece",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_82",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_82",
+			"version_author": "author_11",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"565042805"
+			],
+			"dependencies_name": [
+				"423046453"
+			],
+			"op_sequence": 0
+		},
+		{
+			"tags": [
+				"tag1",
+				"tag2",
+				"tag3"
+			],
+			"name": "document_93",
+			"id": "2c603aee-aa8b-4340-9238-60f88a8d69f0",
+			"version": 1,
+			"tenant_id": "1",
+			"author": "user",
+			"description": "document_93",
+			"type": "workspace",
+			"grouping": "",
+			"display_name": "document_93",
+			"version_author": "author_7",
+			"is_current": true,
+			"perm_read": "all",
+			"perm_write": "all",
+			"dependencies_guid": [
+				"766804706"
+			],
+			"dependencies_name": [
+				"68615752"
+			],
+			"op_sequence": 0
+		}
+	],
+	"groups": [
+		{
+			"name": "document_11",
+			"document_group": {
+				"tags": [
+					"tag7",
+					"tag8"
+				],
+				"name": "document_11",
+				"id": "8b27bd13-95ac-4541-ba9c-cab0a0192721",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_11",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_11",
+				"version_author": "author_9",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"672116109"
+				],
+				"dependencies_name": [
+					"1287962093"
+				],
+				"op_sequence": 0
+			},
+			"documents": [
+				{
+					"tags": [
+						"tag7",
+						"tag8"
+					],
+					"name": "document_40",
+					"id": "281b06c2-b247-41a1-b69b-b899582b45bd",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_40",
+					"type": "workspace",
+					"grouping": "document_11",
+					"display_name": "document_40",
+					"version_author": "author_8",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"649171186"
+					],
+					"dependencies_name": [
+						"1232743540"
+					],
+					"op_sequence": 0
+				}
+			],
+			"groups": [
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [],
+						"name": "document_33",
+						"id": "1f9fa641-eb82-4660-8e4c-068c20ef7d9f",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_33",
+						"type": "document_group",
+						"grouping": "document_11",
+						"display_name": "document_33",
+						"version_author": "author_6",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"459612644"
+						],
+						"dependencies_name": [
+							"2007268939"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [],
+						"name": "document_96",
+						"id": "879c30fe-ff00-48f7-a2b5-7ee3147c485b",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_96",
+						"type": "document_group",
+						"grouping": "document_11",
+						"display_name": "document_96",
+						"version_author": "author_8",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"68972888"
+						],
+						"dependencies_name": [
+							"2143594304"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag5",
+							"tag6",
+							"tag4"
+						],
+						"name": "document_88",
+						"id": "02405276-1d6a-45fa-b953-175d1f4e6796",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_88",
+						"type": "document_group",
+						"grouping": "document_11",
+						"display_name": "document_88",
+						"version_author": "author_9",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"1432045079"
+						],
+						"dependencies_name": [
+							"1333177258"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_8",
+			"document_group": {
+				"tags": [
+					"tag1",
+					"tag2",
+					"tag3"
+				],
+				"name": "document_8",
+				"id": "5c0e9433-835a-46c7-ab1b-500137b4e00d",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_8",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_8",
+				"version_author": "author_9",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"610824506"
+				],
+				"dependencies_name": [
+					"935512692"
+				],
+				"op_sequence": 0
+			},
+			"documents": [
+				{
+					"tags": [
+						"tag5",
+						"tag6",
+						"tag4"
+					],
+					"name": "document_95",
+					"id": "e5e7151a-0e87-4a37-aa04-eb591c652297",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_95",
+					"type": "workspace",
+					"grouping": "document_8",
+					"display_name": "document_95",
+					"version_author": "author_7",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"706292184"
+					],
+					"dependencies_name": [
+						"2035578927"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag9",
+						"tag10",
+						"tag11"
+					],
+					"name": "document_27",
+					"id": "12ce4f36-bf61-406f-af7d-b66075a9078d",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_27",
+					"type": "workspace",
+					"grouping": "document_8",
+					"display_name": "document_27",
+					"version_author": "author_11",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"1721186495"
+					],
+					"dependencies_name": [
+						"165166327"
+					],
+					"op_sequence": 0
+				}
+			],
+			"groups": [
+				{
+					"name": "document_1",
+					"document_group": {
+						"tags": [],
+						"name": "document_1",
+						"id": "691cca85-7b78-4c80-b2cb-724b0084a976",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_1",
+						"type": "document_group",
+						"grouping": "document_8",
+						"display_name": "document_1",
+						"version_author": "author_7",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"981148995"
+						],
+						"dependencies_name": [
+							"1440575010"
+						],
+						"op_sequence": 0
+					},
+					"documents": [
+						{
+							"tags": [
+								"tag5",
+								"tag6",
+								"tag4"
+							],
+							"name": "document_90",
+							"id": "4165de60-6959-4095-a574-a42733f73396",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_90",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_90",
+							"version_author": "author_10",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"105382322"
+							],
+							"dependencies_name": [
+								"564144882"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag1",
+								"tag2",
+								"tag3"
+							],
+							"name": "document_22",
+							"id": "59e4d126-6992-47bd-bae7-92e0c267f317",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_22",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_22",
+							"version_author": "author_5",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"577806734"
+							],
+							"dependencies_name": [
+								"1248121048"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag5",
+								"tag6",
+								"tag4"
+							],
+							"name": "document_89",
+							"id": "b148ed52-c2d8-4306-b3f8-2b85a91dc37d",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_89",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_89",
+							"version_author": "author_8",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"435728419"
+							],
+							"dependencies_name": [
+								"2064732728"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag5",
+								"tag6",
+								"tag4"
+							],
+							"name": "document_2",
+							"id": "9e61b182-7ed5-4609-b221-6e39d2efdc18",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_2",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_2",
+							"version_author": "author_6",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"263611779"
+							],
+							"dependencies_name": [
+								"1043322808"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag9",
+								"tag10",
+								"tag11"
+							],
+							"name": "document_68",
+							"id": "6ee73ffc-4fc6-4df3-aceb-663e95b36ded",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_68",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_68",
+							"version_author": "author_7",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"1962131689"
+							],
+							"dependencies_name": [
+								"179445310"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag1",
+								"tag2",
+								"tag3"
+							],
+							"name": "document_79",
+							"id": "2f99223d-86df-444d-8bc1-84c2caa59271",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_79",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_79",
+							"version_author": "author_8",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"566385082"
+							],
+							"dependencies_name": [
+								"177159528"
+							],
+							"op_sequence": 0
+						},
+						{
+							"tags": [
+								"tag7",
+								"tag8"
+							],
+							"name": "document_19",
+							"id": "a92707a8-e7d7-41b4-875c-79243e2e94f0",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_19",
+							"type": "workspace",
+							"grouping": "document_1",
+							"display_name": "document_19",
+							"version_author": "author_13",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"590252317"
+							],
+							"dependencies_name": [
+								"1627080928"
+							],
+							"op_sequence": 0
+						}
+					],
+					"groups": [
+						{
+							"name": "document_group_tree",
+							"document_group": {
+								"tags": [
+									"tag5",
+									"tag6",
+									"tag4"
+								],
+								"name": "document_78",
+								"id": "7eab49a1-efa1-4874-bbf6-54d7a9faa5fa",
+								"version": 1,
+								"tenant_id": "1",
+								"author": "user",
+								"description": "document_78",
+								"type": "document_group",
+								"grouping": "document_1",
+								"display_name": "document_78",
+								"version_author": "author_9",
+								"is_current": true,
+								"perm_read": "all",
+								"perm_write": "all",
+								"dependencies_guid": [
+									"640550680"
+								],
+								"dependencies_name": [
+									"1688853921"
+								],
+								"op_sequence": 0
+							},
+							"documents": [],
+							"groups": []
+						},
+						{
+							"name": "document_group_tree",
+							"document_group": {
+								"tags": [
+									"tag9",
+									"tag10",
+									"tag11"
+								],
+								"name": "document_37",
+								"id": "6df859c4-4c80-4fbd-8ffd-64d683b45a36",
+								"version": 1,
+								"tenant_id": "1",
+								"author": "user",
+								"description": "document_37",
+								"type": "document_group",
+								"grouping": "document_1",
+								"display_name": "document_37",
+								"version_author": "author_13",
+								"is_current": true,
+								"perm_read": "all",
+								"perm_write": "all",
+								"dependencies_guid": [
+									"1812757444"
+								],
+								"dependencies_name": [
+									"992016649"
+								],
+								"op_sequence": 0
+							},
+							"documents": [],
+							"groups": []
+						}
+					]
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag5",
+							"tag6",
+							"tag4"
+						],
+						"name": "document_77",
+						"id": "0d076597-9c20-4c72-b9ce-f859892f70f8",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_77",
+						"type": "document_group",
+						"grouping": "document_8",
+						"display_name": "document_77",
+						"version_author": "author_14",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"776401495"
+						],
+						"dependencies_name": [
+							"1656700641"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [],
+						"name": "document_99",
+						"id": "a9a7b0d2-db25-4f4d-9af9-a989a504768f",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_99",
+						"type": "document_group",
+						"grouping": "document_8",
+						"display_name": "document_99",
+						"version_author": "author_5",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"671230833"
+						],
+						"dependencies_name": [
+							"1327487225"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_6",
+			"document_group": {
+				"tags": [
+					"tag5",
+					"tag6",
+					"tag4"
+				],
+				"name": "document_6",
+				"id": "7cd95b1c-bffd-4cb0-9af5-c4207cdfd08f",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_6",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_6",
+				"version_author": "author_5",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"389482753"
+				],
+				"dependencies_name": [
+					"1901479563"
+				],
+				"op_sequence": 0
+			},
+			"documents": [
+				{
+					"tags": [],
+					"name": "document_72",
+					"id": "1dad9354-6f6e-49ec-bdb9-eca45eeb3aed",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_72",
+					"type": "workspace",
+					"grouping": "document_6",
+					"display_name": "document_72",
+					"version_author": "author_13",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"1504133228"
+					],
+					"dependencies_name": [
+						"1504794941"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag1",
+						"tag2",
+						"tag3"
+					],
+					"name": "document_32",
+					"id": "dec5d5d4-db4e-4db5-a1f9-d61d0e4f77c5",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_32",
+					"type": "workspace",
+					"grouping": "document_6",
+					"display_name": "document_32",
+					"version_author": "author_12",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"2043638828"
+					],
+					"dependencies_name": [
+						"2078378061"
+					],
+					"op_sequence": 0
+				}
+			],
+			"groups": [
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [],
+						"name": "document_47",
+						"id": "fd318197-e69b-4ab8-864e-a730a6900099",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_47",
+						"type": "document_group",
+						"grouping": "document_6",
+						"display_name": "document_47",
+						"version_author": "author_10",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"838415196"
+						],
+						"dependencies_name": [
+							"1899832984"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag7",
+							"tag8"
+						],
+						"name": "document_63",
+						"id": "b65b8994-774e-4b5a-8379-5dcc314539bb",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_63",
+						"type": "document_group",
+						"grouping": "document_6",
+						"display_name": "document_63",
+						"version_author": "author_9",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"1902838506"
+						],
+						"dependencies_name": [
+							"1719955228"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_15",
+			"document_group": {
+				"tags": [],
+				"name": "document_15",
+				"id": "352d7d8c-49f3-4f75-93db-c0f191b05cb5",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_15",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_15",
+				"version_author": "author_5",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"167409486"
+				],
+				"dependencies_name": [
+					"826441331"
+				],
+				"op_sequence": 0
+			},
+			"documents": [],
+			"groups": [
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag9",
+							"tag10",
+							"tag11"
+						],
+						"name": "document_51",
+						"id": "93bef700-6f70-4cc4-8eca-88b91a4b5e42",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_51",
+						"type": "document_group",
+						"grouping": "document_15",
+						"display_name": "document_51",
+						"version_author": "author_6",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"706417591"
+						],
+						"dependencies_name": [
+							"748343237"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag7",
+							"tag8"
+						],
+						"name": "document_62",
+						"id": "dcb3ca36-025c-4ef4-bbf9-f3d75334c70a",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_62",
+						"type": "document_group",
+						"grouping": "document_15",
+						"display_name": "document_62",
+						"version_author": "author_9",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"713046640"
+						],
+						"dependencies_name": [
+							"2146520855"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_5",
+			"document_group": {
+				"tags": [
+					"tag5",
+					"tag6",
+					"tag4"
+				],
+				"name": "document_5",
+				"id": "34dae263-f4c0-4789-86de-90f1936ea34a",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_5",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_5",
+				"version_author": "author_11",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"583499681"
+				],
+				"dependencies_name": [
+					"872137794"
+				],
+				"op_sequence": 0
+			},
+			"documents": [
+				{
+					"tags": [
+						"tag1",
+						"tag2",
+						"tag3"
+					],
+					"name": "document_24",
+					"id": "fba2eb9c-79f6-4971-918a-2fcd35ff0ff9",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_24",
+					"type": "workspace",
+					"grouping": "document_5",
+					"display_name": "document_24",
+					"version_author": "author_14",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"1989354078"
+					],
+					"dependencies_name": [
+						"485002579"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag7",
+						"tag8"
+					],
+					"name": "document_17",
+					"id": "35c7ccef-aa14-41bf-a0b9-e5d55cae150e",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_17",
+					"type": "workspace",
+					"grouping": "document_5",
+					"display_name": "document_17",
+					"version_author": "author_12",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"609213651"
+					],
+					"dependencies_name": [
+						"2015780145"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag9",
+						"tag10",
+						"tag11"
+					],
+					"name": "document_57",
+					"id": "feb5cb99-16c3-4095-a047-639b2750a950",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_57",
+					"type": "workspace",
+					"grouping": "document_5",
+					"display_name": "document_57",
+					"version_author": "author_11",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"578491355"
+					],
+					"dependencies_name": [
+						"195548882"
+					],
+					"op_sequence": 0
+				}
+			],
+			"groups": [
+				{
+					"name": "document_3",
+					"document_group": {
+						"tags": [
+							"tag5",
+							"tag6",
+							"tag4"
+						],
+						"name": "document_3",
+						"id": "24611de6-26b4-43fe-ae21-a9a25f3d74c1",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_3",
+						"type": "document_group",
+						"grouping": "document_5",
+						"display_name": "document_3",
+						"version_author": "author_6",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"205565314"
+						],
+						"dependencies_name": [
+							"1408065353"
+						],
+						"op_sequence": 0
+					},
+					"documents": [
+						{
+							"tags": [
+								"tag5",
+								"tag6",
+								"tag4"
+							],
+							"name": "document_42",
+							"id": "7af45898-486d-4c75-8a9a-34bce1a16afe",
+							"version": 1,
+							"tenant_id": "1",
+							"author": "user",
+							"description": "document_42",
+							"type": "workspace",
+							"grouping": "document_3",
+							"display_name": "document_42",
+							"version_author": "author_9",
+							"is_current": true,
+							"perm_read": "all",
+							"perm_write": "all",
+							"dependencies_guid": [
+								"1422343568"
+							],
+							"dependencies_name": [
+								"664883422"
+							],
+							"op_sequence": 0
+						}
+					],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_13",
+			"document_group": {
+				"tags": [
+					"tag7",
+					"tag8"
+				],
+				"name": "document_13",
+				"id": "02bf0d09-abfd-47db-990d-62a5c7753834",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_13",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_13",
+				"version_author": "author_5",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"823828216"
+				],
+				"dependencies_name": [
+					"550360769"
+				],
+				"op_sequence": 0
+			},
+			"documents": [
+				{
+					"tags": [],
+					"name": "document_29",
+					"id": "65b1a6b6-ffd1-4668-b0d1-d26d6be8ab69",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_29",
+					"type": "workspace",
+					"grouping": "document_13",
+					"display_name": "document_29",
+					"version_author": "author_8",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"1252425717"
+					],
+					"dependencies_name": [
+						"2107569568"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag7",
+						"tag8"
+					],
+					"name": "document_43",
+					"id": "291e9557-4c51-4966-89ce-37cfbe6ec897",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_43",
+					"type": "workspace",
+					"grouping": "document_13",
+					"display_name": "document_43",
+					"version_author": "author_10",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"954764769"
+					],
+					"dependencies_name": [
+						"262959811"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag1",
+						"tag2",
+						"tag3"
+					],
+					"name": "document_66",
+					"id": "0838173c-844e-4116-a03a-f9731d56ab16",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_66",
+					"type": "workspace",
+					"grouping": "document_13",
+					"display_name": "document_66",
+					"version_author": "author_9",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"284338631"
+					],
+					"dependencies_name": [
+						"445374938"
+					],
+					"op_sequence": 0
+				},
+				{
+					"tags": [
+						"tag1",
+						"tag2",
+						"tag3"
+					],
+					"name": "document_16",
+					"id": "bbca49a8-67d3-4054-9a7d-67dad684007e",
+					"version": 1,
+					"tenant_id": "1",
+					"author": "user",
+					"description": "document_16",
+					"type": "workspace",
+					"grouping": "document_13",
+					"display_name": "document_16",
+					"version_author": "author_5",
+					"is_current": true,
+					"perm_read": "all",
+					"perm_write": "all",
+					"dependencies_guid": [
+						"1156611312"
+					],
+					"dependencies_name": [
+						"1738714324"
+					],
+					"op_sequence": 0
+				}
+			],
+			"groups": [
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag9",
+							"tag10",
+							"tag11"
+						],
+						"name": "document_35",
+						"id": "fa79f631-902b-4057-a3f1-c41b00802408",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_35",
+						"type": "document_group",
+						"grouping": "document_13",
+						"display_name": "document_35",
+						"version_author": "author_8",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"2033826429"
+						],
+						"dependencies_name": [
+							"1665972299"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag5",
+							"tag6",
+							"tag4"
+						],
+						"name": "document_92",
+						"id": "bd80d577-baf4-410d-a9f7-b34e58120120",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_92",
+						"type": "document_group",
+						"grouping": "document_13",
+						"display_name": "document_92",
+						"version_author": "author_13",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"796561993"
+						],
+						"dependencies_name": [
+							"1432860994"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		},
+		{
+			"name": "document_14",
+			"document_group": {
+				"tags": [
+					"tag9",
+					"tag10",
+					"tag11"
+				],
+				"name": "document_14",
+				"id": "3b12c73f-84ee-4310-a6c6-de8271b28c42",
+				"version": 1,
+				"tenant_id": "1",
+				"author": "user",
+				"description": "document_14",
+				"type": "document_group",
+				"grouping": "",
+				"display_name": "document_14",
+				"version_author": "author_14",
+				"is_current": true,
+				"perm_read": "all",
+				"perm_write": "all",
+				"dependencies_guid": [
+					"461696760"
+				],
+				"dependencies_name": [
+					"1710859413"
+				],
+				"op_sequence": 0
+			},
+			"documents": [],
+			"groups": [
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [],
+						"name": "document_36",
+						"id": "fc1e6d46-81d9-47f4-b8bb-b54b66cf4bb6",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_36",
+						"type": "document_group",
+						"grouping": "document_14",
+						"display_name": "document_36",
+						"version_author": "author_11",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"487963072"
+						],
+						"dependencies_name": [
+							"519678744"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag9",
+							"tag10",
+							"tag11"
+						],
+						"name": "document_53",
+						"id": "ca1ed649-5f34-4799-a813-df200edbe46b",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_53",
+						"type": "document_group",
+						"grouping": "document_14",
+						"display_name": "document_53",
+						"version_author": "author_7",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"594036732"
+						],
+						"dependencies_name": [
+							"739470598"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				},
+				{
+					"name": "document_group_tree",
+					"document_group": {
+						"tags": [
+							"tag9",
+							"tag10",
+							"tag11"
+						],
+						"name": "document_20",
+						"id": "b1d8d794-89d5-495c-98de-3efd916613a5",
+						"version": 1,
+						"tenant_id": "1",
+						"author": "user",
+						"description": "document_20",
+						"type": "document_group",
+						"grouping": "document_14",
+						"display_name": "document_20",
+						"version_author": "author_5",
+						"is_current": true,
+						"perm_read": "all",
+						"perm_write": "all",
+						"dependencies_guid": [
+							"1739141184"
+						],
+						"dependencies_name": [
+							"469577195"
+						],
+						"op_sequence": 0
+					},
+					"documents": [],
+					"groups": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,9714 @@
+﻿CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+ /*
+ * TABLE: API_GROUP_CHANGES
+ */
+
+CREATE TABLE API_GROUP_CHANGES
+(
+    API_GROUP_CHANGES_ID    UUID    CONSTRAINT DF_APIGC_CHANGESID DEFAULT uuid_generate_v4() NOT NULL,
+    DOMAIN_ID               UUID    NULL,
+    DOMAIN_NAME             varchar(255)       NULL,
+    APPLICATION_GROUP_ID    UUID    NULL,
+    GROUP_NAME              varchar(255)       NULL,
+    APPLICATION_USER_ID     UUID    NULL,
+    USER_NAME               varchar(128)       NULL,
+    MACHINE_ID              UUID    NULL,
+    MACHINE_NAME            varchar(128)       NULL,
+    IS_ADD                  smallint             NULL,
+    BEEN_PROCESSED          smallint             NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_APIGC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_APIGC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+/*
+ * DGSERVER-3914 - Add index
+ */
+CREATE  INDEX IxAGC ON API_GROUP_CHANGES (MACHINE_ID,BEEN_PROCESSED)
+
+;
+
+
+/*
+ * TABLE: API_CONSOLE_LOG
+ */
+
+CREATE TABLE API_CONSOLE_LOG
+(
+    API_CONSOLE_LOG_ID      UUID    NOT NULL DEFAULT uuid_generate_v4(),
+    APPLICATION_GROUP_ID    UUID    NULL,
+    GROUP_NAME              varchar(255)       NULL,
+    APPLICATION_USER_ID     UUID    NULL,
+    DOMAIN_NAME             varchar (50)       NULL,
+    USER_NAME               varchar(128)       NULL,
+    MACHINE_ID              UUID    NULL,
+    MACHINE_NAME            varchar(128)       NULL,
+    LOG_MESSAGE             text       NULL,
+    CATEGORY                varchar(128)       NOT NULL,
+    MESSAGE_TYPE            varchar(128)       NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_APICL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_APICL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: API_LIST_CONSOLE_LOG
+ */
+
+CREATE TABLE API_LIST_CONSOLE_LOG
+(
+    API_LIST_CONSOLE_LOG_ID         UUID    NOT NULL DEFAULT uuid_generate_v4(),
+    LIST_NAME                       varchar(256)       NOT NULL,
+    COMPONENT_LIST_ID               UUID    NULL,
+    CONTENT_VALUE                   varchar(256)       NULL,
+    LOG_MESSAGE                     text       NULL,
+    CATEGORY                        varchar(128)       NOT NULL,
+    MESSAGE_TYPE                    varchar(128)       NOT NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_ALCL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_ALCL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: ARTIFACT_ASSEMBLED_BLOB
+ */
+
+CREATE TABLE ARTIFACT_ASSEMBLED_BLOB(
+    ARTIFACT_ID                UUID    NOT NULL,
+    ARTIFACT_ASSEMBLED_BLOB    bit varying(83886080)      NOT NULL,
+    CONSTRAINT PK_ARTIFACT_ASSEMBLED_BLOB PRIMARY KEY  (ARTIFACT_ID)
+    WITH (FILLFACTOR = 90)
+)
+;
+
+
+
+/*
+ * TABLE: ARTIFACT_STATE
+ */
+
+CREATE TABLE ARTIFACT_STATE(
+    ARTIFACT_STATE_ID      smallint          NOT NULL,
+    ARTIFACT_STATE_NAME    varchar(50)     NOT NULL,
+    ARTIFACT_STATE_DESC    varchar(256)    NULL,
+    CONSTRAINT PK_ARTIFACT_STATE PRIMARY KEY  (ARTIFACT_STATE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_TYPE
+ */
+
+CREATE TABLE ARTIFACT_TYPE(
+    ARTIFACT_TYPE_ID           int              NOT NULL,
+    ARTIFACT_TYPE_NAME         varchar(100)    NOT NULL,
+    ARTIFACT_TYPE_DESC         varchar(256)    NOT NULL,
+    ARTIFACT_APPLICATION_ID    int              NOT NULL,
+    ARTIFACT_MIMETYPE          varchar(128)    NOT NULL,
+    CREATED_DTTM               timestamp         CONSTRAINT DF_ATYPE_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM              timestamp         CONSTRAINT DF_ATYPE_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_ARTIFACT_TYPE PRIMARY KEY  (ARTIFACT_TYPE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: SCHEDULE
+ */
+
+CREATE TABLE SCHEDULE(
+    SCHEDULE_ID                UUID NOT NULL,
+    SCHEDULE_TIME               timestamp       NOT NULL,
+    IS_ACTIVE                   BOOLEAN             NOT NULL,
+    SCHEDULE_TYPE       smallint         NOT NULL,
+    STATUS                       smallint          CONSTRAINT DF_SCHEDULE_STATUS DEFAULT 0 NOT NULL,
+    COUNT_REQUESTED             BIGINT          DEFAULT 0 NOT NULL,
+    COUNT_PROCESSED             BIGINT          DEFAULT 0 NOT NULL,
+    CONSTRAINT PK_SCHEDULE PRIMARY KEY  (SCHEDULE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_SCHEDULE_MAP
+ */
+
+CREATE TABLE APPLICATION_POLICY_SCHEDULE_MAP(
+    APPLICATION_POLICY_SCHEDULE_MAP_ID      UUID NOT NULL,
+    SCHEDULE_ID                UUID NOT NULL,
+    APPLICATION_POLICY_ID                  UUID NOT NULL,
+    CONSTRAINT PK_APPLICATION_POLICY_SCHEDULE_MAP PRIMARY KEY  (APPLICATION_POLICY_SCHEDULE_MAP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: SCHEDULE_CHUNK
+ */
+
+CREATE TABLE SCHEDULE_CHUNK(
+    SCHEDULE_CHUNK_ID          UUID NOT NULL,
+    SCHEDULE_ID                 UUID NOT NULL,
+    CHUNK_PORTION               smallint     NOT NULL,
+    CHUNK_TIME                  INT         NOT NULL,
+    STATUS                    BOOLEAN         CONSTRAINT DF_SCHEDULE_CHUNK_STATUS DEFAULT FALSE NOT NULL,
+    CONSTRAINT PK_SCHEDULE_CHUNK PRIMARY KEY (SCHEDULE_CHUNK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: SCHEDULE_MACHINE_MAP
+ */
+
+CREATE TABLE SCHEDULE_MACHINE_MAP
+(   SCHEDULE_MACHINE_MAP_ID     UUID NOT NULL,
+    SCHEDULE_ID                 UUID NOT NULL,
+    MACHINE_ID                  UUID NOT NULL,
+    APPLIED_MACHINE_TASK_ID     UUID NOT NULL,
+    STATUS                    smallint CONSTRAINT DF_SMM_STATUS DEFAULT 0 NOT NULL,
+    CONSTRAINT PK_SCHEDULE_MACHINE_MAP PRIMARY KEY  (SCHEDULE_MACHINE_MAP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+/*
+ * TABLE: ACI_RESOURCE
+ */
+
+CREATE TABLE ACI_RESOURCE(
+    ACI_RESOURCE_ID    UUID    NOT NULL,
+    RESOURCE_NAME      varchar(255)       NOT NULL,
+    CONTAINER          varchar(255)       NOT NULL,
+    RESOURCE_TYPE      smallint             NOT NULL,
+    CREATED_DTTM       timestamp            CONSTRAINT DF_ACIRES_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM      timestamp            CONSTRAINT DF_ACIRES_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    ACI_ENGINE_TYPE    smallint             NOT NULL,
+    CONSTRAINT ACI_RESOURCE_PK PRIMARY KEY  (ACI_RESOURCE_ID)
+
+)
+;
+
+
+
+
+
+
+/*
+ * TABLE: ACI_RESOURCE_MAP
+ */
+
+CREATE TABLE ACI_RESOURCE_MAP(
+    ACI_RESOURCE_MAP_ID UUID    NOT NULL,
+    RESOURCE_NAME       varchar(255)       NOT NULL,
+    MAP_RESOURCE_NAME   varchar(255)       NOT NULL,
+    MAP_CONTAINER       varchar(255)       NOT NULL,
+    MAP_ACI_ENGINE_TYPE smallint             NOT NULL,
+    CREATED_DTTM        timestamp            CONSTRAINT DF_ACIRESMAP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM       timestamp            CONSTRAINT DF_ACIRESMAP_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT ACI_RESOURCE_MAPPING_PK PRIMARY KEY  (ACI_RESOURCE_MAP_ID)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: AGENT_SUB_COMPONENT
+ */
+
+CREATE TABLE AGENT_SUB_COMPONENT(
+    SUB_COMPONENT_ID        INT NOT NULL,
+    AGENT_COMPONENT_ID      UUID    NOT NULL,
+    SUB_COMPONENT_NAME      varchar(100)       NOT NULL,
+    LICENSE_TYPE            smallint             NULL,
+    CONSTRAINT PK_SUB_COMPONENT PRIMARY KEY  (SUB_COMPONENT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+/*
+ * TABLE: AGENT_COMPONENT_STATUS_DETAIL
+ */
+
+CREATE TABLE AGENT_COMPONENT_STATUS_DETAIL(
+    SUB_COMPONENT_ID    INT NOT NULL,
+    MACHINE_ID          UUID    NOT NULL,
+    STATUS            INT NOT NULL,
+    ERROR_CODE          BIGINT  NOT NULL,
+    VERSION           varchar(20)        NULL,
+    OP_ALERT            smallint             NULL,
+    OP_ALERT_MSG        varchar(512)       NULL,
+    CREATED_DTTM        timestamp NOT NULL,
+    MODIFIED_DTTM       timestamp   NOT NULL,
+    CONSTRAINT PK_AGENT_COMPONENT_STATUS_DETAIL PRIMARY KEY  (MACHINE_ID,SUB_COMPONENT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: AGENT_FEATURE
+ */
+
+CREATE TABLE AGENT_FEATURE(
+    AGENT_FEATURE_ID      int              NOT NULL,
+    AGENT_FEATURE_NAME    varchar(100)    NOT NULL,
+    CONFIG_NODE_NAME      varchar(100)    NOT NULL,
+    LICENSE_TYPE          smallint          NULL,
+    CONSTRAINT PK_AGENT_FEATURE PRIMARY KEY  (AGENT_FEATURE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AGENT_RESOURCE
+ */
+
+CREATE TABLE AGENT_RESOURCE(
+    APPLICATION_FILE_ID    UUID    NOT NULL,
+    NAME                   varchar(255)       NOT NULL,
+    VERSION                int                 NOT NULL,
+    RANK                   int                 NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_AGENT_RES_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_AGENT_RES_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT AGENT_RESOURCE_PK PRIMARY KEY  (APPLICATION_FILE_ID)
+    ,
+    CONSTRAINT AK_AGENT_RESCE_NAME  UNIQUE (NAME)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AGENT_RESOURCE_ASSIGNMENT
+ */
+
+CREATE TABLE AGENT_RESOURCE_ASSIGNMENT(
+    AGENT_RESOURCE_ASSIGNMENT_ID    UUID    NOT NULL,
+    MACHINE_ID                      UUID    NOT NULL,
+    AGENT_RESOURCE_MAP_ID           UUID    NOT NULL,
+    CURRENT_AGENT_RESOURCE_ID       UUID    NULL,
+    STATE                           int                 NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_ARA_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_ARA_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    APPLIED_AGENT_RESOURCE_ID       UUID    NULL,
+    CONSTRAINT AGENT_RESOURCE_DEPLOYMENT_PK PRIMARY KEY  (AGENT_RESOURCE_ASSIGNMENT_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AGENT_RESOURCE_FILE
+ */
+
+CREATE TABLE AGENT_RESOURCE_FILE(
+    AGENT_RESOURCE_FILE_ID    UUID    NOT NULL,
+    MACHINE_ID                UUID    NOT NULL,
+    RESOURCE_IMAGE            bit varying(83886080)      NOT NULL,
+    RESOURCE_VERSION          int                 NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_ARF_CREATDTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM             timestamp            CONSTRAINT DF_ARF_MODDTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    LAST_COMPILED_DTTM        bigint              NOT NULL,
+    RESOURCE_TYPE             smallint            NOT NULL,
+    LAST_RECEIVED_DTTM        timestamp            NULL,
+    POST_PROCESS              BOOLEAN                 CONSTRAINT DF_ARF_PPROCESS DEFAULT FALSE NOT NULL,
+    LAST_REQUEST_TO_COMPILE_DTTM  bigint             NULL,
+    CONSTRAINT AGENT_RESOURCE_FILE_PK PRIMARY KEY  (AGENT_RESOURCE_FILE_ID)
+    WITH (FILLFACTOR = 90)
+    ,
+    CONSTRAINT AK_ARF_MACHINE_ID_RS_TYPE  UNIQUE (MACHINE_ID, RESOURCE_TYPE)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AGENT_RESOURCE_GROUP
+ */
+
+CREATE TABLE AGENT_RESOURCE_GROUP(
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    DESCRIPTION             varchar(255)       NULL,
+    IS_DEFAULT              BOOLEAN                 NOT NULL,
+    AGENT_TYPE              smallint             NULL,
+    CRITERIA_XML            text       NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_ARG_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_ARG_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    DEFAULT_POLICY_ID       UUID    NULL,
+    CONSTRAINT AGENT_RESOURCE_GROUP_PK PRIMARY KEY  (APPLICATION_GROUP_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AGENT_RESOURCE_MAP
+ */
+
+CREATE TABLE AGENT_RESOURCE_MAP(
+    AGENT_RESOURCE_MAP_ID         UUID    NOT NULL,
+    REQUIRED_AGENT_RESOURCE_ID    UUID    NOT NULL,
+    APPLICATION_GROUP_ID          UUID    NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_ARM_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM                 timestamp            CONSTRAINT DF_ARM_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT AGENT_RESOURCE_MAP_PK PRIMARY KEY  (AGENT_RESOURCE_MAP_ID)
+
+)
+;
+
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_BUSINESS_METADATA
+ */
+
+CREATE TABLE APPLICATION_BUSINESS_METADATA(
+    BUSINESS_CATEGORY_ID    UUID    CONSTRAINT DF_ABM_BUSINESS_ID DEFAULT (uuid_generate_v4()) NOT NULL,
+    DOMAIN_ID               UUID    NOT NULL,
+    BUSINESS_CATEGORY       varchar(256)       NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_ABM_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM       timestamp               CONSTRAINT DF_ABM_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT APPLICATION_BUSINESS_METADATA_PK PRIMARY KEY  (BUSINESS_CATEGORY_ID)
+
+)
+;
+
+
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_COMPONENT_STATUS
+ */
+
+CREATE TABLE APPLICATION_COMPONENT_STATUS(
+    SERVICE_ID           UUID    NOT NULL,
+    COMPUTER_NAME        varchar(260)       NOT NULL,
+    COMPONENT_TYPE       varchar(200)       NOT NULL,
+    ACTIVE               BOOLEAN                 NOT NULL,
+    LAST_COMM_TIME       timestamp            NOT NULL,
+    CREATED_DTTM         timestamp            NOT NULL,
+    COMPONENT_VERSION    varchar(50)        NULL,
+    RUNNING_STATUS       smallint            NULL,
+    CONSTRAINT APPLICATION_COMPONENT_STATUS_PK PRIMARY KEY (SERVICE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_CONFIGURATION
+ */
+
+CREATE TABLE APPLICATION_CONFIGURATION(
+    APPLICATION_CONFIGURATION_ID     int               ,
+    COMPUTER_NAME                    varchar(260)     NOT NULL,
+    CONFIGURATION_MODULE             varchar(80)      NOT NULL,
+    CONFIGURATION_KEY                varchar(80)      NOT NULL,
+    CONFIGURATION_VALUE              varchar(3000)    NOT NULL,
+    CONFIGURATION_VALUE_ENCRYPTED    BOOLEAN               CONSTRAINT DF_AC_CVENCRYPT DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                     timestamp          CONSTRAINT DF_AC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                    timestamp          CONSTRAINT DF_AC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_CONFIGURATION_PK PRIMARY KEY  (APPLICATION_CONFIGURATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_CONSOLE_LOG
+ */
+
+CREATE TABLE APPLICATION_CONSOLE_LOG(
+    APPLICATION_CONSOLE_LOG_ID    UUID    NOT NULL,
+    APPLICATION_USER_ID           UUID    NOT NULL,
+    CONSOLE_MODULE                varchar(80)        NOT NULL,
+    CONSOLE_DETAIL                text       NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_ACL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    DETAIL_ENCRYPTED              BOOLEAN                 NULL,
+    CONSTRAINT APPLICATION_CONSOLE_LOG_PK PRIMARY KEY  (APPLICATION_CONSOLE_LOG_ID)
+    WITH (FILLFACTOR = 90)
+)
+;
+
+
+
+
+
+;
+/*
+ * TABLE: APPLICATION_CONTROL
+ */
+
+CREATE TABLE APPLICATION_CONTROL(
+    APPLICATION_CONTROL_ID    bigint              ,
+    PROCESS_DESCRIPTION_ID    UUID    NOT NULL,
+    APPLICATION_RULE_ID       UUID    NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_APC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_CONTROL_PK PRIMARY KEY  (APPLICATION_CONTROL_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_CREDENTIAL
+ */
+
+CREATE TABLE APPLICATION_CREDENTIAL(
+    APPLICATION_CREDENTIAL_ID    UUID    NOT NULL,
+    CERTIFICATE_HASH             varchar(260)       NOT NULL,
+    CERTIFICATE_PASSWORD         varchar(255)       NOT NULL,
+    CERTIFICATE_IMAGE            bit varying(83886080)      NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_ACR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                timestamp            CONSTRAINT DF_ACR_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_CREDENTIAL_PK PRIMARY KEY  (APPLICATION_CREDENTIAL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_DEPT_METADATA
+ */
+
+CREATE TABLE APPLICATION_DEPT_METADATA(
+    DEPARTMENT_ID    UUID    CONSTRAINT DF_ADM_MANAGEMENT_ID DEFAULT (uuid_generate_v4()) NOT NULL,
+    DOMAIN_ID        UUID    NOT NULL,
+    DEPARTMENT       varchar(256)       NOT NULL,
+    CREATED_DTTM     timestamp            CONSTRAINT DF_ADM_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM    timestamp            CONSTRAINT DF_ADM_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT APPLICATION_DEPT_METADATA_PK PRIMARY KEY  (DEPARTMENT_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_DISTRIBUTOR
+ */
+
+CREATE TABLE APPLICATION_DISTRIBUTOR(
+    APPLICATION_DISTRIBUTOR_ID    int              NOT NULL,
+    DISTRIBUTOR_NAME              varchar(128)    NOT NULL,
+    DISTRIBUTOR_DESCRIPTION       varchar(512)    NULL,
+    CREATED_DTTM                  timestamp         CONSTRAINT DF_AD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_DISTRIBUTOR_PK PRIMARY KEY  (APPLICATION_DISTRIBUTOR_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_DIVISION_METADATA
+ */
+
+CREATE TABLE APPLICATION_DIVISION_METADATA(
+    DIVISION_ID         UUID    CONSTRAINT DF_ADIVM_DIVISION_ID DEFAULT (uuid_generate_v4()) NOT NULL,
+    DOMAIN_ID           UUID    NOT NULL,
+    DIVISION            varchar(256)       NOT NULL,
+    CREATED_DTTM        timestamp            CONSTRAINT DF_ADIVM_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    MODIFIED_DTTM       timestamp           CONSTRAINT DF_ADIVM_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT APPLICATION_DIVISION_METADATA_PK PRIMARY KEY  (DIVISION_ID)
+
+)
+;
+
+
+
+/*
+ * TABLE: APPLICATION_EMAIL
+ */
+
+CREATE TABLE APPLICATION_EMAIL(
+    APPLICATION_EMAIL_ID    int              ,
+    EMAIL_TYPE              smallint          NOT NULL,
+    EMAIL_TEMPLATE          text    NOT NULL,
+    CREATED_DTTM            timestamp         CONSTRAINT DF_AE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_EMAIL_PK PRIMARY KEY  (APPLICATION_EMAIL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_EMAIL_GROUP
+ */
+
+CREATE TABLE APPLICATION_EMAIL_GROUP(
+    APPLICATION_EMAIL_GROUP_ID    bigint              ,
+    APPLICATION_GROUP_ID          UUID    NOT NULL,
+    APPLICATION_EMAIL_ID          int                 NOT NULL,
+    EMAIL_METADATA                varchar(128)       NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_AEG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_EMAIL_GROUP_PK PRIMARY KEY  (APPLICATION_EMAIL_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_FEDERATION
+ */
+
+CREATE TABLE APPLICATION_FEDERATION(
+    APPLICATION_FEDERATION_ID    UUID    NOT NULL,
+    FED_TYPE                     smallint             NOT NULL,
+    ORIGINATOR_ID                UUID    NOT NULL,
+    ORIGINATOR_TYPE              smallint             NOT NULL,
+    APPLICATION_GROUP_ID         UUID    NULL,
+    FED_ASSIGNMENT_TYPE          smallint             NOT NULL,
+    CREATED_DTTM                 timestamp            DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_FEDERATION_PK PRIMARY KEY  (APPLICATION_FEDERATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_FILE
+ */
+
+CREATE TABLE APPLICATION_FILE(
+    APPLICATION_FILE_ID    UUID    NOT NULL,
+    FILE_TYPE              int                 NOT NULL,
+    IS_DEFAULT             BOOLEAN                 CONSTRAINT DF_AF_ISDEF DEFAULT TRUE NOT NULL,
+    FILE_DESCRIPTION       varchar(255)       NOT NULL,
+    LOCALE_ID              varchar(25)        NOT NULL,
+    FILE_IMAGE             bit varying(83886080)      NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_AF_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_AF_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    AGENT_TYPE             smallint             NULL,
+    FILE_HASH              bit varying(83886080)      NULL,
+    READ_ONLY            BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_FILE_PK PRIMARY KEY  (APPLICATION_FILE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_GROUP
+ */
+
+CREATE TABLE APPLICATION_GROUP(
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    GROUP_TYPE              int                 NOT NULL,
+    GROUP_NAME              varchar(255)       NOT NULL,
+    SYNCH_ACTIVE            BOOLEAN                 CONSTRAINT DF_AG_SACTIVE DEFAULT FALSE NOT NULL,
+    ORIGINATOR_TYPE         smallint             CONSTRAINT DF_AG_OTYPE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_AG_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_AG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_GROUP_PK PRIMARY KEY  (APPLICATION_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_GROUP_SYNCH
+ */
+
+CREATE TABLE APPLICATION_GROUP_SYNCH(
+    APPLICATION_GROUP_SYNCH_ID    bigint              ,
+    APPLICATION_GROUP_ID          UUID    NOT NULL,
+    SYNCH_GROUP_ID                varchar(128)       NOT NULL,
+    SYNCH_TYPE                    smallint             NOT NULL,
+    LAST_SYNCH_DTTM               timestamp            NULL,
+    LAST_SYNCH_STATUS             smallint             NULL,
+    LAST_SYNCH_MESSAGE            varchar(512)       NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_AGS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_GROUP_SYNCH_PK PRIMARY KEY  (APPLICATION_GROUP_SYNCH_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_JOB
+ */
+
+CREATE TABLE APPLICATION_JOB(
+    APPLICATION_JOB_ID       UUID    NOT NULL,
+    JOB_NAME                 varchar(255)       NOT NULL,
+    JOB_DESCRIPTION          varchar(2000)      NULL,
+    JOB_CLASS                int                 CONSTRAINT DF_AJ_JOBCLASS DEFAULT 0 NOT NULL,
+    ACTIVE_JOB               BOOLEAN                 CONSTRAINT DF_AJ_ACTIVEJOB DEFAULT TRUE NOT NULL,
+    JOB_TYPE                 smallint             NOT NULL,
+    AVERAGE_DURATION         int                 NULL,
+    NUM_OF_RUN               int                 CONSTRAINT DF_AJ_NUMOFRUN DEFAULT 0 NOT NULL,
+    LAST_RUN_DTTM            timestamp            NULL,
+    JOB_RUN_TYPE             smallint             NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_AJ_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    APPLICATION_PLUGIN_ID    UUID    NULL,
+    CONSTRAINT APPLICATION_JOB_PK PRIMARY KEY  (APPLICATION_JOB_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_JOB_SCHEDULE
+ */
+
+CREATE TABLE APPLICATION_JOB_SCHEDULE(
+    APPLICATION_JOB_SCHEDULE_ID    UUID    NOT NULL,
+    APPLICATION_JOB_ID             UUID    NOT NULL,
+    SCHEDULE_NAME                  varchar(80)        NULL,
+    SCHEDULE_DESCRIPTION           varchar(500)       NULL,
+    SCHEDULE_TYPE                  int                 NOT NULL,
+    SCHEDULE_INTERVAL              int                 NULL,
+    SCHEDULE_TIME                  char(4)             NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_AJH_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    WINDOWS_DOMAIN_ID              UUID    NULL,
+    CONSTRAINT APPLICATION_JOB_SCHEDULE_PK PRIMARY KEY  (APPLICATION_JOB_SCHEDULE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_JOB_STEP
+ */
+
+CREATE TABLE APPLICATION_JOB_STEP(
+    APPLICATION_JOB_STEP_ID    UUID    NOT NULL,
+    APPLICATION_JOB_ID         UUID    NOT NULL,
+    STEP_NAME                  varchar(255)       NOT NULL,
+    STEP_DESCRIPTION           varchar(2000)      NULL,
+    STEP_NUMBER                smallint            CONSTRAINT DF_AJS_STEPNUMBER DEFAULT 0 NOT NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_AJS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_JOB_STEP_PK PRIMARY KEY  (APPLICATION_JOB_STEP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_LANGUAGE
+ */
+
+CREATE TABLE APPLICATION_LANGUAGE(
+    APPLICATION_LANGUAGE_ID    int              NOT NULL,
+    LANGUAGE_CODE              varchar(25)     NULL,
+    LANGUAGE_NAME              varchar(150)    NOT NULL,
+    DEFAULT_LANGUAGE           BOOLEAN              CONSTRAINT DF_AL_DEFLANG DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_LANGUAGE_PK PRIMARY KEY  (APPLICATION_LANGUAGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_LICENSE
+ */
+
+CREATE TABLE APPLICATION_LICENSE(
+    APPLICATION_LICENSE_ID    UUID    NOT NULL,
+    ACTIVE_LICENSE_KEY        varchar(150)       NULL,
+    INPUT_LICENSE_KEY         varchar(150)       NULL,
+    LICENSE_TYPE              smallint             NOT NULL,
+    IS_ACTIVE                 BOOLEAN                 CONSTRAINT DF_ALC_ISACTIVE DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM             timestamp            CONSTRAINT DF_ALC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_ALC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    LICENSE_NAME              varchar(32)        NOT NULL,
+    LICENSE_DESCRIPTION       varchar(255)       NOT NULL,
+    CONSTRAINT APPLICATION_LICENSE_PK PRIMARY KEY  (APPLICATION_LICENSE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+CREATE TABLE APPLICATION_LICENSE_MONITOR(
+    APPLICATION_LICENSE_MONITOR_ID      UUID    NOT NULL,
+    LICENSE_TYPE                        smallint             NOT NULL,
+    CURRENT_COUNT                       int                 NOT NULL,
+    PEAK_COUNT                          int                 NOT NULL,
+    CREATED_DTTM                        timestamp            CONSTRAINT DF_ALM_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_LICENSE_MONITOR_PK PRIMARY KEY  (APPLICATION_LICENSE_MONITOR_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_LOCATION
+ */
+
+CREATE TABLE APPLICATION_LOCATION(
+    APPLICATION_LOCATION_ID    UUID    NOT NULL,
+    COUNTRY_CODE               varchar(2)         NOT NULL,
+    STATE_NAME                 varchar(255)       NULL,
+    CITY_NAME                  varchar(255)       NULL,
+    POSTAL_CODE                varchar(80)        NULL,
+    LATITUDE                   varchar(80)        NULL,
+    LONGITUDE                  varchar(80)        NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_AL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM              timestamp            CONSTRAINT DF_AL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    GEOCODE_STATUS             int                 NULL,
+    GEOCODE_ACCURACY           int                 NULL,
+    CONSTRAINT APPLICATION_LOCATION_PK PRIMARY KEY  (APPLICATION_LOCATION_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_LOOKUP
+ */
+
+CREATE TABLE APPLICATION_LOOKUP(
+    APPLICATION_LOOKUP_ID    int         ,
+    LOOKUP_LEVEL             smallint     NULL,
+    LOOKUP_MODULE            int         NOT NULL,
+    LOOKUP_KEY               int         NULL,
+    LOOKUP_VALUE             int         NULL,
+    LOOKUP_MODULE_ACTIVE     BOOLEAN         CONSTRAINT DF_AK_LMODACTIVE DEFAULT TRUE NOT NULL,
+    LOOKUP_KEY_ACTIVE        BOOLEAN         CONSTRAINT DF_AK_LKEYACTIVE DEFAULT FALSE NOT NULL,
+    EDIT_LOOKUP              BOOLEAN         CONSTRAINT DF_AK_EDITLOOKUP DEFAULT FALSE NOT NULL,
+    CREATED_DTTM             timestamp    CONSTRAINT DF_AK_CREATEDATE DEFAULT (now() at time zone 'utc') NULL,
+    CONSTRAINT APPLICATION_LOOKUP_PK PRIMARY KEY  (APPLICATION_LOOKUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_LOOKUP_LANGUAGE
+ */
+
+CREATE TABLE APPLICATION_LOOKUP_LANGUAGE(
+    APPLICATION_LOOKUP_LANGUAGE_ID    int              ,
+    APPLICATION_LOOKUP_ID             int              NOT NULL,
+    APPLICATION_LANGUAGE_ID           int              NOT NULL,
+    LOOKUP_MODULE_NAME                varchar(80)     NOT NULL,
+    LOOKUP_MODULE_DESCRIPTION         varchar(260)    NOT NULL,
+    LOOKUP_KEY_NAME                   varchar(80)     NULL,
+    LOOKUP_KEY_DESCRIPTION            varchar(260)    NULL,
+    LOOKUP_KEY_DETAIL                 varchar(500)    NULL,
+    LOOKUP_VALUE_NAME                 varchar(80)     NULL,
+    LOOKUP_VALUE_DESCRIPTION          varchar(260)    NULL,
+    LOOKUP_VALUE_DETAIL               varchar(500)    NULL,
+    CREATED_DTTM                      timestamp         CONSTRAINT DF_ALL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_LOOKUP_LANGUAGE_PK PRIMARY KEY  (APPLICATION_LOOKUP_LANGUAGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_NOTIFICATION
+ */
+
+CREATE TABLE APPLICATION_NOTIFICATION(
+    APPLICATION_NOTIFICATION_ID    UUID    NOT NULL,
+    NOTIFICATION_NAME              varchar(128)       NOT NULL,
+    NOTIFICATION_DESCRIPTION       varchar(512)       NULL,
+    APPLICATION_USER_ID            UUID    NOT NULL,
+    NOTIFICATION_TYPE              smallint             NOT NULL,
+    WORKSPACE_ACCESS               smallint             NOT NULL,
+    IS_ENABLED                     BOOLEAN                 CONSTRAINT DF_AN_ISENABLED DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_AN_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_AN_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_NOTIFICATION_PK PRIMARY KEY  (APPLICATION_NOTIFICATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_ORG_METADATA
+ */
+
+CREATE TABLE APPLICATION_ORG_METADATA(
+    MANAGEMENT_ID          UUID    CONSTRAINT DF_AOM_MANAGEMENT_ID DEFAULT uuid_generate_v4() NOT NULL,
+    APPLICATION_USER_ID    UUID    NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_AOM_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_AOM_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_ORG_METADATA_PK PRIMARY KEY  (MANAGEMENT_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_PLUGIN
+ */
+
+CREATE TABLE APPLICATION_PLUGIN(
+    APPLICATION_PLUGIN_ID     UUID    NOT NULL,
+    APPLICATION_LICENSE_ID    UUID    NOT NULL,
+    PLUGIN_NAME               varchar(32)        NOT NULL,
+    PLUGIN_DESCRIPTION        varchar(255)       NULL,
+    PLUGIN_VERSION            varchar(32)        NOT NULL,
+    IS_ACTIVE                 BOOLEAN                 CONSTRAINT DF_APG_ISACTIVE DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM             timestamp            CONSTRAINT DF_APG_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_APG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_PLUGIN_PK PRIMARY KEY  (APPLICATION_PLUGIN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY
+ */
+
+CREATE TABLE APPLICATION_POLICY(
+    APPLICATION_POLICY_ID            UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    VERSION_NUMBER                   int                 CONSTRAINT DF_AP_VNUMBER DEFAULT 0 NOT NULL,
+    POLICY_TYPE                      smallint             CONSTRAINT DF_AP_POLICYTYPE DEFAULT 0 NOT NULL,
+    POLICY_NAME                      varchar(512)       NOT NULL,
+    POLICY_DESCRIPTION               varchar(2048)       NULL,
+    POLICY_CATEGORY                  int                 NOT NULL,
+    POLICY_STATUS                    smallint             CONSTRAINT DF_AP_POLICYSTATUS DEFAULT 1 NOT NULL,
+    MODIFIED_DTTM                    timestamp            CONSTRAINT DF_AP_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_AP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    POLICY_TAG                       varchar(512)       NULL,
+    POLICY_RANK                      smallint            NULL,
+    POLICY_TAG_PERMANENT             BOOLEAN                 CONSTRAINT DF_AP_PTP DEFAULT FALSE NOT NULL,
+    HAS_ACTIVE_RULES                 BOOLEAN                 CONSTRAINT DF_AP_HAR DEFAULT FALSE NOT NULL,
+    NEED_DEPLOYMENT                  BOOLEAN                 CONSTRAINT DF_APP_POL_NDEPLOY DEFAULT FALSE NOT NULL,
+    PARTNER_ID                       int                 NULL,
+    SUPPORTED_PLATFORMS              smallint             NOT NULL,
+    READ_ONLY                      BOOLEAN                 DEFAULT FALSE NOT NULL,
+    PARAMETER_CONFIGURATION_XAML    text       NULL,
+    LICENSE_REQUIREMENT             varchar(1024)      NULL,
+    CONSTRAINT APPLICATION_POLICY_PK PRIMARY KEY  (APPLICATION_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_CONTAINER
+ */
+
+CREATE TABLE APPLICATION_POLICY_CONTAINER(
+    APPLICATION_POLICY_CONTAINER_ID    UUID    NOT NULL,
+    POLICY_CONTAINER_NAME              varchar(128)       NOT NULL,
+    POLICY_CONTAINER_DESCRIPTION       varchar(512)       NULL,
+    POLICY_PRIORITY_TIER               smallint            NOT NULL,
+    MODIFIED_DTTM                      timestamp            NOT NULL,
+    CREATED_DTTM                       timestamp            CONSTRAINT DF_APC_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_APPLICATION_POLICY_CONTAINER PRIMARY KEY  (APPLICATION_POLICY_CONTAINER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_CONTAINER_ACCESS
+ */
+
+CREATE TABLE APPLICATION_POLICY_CONTAINER_ACCESS(
+    APPLICATION_POLICY_CONTAINER_ACCESS_ID    UUID NOT NULL,
+    APPLICATION_FEDERATION_ID                 UUID NOT NULL,
+    APPLICATION_POLICY_CONTAINER_ID           UUID NOT NULL,
+    READONLY_ACCESS                           BOOLEAN              NOT NULL,
+    CREATED_DTTM                              timestamp         CONSTRAINT DF_APCA_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_APPLICATION_POLICY_CONTAINER_ACCESS PRIMARY KEY  (APPLICATION_POLICY_CONTAINER_ACCESS_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+ALTER TABLE APPLICATION_POLICY_CONTAINER_ACCESS ADD CONSTRAINT FK_APCA_APP_POLICY_CONTAINER_ID
+    FOREIGN KEY(APPLICATION_POLICY_CONTAINER_ID)
+    REFERENCES APPLICATION_POLICY_CONTAINER (APPLICATION_POLICY_CONTAINER_ID)
+;
+
+ALTER TABLE APPLICATION_POLICY_CONTAINER_ACCESS ADD CONSTRAINT FK_APCA_APP_FEDERATION_ID
+    FOREIGN KEY(APPLICATION_FEDERATION_ID)
+    REFERENCES APPLICATION_FEDERATION (APPLICATION_FEDERATION_ID)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_CONTAINER_MEMBER
+ */
+
+CREATE TABLE APPLICATION_POLICY_CONTAINER_MEMBER(
+    APPLICATION_POLICY_CONTAINER_MEMBER_ID    UUID    NOT NULL,
+    POLICY_CONTAINER_ID                       UUID    NOT NULL,
+    POLICY_OBJECT_ID                          UUID    NOT NULL,
+    CREATED_DTTM                              timestamp            CONSTRAINT DF_APCM_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_APPLICATION_POLICY_CONTAINER_MEMBER PRIMARY KEY  (APPLICATION_POLICY_CONTAINER_MEMBER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+ALTER TABLE APPLICATION_POLICY_CONTAINER_MEMBER  ADD CONSTRAINT FK_APCM_POLICY_CONTAINER_ID
+    FOREIGN KEY(POLICY_CONTAINER_ID)
+    REFERENCES APPLICATION_POLICY_CONTAINER (APPLICATION_POLICY_CONTAINER_ID)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_RULE
+ */
+
+CREATE TABLE APPLICATION_POLICY_RULE(
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    APPLICATION_RULE_VERSION_ID      UUID    NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_APR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_POLICY_RULE_PK PRIMARY KEY  (APPLICATION_POLICY_VERSION_ID, APPLICATION_RULE_VERSION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_POLICY_VERSION
+ */
+
+CREATE TABLE APPLICATION_POLICY_VERSION(
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    APPLICATION_POLICY_ID            UUID    NOT NULL,
+    APPLICATION_USER_ID              UUID    NOT NULL,
+    VERSION_NUMBER                   int                 NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_APV_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    POLICY_TAG                       varchar(128)       NULL,
+    POLICY_RANK                      smallint            NULL,
+    POLICY_TAG_PERMANENT             BOOLEAN                 CONSTRAINT DF_APV_PTP DEFAULT FALSE NOT NULL,
+    SUPPORTED_PLATFORMS              smallint             NOT NULL,
+    READ_ONLY                      BOOLEAN                 DEFAULT FALSE NOT NULL,
+    LICENSE_REQUIREMENT              varchar(1024)      NULL,
+    POLICY_STATUS                    smallint             NOT NULL CONSTRAINT DF_APV_POLICYSTATUS DEFAULT ((1)),
+    CONSTRAINT APPLICATION_POLICY_VERSION_PK PRIMARY KEY  (APPLICATION_POLICY_VERSION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_PRIVILEGE
+ */
+
+CREATE TABLE APPLICATION_PRIVILEGE(
+    APPLICATION_PRIVILEGE_ID    int             NOT NULL,
+    PRIVILEGE_NAME              varchar(50)    NOT NULL,
+    PRIVILEGE_VALUE             int             NOT NULL,
+    CREATED_DTTM                timestamp        CONSTRAINT DF_APO_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_PRIVILEGE_PK PRIMARY KEY  (APPLICATION_PRIVILEGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_PROMPT
+ */
+
+CREATE TABLE APPLICATION_PROMPT(
+    APPLICATION_PROMPT_ID       UUID    NOT NULL,
+    PROMPT_NAME                 varchar(80)        NOT NULL,
+    PROMPT_TYPE                 smallint             NULL,
+    PROMPT_DESCRIPTION          varchar(260)       NULL,
+    DEFAULT_LOCALE_ID           varchar(25)        NOT NULL,
+    PROMPT_TIMEOUT              int                 NULL,
+    PROMPT_RESPONSE_REQUIRED    BOOLEAN                 CONSTRAINT DF_APT_PRREQUIRE DEFAULT FALSE NOT NULL,
+    PROMPT_DEFAULT_RESPONSE     smallint             NOT NULL,
+    DISPLAY_RESPONSETEXT        smallint             CONSTRAINT DF_APT_DRESTXT DEFAULT 1 NOT NULL,
+    COMPILED_PROMPT_TEXT        text       NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_APT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROMPT_SUPERTYPE            smallint             CONSTRAINT DF_APT_PSTYPE DEFAULT 0 NOT NULL,
+    PROMPT_PASSWORD_CONTROL     BOOLEAN                 CONSTRAINT DF_APT_PPC DEFAULT FALSE NOT NULL,
+    PASSWORD_MIN_LENGTH         smallint            CONSTRAINT DF_APT_PML DEFAULT 0 NOT NULL,
+    PASSWORD_NUMERIC_CHAR       smallint            CONSTRAINT DF_APT_PNC DEFAULT 0 NOT NULL,
+    PASSWORD_MIXED_CASE_CHAR    BOOLEAN                 CONSTRAINT DF_APT_PAC DEFAULT FALSE NOT NULL,
+    PASSWORD_SPECIAL_CHAR       BOOLEAN                 CONSTRAINT DF_APT_PSC DEFAULT FALSE NOT NULL,
+    PASSWORD_READABLE           BOOLEAN                 CONSTRAINT DF_APT_PR DEFAULT FALSE NOT NULL,
+    PASSWORD_AUTO_GENERATE      BOOLEAN                 CONSTRAINT DF_APT_PAG DEFAULT FALSE NOT NULL,
+    PASSWORD_IN_SECURE_MODE     BOOLEAN                 CONSTRAINT DF_APT_PISM DEFAULT FALSE NOT NULL,
+    USE_SECURE_DESKTOP          BOOLEAN                 CONSTRAINT DF_APT_USD DEFAULT FALSE NOT NULL,
+    READ_ONLY                 BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_PROMPT_PK PRIMARY KEY  (APPLICATION_PROMPT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_PROMPT_LOCALE
+ */
+
+CREATE TABLE APPLICATION_PROMPT_LOCALE(
+    APPLICATION_PROMPT_LOCALE_ID    UUID    NOT NULL,
+    APPLICATION_PROMPT_ID           UUID    NOT NULL,
+    LOCALE_ID                       varchar(25)        NOT NULL,
+    VERSION_NUMBER                  int                 NOT NULL,
+    PROMPT_MAIN_TEXT                text       NOT NULL,
+    COMPILED_PROMPT_TEXT            text       NOT NULL,
+    PROMPT_TITLE                    varchar(260)       NULL,
+    PROMPT_OK_TEXT                  varchar(50)        NULL,
+    PROMPT_CANCEL_TEXT              varchar(50)        NULL,
+    PROMPT_RESPONSE_TEXT            varchar(150)       NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_APL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROMPT_PASSWORD_TEXT            varchar(50)        NULL,
+    PASSWORD_AUTO_GEN_TEXT          varchar(50)        NULL,
+    PASSWORD_VALID_ERROR            varchar(255)       NULL,
+    PROMPT_BUTTON3_TEXT             varchar(50)        NULL,
+    PROMPT_TIMEOUT_ACTION_TYPE      smallint             NULL,
+    PROMPT_BUTTON1_ACTION_TYPE      smallint             NULL,
+    PROMPT_BUTTON2_ACTION_TYPE      smallint             NULL,
+    PROMPT_BUTTON3_ACTION_TYPE      smallint             NULL,
+    PROMPT_ACTION_SUBTYPE           smallint             NULL,
+    AME_PWD_DELIVER_METHOD          int                 NULL,
+    AME_PWD_DELIVER_FORMAT          smallint             NULL,
+    PASSWORD_NOT_PROVIDE_ACTION     smallint             NULL,
+    CONFIRM_PWD_LABEL               varchar(50)        NULL,
+    CONFIRM_PWD_ERROR               varchar(255)       NULL,
+    APPLY_DGE_EXTENSION             BOOLEAN                 CONSTRAINT DF_APL_ADE DEFAULT FALSE NOT NULL,
+    PROMPT_USERID_TEXT              varchar(50)        NULL,
+    PROMPT_DOMAIN_TEXT              varchar(50)        NULL,
+    CONSTRAINT APPLICATION_PROMPT_LOCALE_PK PRIMARY KEY  (APPLICATION_PROMPT_LOCALE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_ROLE
+ */
+
+CREATE TABLE APPLICATION_ROLE(
+    APPLICATION_ROLE_ID        UUID    NOT NULL,
+    IS_SYSTEM_ROLE             BOOLEAN                 CONSTRAINT DF_ARO_ISSYSRLE DEFAULT TRUE NOT NULL,
+    IS_ACTIVE_ROLE             BOOLEAN                 CONSTRAINT DF_ARO_ISACTRLE DEFAULT TRUE NOT NULL,
+    REQUIRED_NUMBER_OF_USER    int                 NOT NULL,
+    ROLE_DESCRIPTION           varchar(1000)      NULL,
+    IS_USER_ANON               BOOLEAN                 CONSTRAINT DF_ARO_IUA DEFAULT FALSE NOT NULL,
+    IS_COMPUTER_ANON           BOOLEAN                 CONSTRAINT DF_ARO_ICA DEFAULT FALSE NOT NULL,
+    IS_EMAIL_ANON              smallint             CONSTRAINT DF_ARO_IEA DEFAULT 0 NOT NULL,
+    IS_FILE_ANON               smallint             CONSTRAINT DF_ARO_IFA DEFAULT 0 NOT NULL,
+    IS_NETWORK_ANON            BOOLEAN                 CONSTRAINT DF_ARO_INA DEFAULT FALSE NOT NULL,
+    IS_PRINT_ANON              BOOLEAN                 CONSTRAINT DF_ARO_IPA DEFAULT FALSE NOT NULL,
+    IS_UPLOAD_FILE             BOOLEAN                 CONSTRAINT DF_ARO_IUF DEFAULT FALSE NOT NULL,
+    IS_VIEW_FILE               BOOLEAN                 CONSTRAINT DF_ARO_IVF DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_ROLE_PK PRIMARY KEY  (APPLICATION_ROLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_RULE
+ */
+
+CREATE TABLE APPLICATION_RULE(
+    APPLICATION_RULE_ID            UUID    NOT NULL,
+    APPLICATION_RULE_VERSION_ID    UUID    NOT NULL,
+    APPLICATION_PROMPT_ID          UUID    NULL,
+    VERSION_NUMBER                 int                 CONSTRAINT DF_ARL_VNUMBER DEFAULT 0 NOT NULL,
+    RULE_NAME                      varchar(80)        NOT NULL,
+    RULE_DESCRIPTION               varchar(2048)       NULL,
+    RULE_TYPE                      smallint             NOT NULL,
+    RULE_CATEGORY                  int                 NULL,
+    RULE_CLASS                     smallint             NOT NULL,
+    RULE_STATUS                    smallint             CONSTRAINT DF_ARL_RSTATUS DEFAULT 1 NOT NULL,
+    RULE_SUBCLASS                  smallint             NULL,
+    RULE_ACTION_TYPE               smallint             CONSTRAINT DF_ARL_RACTYPE DEFAULT 0 NOT NULL,
+    RULE_TEXT                      text       NOT NULL,
+    COMPILED_RULE_TEXT             text       NOT NULL,
+    ALARM_LEVEL                    smallint             CONSTRAINT DF_ARL_ALEVEL DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_ARL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_ARL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SEND_ALERT                     smallint             CONSTRAINT DF_ARL_SALERT DEFAULT 1 NOT NULL,
+    RULE_ACTION_SUBTYPE            smallint             NULL,
+    RULE_TAG                       varchar(128)       NULL,
+    RULE_SCOPE                     smallint             NULL,
+    ZIP_PASSWORD_AUTOGEN           BOOLEAN                 CONSTRAINT DF_ARL_ZPAGEN DEFAULT FALSE NOT NULL,
+    ZIP_PASSWORD                   varchar(128)       NULL,
+    RULE_PRIORITY                  int                 CONSTRAINT DF_ARL_PRIORITY DEFAULT -1 NOT NULL,
+    IS_DEFAULT_PRIORITY            BOOLEAN                 CONSTRAINT DF_ARL_DEF_PRIORITY DEFAULT TRUE NOT NULL,
+    IS_FDE_RULE                    BOOLEAN                 CONSTRAINT DF_ARL_FDE DEFAULT FALSE NOT NULL,
+    CONTINUE_RULE_EVALUATION       BOOLEAN                 CONSTRAINT DF_ARL_CRE DEFAULT FALSE NOT NULL,
+    RUN_POST_OP                    BOOLEAN                 CONSTRAINT DF_ARL_RPO DEFAULT FALSE NOT NULL,
+    APPLY_DGE_EXTENSION            BOOLEAN                 CONSTRAINT DF_ARL_ADE DEFAULT FALSE NOT NULL,
+    SUPPORTED_PLATFORMS            smallint             NOT NULL,
+    READ_ONLY                    BOOLEAN                 DEFAULT FALSE NOT NULL,
+    IS_EXPEDITED                   BOOLEAN                 NULL,
+    LICENSE_REQUIREMENT            varchar(1024)      NULL,
+    CONSTRAINT APPLICATION_RULE_PK PRIMARY KEY  (APPLICATION_RULE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_RULE_VERSION
+ */
+
+CREATE TABLE APPLICATION_RULE_VERSION(
+    APPLICATION_RULE_VERSION_ID    UUID    NOT NULL,
+    APPLICATION_RULE_ID            UUID    NOT NULL,
+    VERSION_NUMBER                 int                 NOT NULL,
+    RULE_ACTION_TYPE               smallint             NOT NULL,
+    RULE_TEXT                      text       NOT NULL,
+    ALARM_LEVEL                    smallint             NOT NULL,
+    APPLICATION_USER_ID            UUID    NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_ARV_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SEND_ALERT                     smallint             NOT NULL,
+    RULE_ACTION_SUBTYPE            smallint             NULL,
+    RULE_TAG                       varchar(128)       NULL,
+    RULE_SCOPE                     smallint             NULL,
+    ZIP_PASSWORD_AUTOGEN           BOOLEAN                 CONSTRAINT DF_ARV_ZPAGEN DEFAULT FALSE NOT NULL,
+    ZIP_PASSWORD                   varchar(128)       NULL,
+    RULE_PRIORITY                  int                 CONSTRAINT DF_ARLV_PRIORITY DEFAULT -1 NOT NULL,
+    IS_FDE_RULE                    BOOLEAN                 CONSTRAINT DF_ARLV_FDE DEFAULT FALSE NOT NULL,
+    CONTINUE_RULE_EVALUATION       BOOLEAN                 CONSTRAINT DF_ARLV_CRE DEFAULT FALSE NOT NULL,
+    RUN_POST_OP                    BOOLEAN                 CONSTRAINT DF_ARLV_RPO DEFAULT FALSE NOT NULL,
+    APPLY_DGE_EXTENSION            BOOLEAN                 CONSTRAINT DF_ARLV_ADE DEFAULT FALSE NOT NULL,
+    APPLICATION_PROMPT_ID          UUID    NULL,
+    RULE_CATEGORY                  int                 NULL,
+    RULE_CLASS                     smallint             NULL,
+    RULE_STATUS                    smallint             NULL,
+    RULE_SUBCLASS                  smallint             NULL,
+    IS_DEFAULT_PRIORITY            BOOLEAN                 NULL,
+    APPLICATION_POLICY_CONTAINER_ID  UUID  NULL,
+    SUPPORTED_PLATFORMS              smallint           NOT NULL,
+    READ_ONLY                      BOOLEAN               DEFAULT FALSE NOT NULL,
+    IS_EXPEDITED                   BOOLEAN                 NULL,
+    LICENSE_REQUIREMENT            varchar(1024)      NULL,
+    CONSTRAINT APPLICATION_RULE_VERSION_PK PRIMARY KEY  (APPLICATION_RULE_VERSION_ID)
+    WITH (FILLFACTOR = 90)
+
+);
+CREATE INDEX IK_APPLICATION_RULE_VERSION ON APPLICATION_RULE_VERSION(APPLICATION_RULE_VERSION_ID)
+        WITH (FILLFACTOR = 90)
+
+;
+
+
+
+/*
+ * TABLE: APPLICATION_RULE_CHOICES
+ */
+
+CREATE TABLE APPLICATION_RULE_CHOICES(
+    APPLICATION_RULE_CHOICES_ID uuid NOT NULL,
+    APPLICATION_RULE_ID uuid NOT NULL,
+    SHOW smallint NOT NULL,
+    ACTION_CHOICES int NOT NULL,
+    ACTION_CHOICES_DEFAULT int NOT NULL,
+    ACTION_CHOICES_SELECTED int NOT NULL,
+    ALERT_LEVEL_CHOICE_ENABLED BOOLEAN NOT NULL,
+    ALERT_LEVEL_CHOICE_LIST smallint NOT NULL,
+    ALERT_LEVEL_CHOICE_DEFAULT smallint NOT NULL,
+    ALERT_LEVEL_CHOICE_SELECTED smallint NOT NULL,
+    ENCRYPTION_TYPE_CHOICE_ENABLED BOOLEAN NOT NULL,
+    ENCRYPTION_TYPE_CHOICE_LIST int NOT NULL,
+    ENCRYPTION_TYPE_CHOICE_DEFAULT int NOT NULL,
+    ENCRYPTION_TYPE_CHOICE_SELECTED int NOT NULL,
+    PROMPT_CHOICES_ENABLED BOOLEAN NOT NULL,
+    PROMPT_CHOICES_LIST varchar(2000) NULL,
+    PROMPT_CHOICES_DEFAULT varchar(100) NULL,
+    PROMPT_CHOICES_SELECTED varchar(100) NULL,
+    CHOICE_SELECTIONS varchar(10485760) NULL,
+    MODIFIED_DTTM  timestamp  DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM  timestamp  DEFAULT (now() at time zone 'utc') NOT NULL,
+ CONSTRAINT PK_APPLICATION_RULE_CHOICES PRIMARY KEY
+(
+    APPLICATION_RULE_CHOICES_ID
+)--WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+)
+
+;
+
+
+
+/*
+ * TABLE: APPLICATION_SECTION
+ */
+
+CREATE TABLE APPLICATION_SECTION(
+    APPLICATION_SECTION_ID    UUID    NOT NULL,
+    PARENT_SECTION_ID         UUID    NULL,
+    ULTIMATE_SECTION_ID       UUID    NOT NULL,
+    SECTION_NAME              varchar(255)       NOT NULL,
+    SECTION_DESCRIPTION       varchar(1000)      NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_ASC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SECTION_PK PRIMARY KEY  (APPLICATION_SECTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SET_MAP
+ */
+
+CREATE TABLE APPLICATION_SET_MAP(
+    DYNAMIC_GROUP_ID         UUID    NOT NULL,
+    APPLICATION_SET_ID       UUID    NOT NULL,
+    APPLICATION_MAP_TYPE     smallint             NOT NULL,
+    APPLICATION_MAP_STATE    smallint             CONSTRAINT DF_ASMAP_MSTATE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_ASMAP_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_ASMAP_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_APPLICATION_SET_MAP PRIMARY KEY  (DYNAMIC_GROUP_ID, APPLICATION_SET_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SET_MEMBER
+ */
+
+CREATE TABLE APPLICATION_SET_MEMBER(
+    APPLICATION_SET_ID    UUID    NOT NULL,
+    SET_MEMBER_ID         UUID    NOT NULL,
+    SET_ENTRY_STATE       smallint             CONSTRAINT DF_ASM_ESTATE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM         timestamp            CONSTRAINT DF_ASM_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM          timestamp            CONSTRAINT DF_ASM_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SET_MEMBER_PK PRIMARY KEY  (SET_MEMBER_ID, APPLICATION_SET_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_LINK
+ */
+
+CREATE TABLE APPLICATION_SIDENAV_LINK(
+    APPLICATION_SIDENAV_LINK_ID       UUID    NOT NULL,
+    APPLICATION_SIDENAV_SECTION_ID    UUID    NOT NULL,
+    APPLICATION_SECTION_ID            UUID    NULL,
+    IS_ACTIVE                         BOOLEAN                 CONSTRAINT DF_ASL_ISACTIVE DEFAULT TRUE NOT NULL,
+    RESOURCE_NAME                     varchar(128)       NOT NULL,
+    URL_PATH_NAME                     varchar(512)       NOT NULL,
+    LINK_ORDER                        smallint            NOT NULL,
+    MODIFIED_DTTM                     timestamp            CONSTRAINT DF_ASL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_ASL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SIDENAV_LINK_PK PRIMARY KEY  (APPLICATION_SIDENAV_LINK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_SECTION
+ */
+
+CREATE TABLE APPLICATION_SIDENAV_SECTION(
+    APPLICATION_SIDENAV_SECTION_ID    UUID    NOT NULL,
+    APPLICATION_SIDENAV_TAB_ID        UUID    NOT NULL,
+    APPLICATION_SECTION_ID            UUID    NULL,
+    IS_ACTIVE                         BOOLEAN                 CONSTRAINT DF_ASV_ISACTIVE DEFAULT TRUE NOT NULL,
+    RESOURCE_NAME                     varchar(128)       NOT NULL,
+    SECTION_ORDER                     smallint            NOT NULL,
+    MODIFIED_DTTM                     timestamp            CONSTRAINT DF_ASV_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_ASV_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SIDENAV_SECTION_PK PRIMARY KEY  (APPLICATION_SIDENAV_SECTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_TAB
+ */
+
+CREATE TABLE APPLICATION_SIDENAV_TAB(
+    APPLICATION_SIDENAV_TAB_ID     UUID    NOT NULL,
+    APPLICATION_LICENSE_ID         UUID    NOT NULL,
+    APPLICATION_SECTION_ID         UUID    NOT NULL,
+    APPLICATION_SIDENAV_LINK_ID    UUID    NULL,
+    IS_ACTIVE                      BOOLEAN                 CONSTRAINT DF_AST_ISACTIVE DEFAULT TRUE NOT NULL,
+    IMAGE_RESOURCE_NAME            varchar(128)       NOT NULL,
+    TAB_ORDER                      smallint            NOT NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_AST_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_AST_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SIDENAV_TAB_PK PRIMARY KEY  (APPLICATION_SIDENAV_TAB_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SKIN
+ */
+
+CREATE TABLE APPLICATION_SKIN(
+    APPLICATION_SKIN_ID    UUID    NOT NULL,
+    VERSION_NUMBER         int                 CONSTRAINT DF_AS_VNUMBER DEFAULT 0 NOT NULL,
+    SKIN_NAME              varchar(80)        NOT NULL,
+    SKIN_HEIGHT            int                 NOT NULL,
+    SKIN_DESCRIPTION       varchar(260)       NULL,
+    SKIN_DIMENSION_UNIT    smallint             NOT NULL,
+    SKIN_WIDTH             int                 NOT NULL,
+    SKIN_HTML              text       NOT NULL,
+    DEFAULT_SKIN           BOOLEAN                 CONSTRAINT DF_AS_DEFSKIN DEFAULT TRUE NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_AS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    READ_ONLY            BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_SKIN_PK PRIMARY KEY  (APPLICATION_SKIN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SKIN_FILE
+ */
+
+CREATE TABLE APPLICATION_SKIN_FILE(
+    APPLICATION_SKIN_FILE_ID    UUID    NOT NULL,
+    APPLICATION_SKIN_ID         UUID    NOT NULL,
+    SKIN_FILE_NAME              varchar(260)       NOT NULL,
+    SKIN_FILE_IMAGE             bit varying(83886080)      NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_ASF_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SKIN_FILE_PK PRIMARY KEY  (APPLICATION_SKIN_FILE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_SKIN_PROMPT
+ */
+
+CREATE TABLE APPLICATION_SKIN_PROMPT(
+    APPLICATION_SKIN_ID      UUID    NOT NULL,
+    APPLICATION_PROMPT_ID    UUID    NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_ASP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_SKIN_PROMPT_PK PRIMARY KEY  (APPLICATION_SKIN_ID, APPLICATION_PROMPT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_TAG
+ */
+
+CREATE TABLE APPLICATION_TAG(
+    APPLICATION_TAG_ID              UUID    CONSTRAINT DF_AT_APPLICATION_TAG_ID DEFAULT uuid_generate_v4() NOT NULL,
+    TAG_NAME                        varchar(128)       NOT NULL,
+    TAG_TYPE                        smallint             NOT NULL,
+    TAG_DATA                        text       NOT NULL,
+    TAG_DESCRIPTION                 varchar(255)       NULL,
+    IS_ACTIVE                       BOOLEAN                 CONSTRAINT DF_AT_ISACTIVE DEFAULT TRUE NOT NULL,
+    TAG_THRESHOLD                   smallint             CONSTRAINT DF_AT_THRESHOLD DEFAULT 100 NOT NULL,
+    TAG_SUBTYPE                     smallint             NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_AT_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_AT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MASK_TYPE                       smallint             NULL,
+    MASK_START                      int                 NULL,
+    MASK_END                        int                 NULL,
+    TAG_LANGUAGE                    varchar(128)       NULL,
+    DYNAMIC_APP_COMPLIANCE_EVENT    BOOLEAN                 CONSTRAINT DF_APP_TAG_DYN_APP_CE DEFAULT FALSE NOT NULL,
+    MASK_APP_COMPLIANCE_EVENT       BOOLEAN                 CONSTRAINT DF_APP_TAG_MASK_APP_CE DEFAULT FALSE NOT NULL,
+    MASK_TRIGGER_ID                 UUID    NULL,
+    MASK_ENTIRE_FIELD               BOOLEAN                 NULL,
+    TAG_RANK                        int                 NULL,
+    DISTINCT_MATCH                  BOOLEAN                 CONSTRAINT DF_AT_DM DEFAULT FALSE NOT NULL,
+    CONSTRAINT APPLICATION_TAG_PK PRIMARY KEY  (APPLICATION_TAG_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_TAG_DEPENDENCY
+ */
+
+CREATE TABLE APPLICATION_TAG_DEPENDENCY(
+    APPLICATION_TAG_DEPENDENCY_ID    UUID    NOT NULL,
+    APPLICATION_TAG_ENGINE_ID        UUID    NOT NULL,
+    PARENT_ID                        UUID    NOT NULL,
+    DEPENDENCY_TYPE                  smallint             NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_ATDE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_TAG_DEPENDENCY_PK PRIMARY KEY  (APPLICATION_TAG_DEPENDENCY_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_TAG_ENGINE
+ */
+
+CREATE TABLE APPLICATION_TAG_ENGINE(
+    APPLICATION_TAG_ENGINE_ID    UUID    NOT NULL,
+    APPLICATION_TAG_ID           UUID    NOT NULL,
+    ACI_ENGINE_TYPE              smallint             NOT NULL,
+    TAG_DATA                     text       NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_ATENG_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                timestamp            CONSTRAINT DF_ATENG_MOD_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_TAG_ENGINE_PK PRIMARY KEY  (APPLICATION_TAG_ENGINE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_TREND
+ */
+
+CREATE TABLE APPLICATION_TREND(
+    APPLICATION_TREND_ID    bigint              ,
+    DGMC_USER_REPORT_ID     UUID    NOT NULL,
+    EVENT_DTTM              int                 NOT NULL,
+    WEEK_HASH               int                 NOT NULL,
+    EVENT_HOUR              smallint             NOT NULL,
+    TOTAL_OPERATION         real                NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_ATR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    APPLICATION_GROUP_ID    UUID    NULL,
+    ORIGINATOR_ID           UUID    NULL,
+    CONSTRAINT APPLICATION_TREND_PK PRIMARY KEY  (APPLICATION_TREND_ID)
+)
+;
+
+
+
+
+/*
+ * TABLE: APPLICATION_TREND_AVG
+ */
+
+CREATE TABLE APPLICATION_TREND_AVG(
+    APPLICATION_TREND_AVG_ID    bigint              ,
+    DGMC_USER_REPORT_ID         UUID    NOT NULL,
+    EVENT_HOUR                  smallint             NOT NULL,
+    AVG_COUNT                   real                NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_ATRA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    APPLICATION_GROUP_ID        UUID    NULL,
+    STD_DEV                     real                NOT NULL,
+    ORIGINATOR_ID               UUID    NULL,
+    VARIANCE                    real                NULL,
+    CONSTRAINT APPLICATION_TREND_AVG_PK PRIMARY KEY  (APPLICATION_TREND_AVG_ID)
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_TREND_THRESHOLD
+ */
+
+CREATE TABLE APPLICATION_TREND_THRESHOLD(
+    APPLICATION_TREND_THRESHOLD_ID    bigint              ,
+    DGMC_USER_REPORT_ID               UUID    NOT NULL,
+    EVENT_HOUR                        smallint             NOT NULL,
+    THRESHOLD                         real                NOT NULL,
+    ALERT_SENT_DTTM                   int                 NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_ATRT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    THRESHOLD_TYPE                    smallint             CONSTRAINT DF_ATRT_T_TYPE DEFAULT 0 NOT NULL,
+    LAST_RUN_DTTM                     timestamp            NULL,
+    CONSTRAINT APPLICATION_TREND_THRESHOLD_PK PRIMARY KEY  (APPLICATION_TREND_THRESHOLD_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_USER
+ */
+
+CREATE TABLE APPLICATION_USER(
+    APPLICATION_USER_ID      UUID    NOT NULL,
+    USER_TYPE                int                 NOT NULL,
+    USER_ACTIVE              BOOLEAN                 CONSTRAINT DF_AU_USERACTIVE DEFAULT TRUE NOT NULL,
+    APPLICATION_USER_NAME    varchar(128)       NOT NULL,
+    COMMON_NAME              varchar(128)       NULL,
+    CITY_NAME                varchar(255)       NULL,
+    STATE_NAME               varchar(255)       NULL,
+    POSTAL_CODE              varchar(80)        NULL,
+    COUNTRY_CODE             char(2)             NULL,
+    ORIGINATOR_TYPE          smallint             CONSTRAINT DF_AU_OTYPE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_AU_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_AU_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    OBFUSCATED_NAME          varchar(50)        NULL,
+    DOMAIN_NAME              varchar(50)        NULL,
+    DOMAIN_ID                UUID    NULL,
+    USER_LOCKOUT             BOOLEAN                 NULL,
+    LOGIN_FAILURE_COUNT      smallint            NULL,
+    CONSTRAINT APPLICATION_USER_PK PRIMARY KEY  (APPLICATION_USER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_USER_GROUP
+ */
+
+CREATE TABLE APPLICATION_USER_GROUP(
+    APPLICATION_USER_GROUP_ID    UUID    NOT NULL,
+    APPLICATION_GROUP_ID         UUID    NOT NULL,
+    APPLICATION_USER_ID          UUID    NOT NULL,
+    GROUP_USER_ACTIVE            BOOLEAN                 CONSTRAINT DF_AUG_GUACTIVE DEFAULT TRUE NOT NULL,
+    ORIGINATOR_TYPE              smallint             CONSTRAINT DF_AUG_OTYPE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM                timestamp            CONSTRAINT DF_AUG_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_AUG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_USER_GROUP_PK PRIMARY KEY  (APPLICATION_USER_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLICATION_USER_SYNCH
+ */
+
+CREATE TABLE APPLICATION_USER_SYNCH(
+    APPLICATION_USER_SYNCH_ID    bigint              ,
+    APPLICATION_USER_ID          UUID    NOT NULL,
+    SYNCH_USER_ID                varchar(128)       NOT NULL,
+    SYNCH_TYPE                   smallint             NOT NULL,
+    LAST_SYNCH_DTTM              timestamp            NULL,
+    LAST_SYNCH_STATUS            smallint             NULL,
+    LAST_SYNCH_MESSAGE           varchar(512)       NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_AUS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_USER_SYNCH_PK PRIMARY KEY  (APPLICATION_USER_SYNCH_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+/*
+ * TABLE: APPLICATION_USER_ACTIVITY
+ */
+
+CREATE TABLE APPLICATION_USER_ACTIVITY(
+    APPLICATION_USER_ACTIVITY_ID    uuid  NOT NULL,
+    APPLICATION_USER_ID             uuid  NULL,
+    LOGIN_DTTM                      timestamp         CONSTRAINT DF_APPUA_LIDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    LOGIN_STATUS                    smallint           NULL,
+    FROM_IP_ADDRESS                 varchar(50)      NULL,
+    CONSTRAINT APPLICATION_USER_ACTIVITY_PK PRIMARY KEY  (APPLICATION_USER_ACTIVITY_ID)
+
+)
+;
+
+
+
+
+
+
+
+/*
+ * TABLE: APPLIED_JOB_RUN_TASK
+ */
+
+CREATE TABLE APPLIED_JOB_RUN_TASK(
+    APPLIED_JOB_RUN_TASK_ID    UUID    NOT NULL,
+    JOB_RUN_ID                 UUID    NOT NULL,
+    TASK_OPERATION             smallint             NOT NULL,
+    TASK_SUCCESSFUL            BOOLEAN                 CONSTRAINT DF_AJRT_TSUCCESS DEFAULT FALSE NOT NULL,
+    TASK_XML                   text       NULL,
+    RECEIVED_DTTM              timestamp            NULL,
+    DISPATCHED_DTTM            timestamp            NULL,
+    COMPLETED_DTTM             timestamp            NULL,
+    TASK_MESSAGE               varchar(260)       NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_AJRT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLIED_JOB_RUIN_TASK_PK PRIMARY KEY  (APPLIED_JOB_RUN_TASK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: APPLIED_MACHINE_POLICY
+ */
+
+CREATE TABLE APPLIED_MACHINE_POLICY(
+    APPLIED_MACHINE_POLICY_ID        UUID    NOT NULL,
+    MACHINE_ID                       UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    MACHINE_POLICY_ACTIVE            BOOLEAN                 CONSTRAINT DF_AMP_MPACTIVE DEFAULT TRUE NOT NULL,
+    RECEIVED_DTTM                    timestamp            NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_AMP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                    bigint              NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_POLICY_PK PRIMARY KEY  (APPLIED_MACHINE_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLIED_MACHINE_PROMPT
+ */
+
+CREATE TABLE APPLIED_MACHINE_PROMPT(
+    APPLIED_MACHINE_PROMPT_ID       UUID    NOT NULL,
+    MACHINE_ID                      UUID    NOT NULL,
+    APPLICATION_PROMPT_LOCALE_ID    UUID    NOT NULL,
+    VERSION_NUMBER                  int                 NOT NULL,
+    RECEIVED_DTTM                   timestamp            NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_AMR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                   bigint              NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_PROMPT_PK PRIMARY KEY  (APPLIED_MACHINE_PROMPT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLIED_MACHINE_RULE_EXCEPTION
+ */
+
+CREATE TABLE APPLIED_MACHINE_RULE_EXCEPTION(
+    APPLIED_MACHINE_RULE_EXCEPT_ID    UUID    NOT NULL,
+    MACHINE_ID                        UUID    NOT NULL,
+    APPLICATION_USER_ID               UUID    NOT NULL,
+    APPLICATION_POLICY_ID             UUID    NOT NULL,
+    APPLICATION_RULE_ID               UUID    NOT NULL,
+    MACHINE_RULE_EXCEPTION_ACTIVE     BOOLEAN                 CONSTRAINT DF_AMRE_MREACTIVE DEFAULT TRUE NOT NULL,
+    RECEIVED_DTTM                     timestamp            NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_AMRE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                     bigint              NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_RULE_EXCEPT_PK PRIMARY KEY  (APPLIED_MACHINE_RULE_EXCEPT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLIED_MACHINE_SKIN
+ */
+
+CREATE TABLE APPLIED_MACHINE_SKIN(
+    APPLIED_MACHINE_SKIN_ID    UUID    NOT NULL,
+    MACHINE_ID                 UUID    NOT NULL,
+    APPLICATION_SKIN_ID        UUID    NOT NULL,
+    VERSION_NUMBER             int                 NOT NULL,
+    RECEIVED_DTTM              timestamp            NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_AMS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_SKIN_PK PRIMARY KEY  (APPLIED_MACHINE_SKIN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLIED_MACHINE_TASK
+ */
+
+CREATE TABLE APPLIED_MACHINE_TASK(
+    APPLIED_MACHINE_TASK_ID    UUID    NOT NULL,
+    MACHINE_ID                 UUID    NOT NULL,
+    TASK_STATUS                int                 NOT NULL,
+    TASK_OPERATION             varchar(50)        NOT NULL,
+    TASK_XML                   text       NOT NULL,
+    COMPLETED_DTTM             timestamp            NULL,
+    RECEIVED_DTTM              timestamp            NULL,
+    TASK_MESSAGE               varchar(260)       NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_AMT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    RESOURCE_ID                UUID    NULL,
+    RESOURCE_TYPE              smallint             NULL,
+    IS_CHILD                   BOOLEAN                 NULL,
+    CONSTRAINT APPLIED_MACHINE_TASK_PK PRIMARY KEY  (APPLIED_MACHINE_TASK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: APPLIED_MACHINE_USER
+ */
+
+CREATE TABLE APPLIED_MACHINE_USER(
+    MACHINE_ID             UUID    NOT NULL,
+    APPLICATION_USER_ID    UUID    NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_AMU_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_USER_PK PRIMARY KEY  (MACHINE_ID, APPLICATION_USER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: APPLIED_MACHINE_USER_POLICY
+ */
+
+CREATE TABLE APPLIED_MACHINE_USER_POLICY(
+    APPLIED_MACHINE_USER_POLICY_ID    UUID    NOT NULL,
+    MACHINE_ID                        UUID    NOT NULL,
+    APPLICATION_USER_ID               UUID    NOT NULL,
+    APPLICATION_POLICY_ID             UUID    NOT NULL,
+    MACHINE_USER_POLICY_ACTIVE        BOOLEAN                 CONSTRAINT DF_AMUP_MUPACTIVE DEFAULT TRUE NOT NULL,
+    RECEIVED_DTTM                     timestamp            NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_AMUP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                     bigint              NOT NULL,
+    CONSTRAINT APPLIED_MACHINE_USER_POLICY_PK PRIMARY KEY  (APPLIED_MACHINE_USER_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AR_BUNDLE
+ */
+
+CREATE TABLE AR_BUNDLE(
+    BUNDLE_ID      UUID    NOT NULL,
+    AR_QUEUE_ID    UUID    NOT NULL,
+    CONSTRAINT AR_BUNDLE_PK PRIMARY KEY  (BUNDLE_ID, AR_QUEUE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AR_QUEUE
+ */
+
+CREATE TABLE AR_QUEUE(
+    AR_QUEUE_ID            UUID    NOT NULL,
+    AR_QUEUE_OPERATION     smallint             NOT NULL,
+    AR_QUEUE_TYPE          smallint             NOT NULL,
+    AR_QUEUE_STATUS        smallint             NOT NULL,
+    AR_DIRECTORY           varchar(255)       NULL,
+    AR_BUNDLE_TYPE         smallint             NOT NULL,
+    AR_INVESTIGATION_ID    int                 NULL,
+    AR_SUBJECT_NAME        varchar(255)       NULL,
+    AR_BEGIN_DTTM          int                 NULL,
+    AR_END_DTTM            int                 NULL,
+    AR_RETRY_COUNT         int                 CONSTRAINT DF_ARQ_RC DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_ARQ_MOD_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_ARQ_CR_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT AR_QUEUE_PK PRIMARY KEY  (AR_QUEUE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AR_QUEUE_FILE
+ */
+
+CREATE TABLE AR_QUEUE_FILE(
+    AR_QUEUE_FILE_ID    bigint              ,
+    AR_QUEUE_ID         UUID    NOT NULL,
+    AR_FILE_NAME        varchar(512)       NOT NULL,
+    CREATED_DTTM        timestamp            CONSTRAINT DF_AQF_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT AR_QUEUE_FILE_PK PRIMARY KEY  (AR_QUEUE_FILE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: AR_QUEUE_LOG
+ */
+
+CREATE TABLE AR_QUEUE_LOG(
+    AR_QUEUE_LOG_ID    bigint              ,
+    AR_QUEUE_ID        UUID    NOT NULL,
+    AR_LOG_MESSAGE     varchar(2000)      NOT NULL,
+    AR_LOG_TYPE        smallint             NOT NULL,
+    CREATED_DTTM       timestamp            CONSTRAINT DF_AQL_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT AR_QUEUE_LOG_PK PRIMARY KEY  (AR_QUEUE_LOG_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARCHIVE_REQUEST
+ */
+
+CREATE TABLE ARCHIVE_REQUEST(
+    ARCHIVE_REQUEST_ID     bigint           ,
+    ARCHIVE_VERSION        varchar(25)     NOT NULL,
+    ARCHIVE_STATUS         smallint          NOT NULL,
+    ARCHIVE_TYPE           smallint          NOT NULL,
+    ARCHIVE_OBJECT_NAME    varchar(30)     NOT NULL,
+    METADATA_FILE_NAME     varchar(512)    NOT NULL,
+    BUNDLE_FILE_NAME       varchar(512)    NOT NULL,
+    EVENT_DTTM             int              NOT NULL,
+    CREATED_DTTM           timestamp         CONSTRAINT DF_AR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT ARCHIVE_REQUEST_PK PRIMARY KEY  (ARCHIVE_REQUEST_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARCHIVE_REQUEST_SUBJECT
+ */
+
+CREATE TABLE ARCHIVE_REQUEST_SUBJECT(
+    ARCHIVE_REQUEST_SUBJECT_ID    bigint           ,
+    ARCHIVE_REQUEST_ID            bigint           NOT NULL,
+    SUBJECT_TYPE                  smallint          NOT NULL,
+    SUBJECT_NAME                  varchar(255)    NOT NULL,
+    CREATED_DTTM                  timestamp         CONSTRAINT DF_ARS_CREATEDATE DEFAULT (now() at time zone 'utc') NULL,
+    CONSTRAINT ARCHIVE_REQUEST_SUBJECT_PK PRIMARY KEY  (ARCHIVE_REQUEST_SUBJECT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT
+ */
+
+CREATE TABLE ARTIFACT(
+    ARTIFACT_ID                   UUID    NOT NULL,
+    MACHINE_ID                    UUID    NOT NULL,
+    ARTIFACT_TYPE_ID              int                 NOT NULL,
+    ARTIFACT_STATE_ID             smallint             NOT NULL,
+    ARTIFACT_TOTAL_SIZE           bigint              NOT NULL,
+    ARTIFACT_MIME_TYPE            varchar(128)       NOT NULL,
+    ARTIFACT_LOCAL_URI            varchar(512)       NOT NULL,
+    ARTIFACT_CREATED_DTTM         timestamp            NOT NULL,
+    ARTIFACT_MODIFIED_DTTM        timestamp            NOT NULL,
+    ARTIFACT_DIGEST_ALGORITHM     varchar(10)        NOT NULL,
+    ARTIFACT_DIGEST               bit varying(128)      NOT NULL,
+    LAST_ORDINAL                  int                 CONSTRAINT DF_AFT_LAST_ORDINAL DEFAULT -1 NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_AFT_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                 timestamp            CONSTRAINT DF_AFT_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    ARTIFACT_ASSEMBLY_DEST        smallint             CONSTRAINT DF_AFT_ASSEMDEST DEFAULT 0 NOT NULL,
+    ARTIFACT_ASSEMBLY_DEST_URI    varchar(1024)      NULL,
+    ARTIFACT_UPLOAD_PCT           smallint             CONSTRAINT DF_AFT_UPCT DEFAULT 0 NOT NULL,
+    AGENT_VERSION                 varchar(40)        NULL,
+    DIGITAL_SIGNATURE             bit varying(512)      NULL,
+    AGENT_GUID                    UUID    NULL,
+    CONSTRAINT PK_ARTIFACT PRIMARY KEY  (ARTIFACT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_APPLICATION
+ */
+
+CREATE TABLE ARTIFACT_APPLICATION(
+    ARTIFACT_APPLICATION_ID         int              NOT NULL,
+    ARTIFACT_APPLICATION_NAME       varchar(100)    NOT NULL,
+    ARTIFACT_APPLICATION_CONTEXT    varchar(100)    NOT NULL,
+    CONSTRAINT PK_ARTIFACT_APPLICATION PRIMARY KEY  (ARTIFACT_APPLICATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK
+ */
+
+CREATE TABLE ARTIFACT_CHUNK(
+    ARTIFACT_CHUNK_ID          int                 ,
+    ARTIFACT_ID                UUID    NOT NULL,
+    ARTIFACT_ORDINAL           int                 NOT NULL,
+    ARTIFACT_CHUNK_SIZE        int                 NOT NULL,
+    ARTIFACT_COMP_ALGORITHM    varchar(50)        NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_ACHUNK_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_ARTIFACT_CHUNK PRIMARY KEY  (ARTIFACT_CHUNK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK_BLOB
+ */
+
+CREATE TABLE ARTIFACT_CHUNK_BLOB(
+    ARTIFACT_CHUNK_ID      int               NOT NULL,
+    ARTIFACT_CHUNK_BLOB    bit varying(83886080)    NOT NULL,
+    CONSTRAINT PK_ARTIFACT_CHUNK_BLOB PRIMARY KEY  (ARTIFACT_CHUNK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK_KEY
+ */
+
+CREATE TABLE ARTIFACT_CHUNK_KEY(
+    ARTIFACT_CHUNK_ID         int               NOT NULL,
+    ARTIFACT_KEY_ALGORITHM    varchar(50)      NOT NULL,
+    ARTIFACT_IV               bit varying(64)     NOT NULL,
+    ARTIFACT_CHUNK_KEY        bit varying(128)    NOT NULL,
+    CONSTRAINT PK_ARTIFACT_CHUNK_KEY PRIMARY KEY  (ARTIFACT_CHUNK_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_CONFIG
+ */
+
+CREATE TABLE ARTIFACT_CONFIG(
+    ARTIFACT_CONFIG_ID          int              ,
+    ARTIFACT_CONFIG_KEY         varchar(512)    NOT NULL,
+    ARTIFACT_CONFIG_GROUP       varchar(100)    NOT NULL,
+    ARTIFACT_CONFIG_VALUE       varchar(512)    NOT NULL,
+    ARTIFACT_CONFIG_DATATYPE    varchar(10)     NOT NULL,
+    ARTIFACT_CONFIG_REQUIRED    BOOLEAN              CONSTRAINT DF_AC_ACREQ DEFAULT FALSE NOT NULL,
+    ARTIFACT_CONFIG_USAGE       smallint          NOT NULL,
+    CREATED_DTTM                timestamp         CONSTRAINT DF_ACONFIG_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM               timestamp         CONSTRAINT DF_ACONFIG_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_ARTIFACT_CONFIG PRIMARY KEY  (ARTIFACT_CONFIG_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_CONFIG_MAP
+ */
+
+CREATE TABLE ARTIFACT_CONFIG_MAP(
+    ARTIFACT_TYPE_ID      int    NOT NULL,
+    ARTIFACT_CONFIG_ID    int    NOT NULL,
+    CONSTRAINT PK_ARTIFACT_CONFIG_MAP PRIMARY KEY  (ARTIFACT_TYPE_ID, ARTIFACT_CONFIG_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_METADATA
+ */
+
+CREATE TABLE ARTIFACT_METADATA(
+    ARTIFACT_METADATA_ID       int              ,
+    ARTIFACT_METADATA_KEY      varchar(50)     NULL,
+    ARTIFACT_METADATA_VALUE    varchar(256)    NOT NULL,
+    CONSTRAINT PK_ARTIFACT_METADATA PRIMARY KEY  (ARTIFACT_METADATA_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: ARTIFACT_METADATA_MAP
+ */
+
+CREATE TABLE ARTIFACT_METADATA_MAP(
+    ARTIFACT_ID             UUID    NOT NULL,
+    ARTIFACT_METADATA_ID    int                 NOT NULL,
+    CONSTRAINT PK_ARTIFACT_METADATA_MAP PRIMARY KEY  (ARTIFACT_ID, ARTIFACT_METADATA_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: BUNDLE_FAILURE_REPOSITORY
+ */
+
+CREATE TABLE BUNDLE_FAILURE_REPOSITORY(
+    BUNDLE_ID                UUID    NOT NULL,
+    PROCESS_RETRY_COUNT      int                 CONSTRAINT DF_BFR_PRCNT DEFAULT 1 NOT NULL,
+    BUNDLE_FAILURE_ACTIVE    BOOLEAN                 CONSTRAINT DF_BFR_BFACTIVE DEFAULT TRUE NOT NULL,
+    FAILURE_REASON           text       NULL,
+    FAILURE_ACTIVE_REASON    smallint             NULL,
+    RETRY_DTTM               timestamp            NULL,
+    RESOLUTION_DTTM          timestamp            NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_BFR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    APPLICATION_USER_ID      UUID    NULL,
+    CONSTRAINT BUNDLE_FAILURE_REPOSITORY_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: BUNDLE_FAILURE_SEQUENCE
+ */
+
+CREATE TABLE BUNDLE_FAILURE_SEQUENCE(
+    BUNDLE_ID                 UUID    NOT NULL,
+    BUNDLE_SEQUENCE           int                 NOT NULL,
+    BUNDLE_SEQUENCE_ACTIVE    BOOLEAN                 CONSTRAINT DF_BFS_BSACTIVE DEFAULT TRUE NOT NULL,
+    FAILURE_REASON            varchar(2000)      NOT NULL,
+    RESOLUTION_DTTM           timestamp            CONSTRAINT DF_BFS_RESDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT BUNDLE_FAILURE_SEQUENCE_PK PRIMARY KEY  (BUNDLE_ID, BUNDLE_SEQUENCE)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: BUNDLE_PROCESS_QUEUE
+ */
+
+CREATE TABLE BUNDLE_PROCESS_QUEUE(
+    BUNDLE_ID              UUID    NOT NULL,
+    SERVICE_ID             UUID    NULL,
+    BATCH_ID               UUID    NULL,
+    PROCESS_RETRY_COUNT    int                 CONSTRAINT DF_BPQ_PRCNT DEFAULT 0 NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_BPQ_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    IS_EXPEDITED           BOOLEAN                 NULL,
+    CONSTRAINT BUNDLE_PROCESS_QUEUE_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: BUNDLE_REPOSITORY
+ */
+
+CREATE TABLE BUNDLE_REPOSITORY(
+    BUNDLE_ID                     UUID    NOT NULL,
+    MACHINE_ID                    UUID    NOT NULL,
+    SENDER_MACHINE_ID             UUID    NOT NULL,
+    NETWORK_ADDRESS               varchar(60)        NULL,
+    MESSAGE_MD5                   UUID    NOT NULL,
+    CURRENT_DIGITAL_SIGNATURE     bit(128)         NULL,
+    PREVIOUS_DIGITAL_SIGNATURE    bit(128)         NULL,
+    BUNDLE_IMAGE                  bit varying(83886080)      NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_BR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    BUNDLE_TYPE                   smallint             CONSTRAINT DF_BR_BTYPE DEFAULT 0 NOT NULL,
+    BUNDLE_SIZE                   int                 NULL,
+    IS_EXPEDITED                  BOOLEAN                 NULL,
+    CONSTRAINT BUNDLE_REPOSITORY_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: BUNDLE_REPOSITORY
+ */
+
+CREATE TABLE BUNDLE_REPOSITORY_LARGE(
+    BUNDLE_ID                     UUID    NOT NULL,
+    MACHINE_ID                    UUID    NOT NULL,
+    SENDER_MACHINE_ID             UUID    NOT NULL,
+    NETWORK_ADDRESS               varchar(60)        NULL,
+    MESSAGE_MD5                   UUID    NOT NULL,
+    CURRENT_DIGITAL_SIGNATURE     bit(128)         NULL,
+    PREVIOUS_DIGITAL_SIGNATURE    bit(128)         NULL,
+    BUNDLE_IMAGE                  bit varying(83886080)      NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_BRF_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    BUNDLE_TYPE                   smallint             CONSTRAINT DF_BRF_BTYPE DEFAULT 0 NOT NULL,
+    BUNDLE_SIZE                   int                 NOT NULL,
+    IS_EXPEDITED                  BOOLEAN                 NULL,
+    CONSTRAINT BUNDLE_REPOSITORY_LARGE_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+;
+/*
+ * TABLE: CLSFY_EVENT
+ */
+
+CREATE TABLE CLSFY_EVENT(
+    CLSFY_EVENT_ID         UUID    CONSTRAINT DF_CE_PK DEFAULT uuid_generate_v4() NOT NULL,
+    MACHINE_EVENT_ID       UUID    NOT NULL,
+    CLASSIFICATION_TYPE    smallint             NOT NULL,
+    CLASSIFICATION_ID      UUID    NOT NULL,
+    TAG_COUNT              bigint              NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_CE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CLSFY_EVENT_PK PRIMARY KEY  (CLSFY_EVENT_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CLSFY_EVENT_DETAIL
+ */
+
+CREATE TABLE CLSFY_EVENT_DETAIL(
+    CLSFY_EVENT_DETAIL_ID      UUID    CONSTRAINT DF_CED_PK DEFAULT uuid_generate_v4() NOT NULL,
+    MACHINE_EVENT_DETAIL_ID    UUID    NOT NULL,
+    MACHINE_EVENT_ID           UUID    NOT NULL,
+    CLASSIFICATION_TYPE        smallint             NOT NULL,
+    CLASSIFICATION_ID          UUID    NOT NULL,
+    DETAIL_FILE_ID             UUID    NOT NULL,
+    TAG_COUNT                  bigint              NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_CED_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CLSFY_EVENT_DETAIL_PK PRIMARY KEY  (CLSFY_EVENT_DETAIL_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CLSFY_FILESTATE
+ */
+
+CREATE TABLE CLSFY_FILESTATE(
+    ORIGINATOR_ID                   UUID    NOT NULL,
+    DETAIL_ID                       UUID    NOT NULL,
+    DETAIL_NAME                     varchar(256)       NOT NULL,
+    DETAIL_PATH                     varchar(512)       NOT NULL,
+    HAS_CLASSIFICATION              BOOLEAN                 CONSTRAINT DF_CF_HC DEFAULT TRUE NOT NULL,
+    HAS_ENCRYPTION                  BOOLEAN                 CONSTRAINT DF_CF_HE DEFAULT FALSE NOT NULL,
+    ENCRYPTION_TYPE                 smallint             CONSTRAINT DF_CF_ET DEFAULT 0 NOT NULL,
+    BUNDLE_ID                       UUID    NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_CF_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    FILE_SIZE                       bigint              CONSTRAINT DF_CF_FSIZE DEFAULT 0 NOT NULL,
+    WAS_SCANNABLE                   BOOLEAN                 CONSTRAINT DF_CF_WS DEFAULT TRUE NOT NULL,
+    SCAN_FAILURE_CODE               int                 NULL,
+    SRC_TYPE                        smallint             NOT NULL,
+    OPERATION                       smallint             NOT NULL,
+    DETAIL_CLASSIFIED_LOCAL_DTTM    timestamp            NULL,
+    DETAIL_CLASSIFIED_UTC_DTTM      timestamp            NULL,
+    DETAIL_CREATED_LOCAL_DTTM       timestamp            NULL,
+    DETAIL_CREATED_UTC_DTTM         timestamp            NULL,
+    DETAIL_MODIFIED_LOCAL_DTTM      timestamp            NULL,
+    DETAIL_MODIFIED_UTC_DTTM        timestamp            NULL,
+    DETAIL_HASH                     varchar(32)         NULL,
+    DETAIL_OWNER                    varchar(512)       NULL,
+    DETAIL_EXTENSION                varchar(40)        NULL,
+    CONSTRAINT CLSFY_FILESTATE_PK PRIMARY KEY  (ORIGINATOR_ID, DETAIL_ID)
+    WITH (FILLFACTOR = 70)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CLSFY_FILESTATE_DETAIL
+ */
+
+CREATE TABLE CLSFY_FILESTATE_DETAIL(
+    ORIGINATOR_ID          UUID    NOT NULL,
+    DETAIL_ID              UUID    NOT NULL,
+    CLASSIFICATION_ID      UUID    NOT NULL,
+    CLASSIFICATION_TYPE    smallint             NOT NULL,
+    TAG_COUNT              bigint              NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_CFD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CLSFY_FILESTATE_DETAIL_PK PRIMARY KEY  (ORIGINATOR_ID, DETAIL_ID, CLASSIFICATION_ID)
+    WITH (FILLFACTOR = 70)
+
+)
+;
+
+
+
+/*
+ * TABLE: COMPONENT_LIST
+ */
+
+CREATE TABLE COMPONENT_LIST
+(
+    COMPONENT_LIST_ID               UUID    NOT NULL,
+    LIST_NAME                       varchar(256)       NOT NULL,
+    LIST_DESCRIPTION                varchar(512)       NULL,
+    LIST_TYPE                       smallint             NOT NULL,
+    LIST_STATUS                     smallint             NOT NULL,
+    MAX_LIST_SIZE                   int                 NOT NULL,
+    APPLICATION_POLICY_CONTAINER_ID UUID    NULL,
+    SCHEDULE_TYPE                   smallint             NOT NULL,
+    SCHEDULE_INTERVAL               int                 NULL,
+    SCHEDULE_TIME                   char(4)             NULL,
+    APPLICATION_NOTIFICATION_ID     UUID    NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_CL_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_CL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    LAST_COMPILED_DTTM              timestamp           NULL,
+    LIST_CACHE                      xml                 NULL,
+    LIST_CHECKSUM                   varchar(3000)      NULL,   -- not sure how big we need
+    VERSION_NUMBER                  int                 NOT NULL,
+    APPLICATION_RULE_ID             UUID    NULL,
+    READ_ONLY                     BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT COMPONENT_LIST_PK PRIMARY KEY  (COMPONENT_LIST_ID)
+    WITH (FILLFACTOR = 90)
+)
+;
+
+
+
+
+
+
+
+/*
+ * TABLE: COMPONENT_LIST_FEED
+ */
+
+CREATE TABLE COMPONENT_LIST_FEED(
+    COMPONENT_LIST_FEED_ID uuid NOT NULL,
+    COMPONENT_LIST_ID uuid NOT NULL,
+    NAME varchar(255) NOT NULL,
+    CATEGORY  int NOT NULL,
+    FEED_TYPE smallint NOT NULL,
+    CONTAINER_ID uuid NULL,
+    FEED_STATUS smallint NOT NULL,
+    USE_PROXY BOOLEAN NOT NULL,
+    TIMEOUT int NOT NULL CONSTRAINT DF_CLF_VTIMEOUT  DEFAULT 15,
+    SCHEDULE_TYPE smallint NOT NULL,
+    SCHEDULE_INTERVAL int NULL,
+    SCHEDULE_TIME char(4) NULL,
+    APPLICATION_NOTIFICATION_ID uuid NULL,
+    EXPIRATION_INTERVAL smallint NULL,
+    URL varchar(2000) NOT NULL,
+    USERNAME varchar(255) NULL,
+    PASSWORD varchar (255) NULL,
+    DESCRIPTION varchar(512) NULL,
+    FORMAT smallint NOT NULL,
+    TYPE_OF_DATA smallint NOT NULL,
+    DELIMITERS varchar(255) NULL,
+    ARCHIVE_TYPE smallint  DEFAULT 0 NOT NULL,
+    LAST_UPDATE timestamp NULL,
+    LAST_UPDATE_REC_NUM int NOT NULL CONSTRAINT DF_CLF_LU_REC_NUMBER  DEFAULT 0,
+    MAX_LIST_SIZE int NOT NULL CONSTRAINT DF_CLF_MAX_LIST_SIZE  DEFAULT 1000,
+    MODIFIED_DTTM timestamp NOT NULL CONSTRAINT DF_CLF_MODDATE  DEFAULT ((now() at time zone 'utc')),
+    CREATED_DTTM timestamp NOT NULL CONSTRAINT DF_CLF_CREATEDATE  DEFAULT ((now() at time zone 'utc')),
+    MODIFIED_BY uuid NOT NULL,
+    PROXY_PORT_NUMBER int  NULL DEFAULT 0,
+    PROXY_URL varchar(2000) NULL DEFAULT '',
+    USE_PROXY_CREDENTIALS BOOLEAN NOT NULL DEFAULT FALSE,
+    LINES_TO_IGNORE int NOT NULL DEFAULT 0,
+
+ CONSTRAINT COMPONENT_LIST_FEED_PK PRIMARY KEY
+(
+    COMPONENT_LIST_FEED_ID
+)WITH (FILLFACTOR = 90)
+)
+
+;
+
+/****** Object:  Index AK_CL_FEED_NAME    Script Date: 7/10/2014 9:45:59 AM ******/
+CREATE UNIQUE  INDEX AK_CL_FEED_NAME ON COMPONENT_LIST_FEED
+(
+    NAME ASC
+)WITH (FILLFACTOR = 90)
+;
+
+
+
+--
+
+
+/*
+ * INDEX: AK_CL_LIST_NAME
+ */
+CREATE UNIQUE INDEX AK_CL_LIST_NAME ON COMPONENT_LIST(LIST_NAME) WITH (FILLFACTOR = 90)
+;
+
+/*
+ * TABLE: COMPONENT_LIST
+ */
+
+CREATE TABLE COMPONENT_LIST_CONTENT
+(
+    COMPONENT_LIST_CONTENT_ID   UUID    NOT NULL,
+    COMPONENT_LIST_ID           UUID    NOT NULL,
+    SOURCE_TYPE                 smallint             NOT NULL,
+    CONTENT_DESCRIPTION         varchar(512)       NULL,
+    CONTENT_VALUE               varchar(256)       NULL,
+    CONTENT_PREVIOUS_VALUE      varchar(256)       NULL,
+    CONTENT_STATUS              smallint             NOT NULL,
+    STATUS_CHANGE               BOOLEAN                 CONSTRAINT DF_CLC_STATUS_CHANGE DEFAULT FALSE NOT NULL,
+    MODIFIED_DTTM               timestamp           CONSTRAINT DF_CLC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                timestamp           CONSTRAINT DF_CLC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+
+
+/*
+ * INDEX: AK_CLC_CONTENT_VALUE
+ */
+CREATE INDEX AK_CLC_CONTENT_VALUE ON COMPONENT_LIST_CONTENT(CONTENT_VALUE) WITH (FILLFACTOR = 90)
+;
+
+/*
+ * TABLE: COMPONENT_LIST_DELTA_CACHE
+ */
+
+CREATE TABLE COMPONENT_LIST_DELTA_CACHE
+(
+    COMPONENT_LIST_ID               UUID    NOT NULL,
+    BEGIN_COMPILED_DTTM             timestamp           NULL,
+    END_COMPILED_DTTM               timestamp           NULL,
+    LIST_CACHE                      xml                 NULL
+)
+;
+
+
+
+/*
+ * TABLE: COMPONENT_LIST_DEPLOYMENT
+ */
+
+CREATE TABLE COMPONENT_LIST_DEPLOYMENT
+(
+    COMPONENT_LIST_DEPLOYMENT_ID    UUID    NOT NULL,
+    COMPONENT_LIST_ID               UUID    NOT NULL,
+    MACHINE_ID                      UUID    NOT NULL,
+    COMPILED_DTTM                   timestamp            NOT NULL,
+    SEND_DTTM                       timestamp           NOT NULL,
+    IS_DELTA                        BOOLEAN                 NOT NULL,
+    AGENT_LIST_VERSION              int                 NULL,
+    RECEIVED_DTTM                   timestamp            NULL,
+    CONSTRAINT COMPONENT_LIST_DEPLOYMENT_PK PRIMARY KEY  (COMPONENT_LIST_DEPLOYMENT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: CONFIGURATION_RESOURCE
+ */
+
+CREATE TABLE CONFIGURATION_RESOURCE(
+    CONFIGURATION_RESOURCE_ID         UUID    NOT NULL,
+    CONFIGURATION_RESOURCE_TYPE_ID    UUID    NOT NULL,
+    IS_DIRTY                          BOOLEAN                 NOT NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_CR_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                     timestamp            CONSTRAINT DF_CR_MODIFIED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CONFIGURATION_RESOURCE_PK PRIMARY KEY  (CONFIGURATION_RESOURCE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CONFIGURATION_RESOURCE_TYPE
+ */
+
+CREATE TABLE CONFIGURATION_RESOURCE_TYPE(
+    CONFIGURATION_RESOURCE_TYPE_ID      UUID    NOT NULL,
+    CONFIGURATION_RESOURCE_TYPE_NAME    varchar(80)        NOT NULL,
+    CREATED_DTTM                        timestamp            CONSTRAINT DF_CRT_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                       timestamp            CONSTRAINT DF_CRT_MODIFIED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    FILE_TYPE                           int                 NOT NULL,
+    IS_DEFINED_BY_DATA                  BOOLEAN                 CONSTRAINT DF_CRT_IS_DEFINED_BY_DATA DEFAULT FALSE NULL,
+    AGENT_FEATURE_ID                    int                 NULL,
+    CONSTRAINT CONFIGURATION_RESOURCE_TYPE_PK PRIMARY KEY  (CONFIGURATION_RESOURCE_TYPE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CUSTOM_ATTRIBUTE
+ */
+
+CREATE TABLE CUSTOM_ATTRIBUTE(
+    CUSTOM_ATTRIBUTE_ID              int              ,
+    CUSTOM_ATTRIBUTE_NAME            varchar(100)    NOT NULL,
+    CUSTOM_ATTRIBUTE_DISPLAY_NAME    varchar(100)    NOT NULL,
+    CUSTOM_ATTRIBUTE_DESCRIPTION     varchar(500)    NULL,
+    IS_DELETED                       BOOLEAN              CONSTRAINT DF_CUST_AT_IS_DEL DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                     timestamp         CONSTRAINT DF_CUST_AT_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                    timestamp         CONSTRAINT DF_CUST_ATT_MOD_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CUSTOM_ATTRIBUTE_PK PRIMARY KEY (CUSTOM_ATTRIBUTE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CUSTOM_ATTRIBUTE_VALUE
+ */
+
+CREATE TABLE CUSTOM_ATTRIBUTE_VALUE(
+    MACHINE_ID                UUID    NOT NULL,
+    CUSTOM_ATTRIBUTE_ID       int                 NOT NULL,
+    CUSTOM_ATTRIBUTE_VALUE    varchar(256)       NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_CUST_ATV_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CUSTOM_ATTRIBUTE_VALUE_PK PRIMARY KEY  (MACHINE_ID, CUSTOM_ATTRIBUTE_ID)
+    WITH (FILLFACTOR = 70)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: CUSTOM_DATA_MAPPING
+ */
+
+CREATE TABLE CUSTOM_DATA_MAPPING(
+    CUSTOM_DATA_MAPPING_ID    UUID    NOT NULL,
+    RULE_VARIABLE_NAME        varchar(80)        NOT NULL,
+    DATABASE_FIELD_NAME       varchar(36)        NOT NULL,
+    RULE_VARIABLE_TYPE        varchar(36)        NOT NULL,
+    RULE_VARIABLE_SCOPE       smallint             NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_CDM_CREATEDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM             timestamp           CONSTRAINT DF_CDM_MODIFIEDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT CUSTOM_DATA_MAPPING_PK PRIMARY KEY  (CUSTOM_DATA_MAPPING_ID)
+    WITH (FILLFACTOR = 70)
+
+)
+;
+
+
+
+/*
+ * UNIQUE INDEX: AK_CDM_ROW
+ */
+
+CREATE UNIQUE INDEX AK_CDM_ROW ON CUSTOM_DATA_MAPPING (RULE_VARIABLE_NAME, DATABASE_FIELD_NAME,  RULE_VARIABLE_SCOPE)
+;
+
+
+/*
+ * TABLE: DDNA_COOLING
+ */
+
+CREATE TABLE DDNA_COOLING(
+    DDNA_COOLING_ID        int              ,
+    DDNA_PROCESS_NAME      varchar(128)    NOT NULL,
+    DDNA_MODULE_NAME       varchar(128)    NOT NULL,
+    DDNA_COOLING_WEIGHT    decimal(5, 2)    NOT NULL,
+    CREATED_DTTM           timestamp         CONSTRAINT DF_DDNAC_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM          timestamp         CONSTRAINT DF_DDNAC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_DDNA_COOLING PRIMARY KEY  (DDNA_COOLING_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_LICENSE
+ */
+
+CREATE TABLE DDNA_LICENSE(
+    DDNA_LICENSE_ID        UUID    NOT NULL,
+    DDNA_EVIDENCE          varchar(128)        NOT NULL,
+    DDNA_GEN_LICENSE       varchar(256)        NULL,
+    DDNA_LICENSE_ACTIVE    BOOLEAN                 CONSTRAINT DF_DDNAL_ACTIVE DEFAULT TRUE NOT NULL,
+    DDNA_MOD_DTTM          timestamp            CONSTRAINT DF_DDNAL_MODDT DEFAULT (now() at time zone 'utc') NOT NULL,
+    DDNA_CREATED_DTTM      timestamp            CONSTRAINT DF_DDNAL_CRDT DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DDNA_LICENSE_PK PRIMARY KEY  (DDNA_LICENSE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_MODULE
+ */
+
+CREATE TABLE DDNA_MODULE(
+    DDNA_MODULE_ID          UUID    NOT NULL,
+    DDNA_PROCESS_ID         UUID    NOT NULL,
+    DDNA_MODULE_NAME        varchar(128)       NOT NULL,
+    DDNA_MODULE_WEIGHT      decimal(5, 2)       NOT NULL,
+    DDNA_COOLING_WEIGHT     decimal(5, 2)       CONSTRAINT DF_DDNAM_CWGHT DEFAULT 0 NOT NULL,
+    DDNA_LIVEBIN_HASH       varchar(512)       NOT NULL,
+    ARTIFACT_ID             UUID    NULL,
+    DDNA_LIVEBIN_PRESENT    BOOLEAN                 CONSTRAINT DF_DDNAM_LBPRE DEFAULT TRUE NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_DDNAM_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_DDNAM_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    DDNA_LIVEBIN_STATE      smallint             CONSTRAINT DF_DDNAM_LBSTA DEFAULT 0 NOT NULL,
+    CONSTRAINT DDNA_MODULE_PK PRIMARY KEY  (DDNA_MODULE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_PROCESS
+ */
+
+CREATE TABLE DDNA_PROCESS(
+    DDNA_PROCESS_ID      UUID    NOT NULL,
+    DDNA_XML_ID          UUID    NOT NULL,
+    DDNA_PROCESS_NAME    varchar(128)       NOT NULL,
+    DDNA_PROCESS_PID     int                 NOT NULL,
+    CREATED_DTTM         timestamp            CONSTRAINT DF_DDNAP_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DDNA_PROCESS_PK PRIMARY KEY  (DDNA_PROCESS_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_TRAIT
+ */
+
+CREATE TABLE DDNA_TRAIT(
+    DDNA_TRAIT_ID      UUID    NOT NULL,
+    DDNA_MODULE_ID     UUID    NOT NULL,
+    DDNA_TRAIT_CODE    varchar(8)          NOT NULL,
+    CREATED_DTTM       timestamp            CONSTRAINT DF_DDNAT_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DDNA_TRAIT_PK PRIMARY KEY  (DDNA_TRAIT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_TRAIT_CODE
+ */
+
+CREATE TABLE DDNA_TRAIT_CODE(
+    DDNA_TRAIT_CODE_ID      UUID    NOT NULL,
+    DDNA_TRAIT_CODE         varchar(8)          NOT NULL,
+    DDNA_TRAIT_CODE_DESC    varchar(1024)      NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_DDNATC_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    TRAIT_WEIGHT            smallint            CONSTRAINT DF_DTC_WGHT DEFAULT 0 NOT NULL,
+    TRAIT_IMAGE_INDEX       smallint             NULL,
+    CONSTRAINT DDNA_TRAIT_CODE_PK PRIMARY KEY  (DDNA_TRAIT_CODE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_XML
+ */
+
+CREATE TABLE DDNA_XML(
+    DDNA_XML_ID            UUID    NOT NULL,
+    MACHINE_ID             UUID    NOT NULL,
+    DDNA_XML               xml                 NOT NULL,
+    DDNA_STATE             smallint             CONSTRAINT DF_DDNAX_STATE DEFAULT 0 NOT NULL,
+    DDNA_PROCESS_COUNT     int                 NULL,
+    DDNA_MAX_WEIGHT        decimal(5, 2)       NULL,
+    DDNA_MAX_WEIGHT_PID    smallint            NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_DDNAX_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_DDNAX_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SNAPSHOT_DTTM          timestamp            CONSTRAINT DF_DDNAX_SNDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SNAPSHOT_HASH          varchar(512)       null,
+    DDNA_LIVEBIN_STATE      smallint        CONSTRAINT DF_DDNAX_LBSTA DEFAULT 0 NOT NULL,
+    ARTIFACT_ID             UUID    NULL,
+    CONSTRAINT DDNA_XML_PK PRIMARY KEY  (DDNA_XML_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DEBUG_PERFORMANCE_LOG
+ */
+
+CREATE TABLE DEBUG_PERFORMANCE_LOG(
+    DEBUG_PERFORMANCE_LOG_ID    int                 ,
+    DEBUG_BATCH_ID              UUID    NOT NULL,
+    DEBUG_PROCEDURE_NAME        varchar(30)         NOT NULL,
+    STEP_NAME                   varchar(150)        NOT NULL,
+    STEP_NUMBER                 decimal(10, 2)      NOT NULL,
+    STEP_DTTM                   timestamp            CONSTRAINT DF_DPL_STEPDTTM DEFAULT now() NOT NULL,
+    DEBUG_COUNT                 bigint              CONSTRAINT DF_DPL_DCOUNT DEFAULT 0 NOT NULL,
+    DEBUG_MESSAGE               text       NULL,
+    DEBUG_XML                   xml                 NULL,
+    CONSTRAINT DEBUG_PERFORMANCE_LOG_PK PRIMARY KEY  (DEBUG_PERFORMANCE_LOG_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+
+/*
+ * TABLE: DEBUG_SETTINGS_TABLE
+ */
+
+CREATE TABLE DEBUG_SETTINGS_TABLE
+(
+    DEBUG_SETTINGS_TABLE_ID         BIGINT          ,
+    DEBUG_SETTING_LARGE_COLUMN      text   NOT NULL,
+    DEBUG_SETTING_ERROR_MESSAGE     varchar(4000)  NOT NULL,
+    CREATED_DTTM                    timestamp       CONSTRAINT DF_DST2_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL
+);
+
+
+
+
+;
+
+/*
+ * TABLE: DGMC_CUSTOM_DATA
+ */
+
+CREATE TABLE DGMC_CUSTOM_DATA(
+    DGMC_CUSTOM_DATA_ID        UUID    NOT NULL,
+    DATA_SOURCE_NAME           varchar(128)       NOT NULL,
+    DATA_SOURCE_DESCRIPTION    varchar(512)       NULL,
+    DATA_SOURCE_XML            xml                 NOT NULL,
+    GENERATED_XML              xml                 NOT NULL,
+    CREATE_QUERY               text       NOT NULL,
+    DELETE_QUERY               text       NOT NULL,
+    INSERT_QUERY               text       NOT NULL,
+    CREATE_INDEX               text       NULL,
+    IS_ACTIVE                  BOOLEAN                 NOT NULL,
+    CMD_TYPE                   smallint             NOT NULL,
+    LIFE_SPAN                  int                 NOT NULL,
+    READ_ONLY                BOOLEAN                 DEFAULT FALSE NOT NULL,
+    MODIFIED_DTTM              timestamp            CONSTRAINT DF_DCD_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_DCD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DGMC_CUSTOM_DATA_PK PRIMARY KEY  (DGMC_CUSTOM_DATA_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DGMC_CUSTOM_DATA_STATS
+ */
+
+CREATE TABLE DGMC_CUSTOM_DATA_STATS(
+    DGMC_CUSTOM_DATA_STATS_ID    UUID    NOT NULL,
+    DGMC_CUSTOM_DATA_ID          UUID    NOT NULL,
+    NUMBER_OF_WEEKS              varchar(100)        NOT NULL,
+    NUMBER_OF_ROWS               varchar(100)        NOT NULL,
+    RESERVED_SIZE                varchar(50)         NOT NULL,
+    DATA_SIZE                    varchar(50)         NOT NULL,
+    INDEX_SIZE                   varchar(50)         NOT NULL,
+    UNUSED_SIZE                  varchar(50)         NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_DCDS_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DGMC_CUSTOM_DATA_STATS_PK PRIMARY KEY  (DGMC_CUSTOM_DATA_STATS_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DGMC_CUSTOM_INDEX
+ */
+
+CREATE TABLE DGMC_CUSTOM_INDEX(
+    DGMC_CUSTOM_INDEX_ID    UUID    NOT NULL,
+    INDEX_NAME              varchar(128)       NOT NULL,
+    TABLE_NAME              varchar(128)       NOT NULL,
+    INDEX_ABBREVIATION      varchar(128)       NOT NULL,
+    INDEX_DESCRIPTION       varchar(512)       NULL,
+    INDEX_COLUMNS           varchar(512)       NOT NULL,
+    INCLUDED_COLUMNS        varchar(512)       NULL,
+    FILL_FACTOR             int                 NOT NULL,
+    INDEX_GROUP             varchar(100)       NOT NULL,
+    CMD_TYPE                smallint             NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_DCI_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_DCI_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    IS_COMPRESSED           BOOLEAN                 CONSTRAINT DF_DCI_IC DEFAULT FALSE NOT NULL,
+    CONSTRAINT DGMC_CUSTOM_INDEX_PK PRIMARY KEY  (DGMC_CUSTOM_INDEX_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DGMC_CUSTOM_INDEX_STATS
+ */
+
+CREATE TABLE DGMC_CUSTOM_INDEX_STATS(
+    DGMC_CUSTOM_INDEX_STATS_ID    UUID    NOT NULL,
+    DGMC_CUSTOM_INDEX_ID          UUID    NOT NULL,
+    TOTAL_INDEX_SIZE              varchar(50)         NOT NULL,
+    INDEX_SIZE                    varchar(50)         NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_DCIS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DGMC_CUSTOM_INDEX_STATS_PK PRIMARY KEY  (DGMC_CUSTOM_INDEX_STATS_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DGMC_USER
+ */
+
+CREATE TABLE DGMC_USER(
+    DGMC_USER_ID     UUID    NOT NULL,
+    DGMC_PASSWORD    varchar(128)       NOT NULL,
+    EMAIL_ADDRESS    varchar(256)       NULL,
+    CONSTRAINT DGMC_USER_PK PRIMARY KEY  (DGMC_USER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DGMC_USER_REPORT
+ */
+
+CREATE TABLE DGMC_USER_REPORT(
+    DGMC_USER_REPORT_ID            UUID    NOT NULL,
+    APPLICATION_USER_ID            UUID    NOT NULL,
+    APPLICATION_SIDENAV_LINK_ID    UUID    NOT NULL,
+    USER_REPORT_NAME               varchar(128)       NOT NULL,
+    USER_REPORT_DESCRIPTION        varchar(512)       NULL,
+    USER_REPORT_XML                xml                 NOT NULL,
+    WORKSPACE_ACCESS               smallint             NOT NULL,
+    DATE_RANGE_TYPE                smallint             NOT NULL,
+    DATE_RANGE_SERIES              smallint             NULL,
+    LAST_ACCESSED_DTTM             timestamp            CONSTRAINT DF_DUR_LACCDTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_DUR_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_DUR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SCHEDULE_TYPE                  smallint             NULL,
+    SCHEDULE_INTERVAL              smallint             NULL,
+    SCHEDULE_TIME                  char(4)             CONSTRAINT DF_DUR_STIME DEFAULT '0' NOT NULL,
+    APPLICATION_NOTIFICATION_ID    UUID    NULL,
+    LAST_RUN_DTTM                  timestamp            NULL,
+    GENERATED_QUERY                text       NULL,
+    THRESHOLD_NOTIFICATION_ID      UUID    NULL,
+    EMAIL_DELIVERY_TYPE            smallint             NULL,
+    RUN_DTTM                       timestamp            NULL,
+    READ_ONLY                    BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT DGMC_USER_REPORT_PK PRIMARY KEY  (DGMC_USER_REPORT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: DGMC_USER_REPORT_ASSIGN
+ */
+
+CREATE TABLE DGMC_USER_REPORT_ASSIGN(
+    DGMC_USER_REPORT_ASSIGN_ID    bigint              ,
+    DGMC_USER_REPORT_ID           UUID    NOT NULL,
+    ASSIGNEE_ID                   UUID    NOT NULL,
+    ASSIGNEE_TYPE                 smallint             NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_DURA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT DGMC_USER_REPORT_ASSIGN_PK PRIMARY KEY  (DGMC_USER_REPORT_ASSIGN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DYNAMIC_USER_GROUP
+ */
+
+CREATE TABLE DYNAMIC_USER_GROUP(
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    DESCRIPTION             varchar(255)       NULL,
+    CRITERIA_XML            text       NULL,
+    CREATED_DTTM            timestamp            NOT NULL,
+    MODIFIED_DTTM           timestamp            NOT NULL,
+    CONSTRAINT PK_DYNAMIC_USER_GROUP PRIMARY KEY  (APPLICATION_GROUP_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_CREDENTIAL
+ */
+
+CREATE TABLE EDISCOVERY_CREDENTIAL(
+    EDISCOVERY_CREDENTIAL_ID    UUID    NOT NULL,
+    CREDENTIAL_NAME             varchar(256)       NOT NULL,
+    CREDENTIAL_DESCRIPTION      varchar(256)       NULL,
+    CREDENTIAL_TYPE             smallint             NOT NULL,
+    CREDENTIAL_INFORMATION      text       NOT NULL,
+    MODIFIED_DTTM               timestamp            CONSTRAINT DF_EDC_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_EDC_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_CREDENTIAL_PK PRIMARY KEY  (EDISCOVERY_CREDENTIAL_ID)
+
+)
+
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_FILTER
+ */
+
+CREATE TABLE EDISCOVERY_FILTER(
+    EDISCOVERY_FILTER_ID    UUID    NOT NULL,
+    FILTER_NAME             varchar(256)       NOT NULL,
+    FILTER_SPEC             varchar(256)       NOT NULL,
+    FILE_SIZE               bigint              NULL,
+    IS_LESS_THAN            BOOLEAN                 CONSTRAINT DF_EDF_IS_LN DEFAULT FALSE NOT NULL,
+    IS_AVAILABLE            BOOLEAN                 CONSTRAINT DF_EDF_IS_AV DEFAULT TRUE NOT NULL,
+    FILTER_RANK             smallint            NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_EDF_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_EDF_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_FILTER_PK PRIMARY KEY  (EDISCOVERY_FILTER_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_PATH
+ */
+
+CREATE TABLE EDISCOVERY_PATH(
+    EDISCOVERY_PATH_ID    UUID    NOT NULL,
+    PATH_NAME             varchar(256)       NOT NULL,
+    PATH_SPEC             varchar(256)       NOT NULL,
+    IS_AVAILABLE          BOOLEAN                 CONSTRAINT DF_EDP__IS_AV DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM         timestamp            CONSTRAINT DF_EDP_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CREATED_DTTM          timestamp            CONSTRAINT DF_EDP_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_PATH_PK PRIMARY KEY  (EDISCOVERY_PATH_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_PATH_FILTER
+ */
+
+CREATE TABLE EDISCOVERY_PATH_FILTER(
+    EDISCOVERY_PATH_FILTER_ID    UUID    NOT NULL,
+    EDISCOVERY_PATH_ID           UUID    NOT NULL,
+    EDISCOVERY_FILTER_ID         UUID    NOT NULL,
+    IS_EXCLUDED                  BOOLEAN                 CONSTRAINT DF_EDPF_IS_EX DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_EDPF_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_PATH_FILTER_PK PRIMARY KEY  (EDISCOVERY_PATH_FILTER_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_PROFILE
+ */
+
+CREATE TABLE EDISCOVERY_PROFILE(
+    EDISCOVERY_PROFILE_ID    UUID    NOT NULL,
+    PROFILE_NAME             varchar(256)       NOT NULL,
+    PROFILE_DESCRIPTION      varchar(256)       NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_EDPR_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_EDPR_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_PROFILE_PK PRIMARY KEY  (EDISCOVERY_PROFILE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_PROFILE_LINKAGE
+ */
+
+CREATE TABLE EDISCOVERY_PROFILE_LINKAGE(
+    EDISCOVERY_LINKAGE_ID    UUID    NOT NULL,
+    EDISCOVERY_PROFILE_ID    UUID    NOT NULL,
+    EDISCOVERY_CHILD_ID      UUID    NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_EDPL_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_LINKAGE_PK PRIMARY KEY  (EDISCOVERY_LINKAGE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_QUEUE
+ */
+
+CREATE TABLE EDISCOVERY_QUEUE(
+    EDISCOVERY_QUEUE_ID          UUID    NOT NULL,
+    MACHINE_ID                   UUID    NOT NULL,
+    EDISCOVERY_TARGET_ID         UUID    NOT NULL,
+    SCAN_STATUS                  smallint             NOT NULL,
+    FAILURE_CODE                 int                 NULL,
+    START_UTC_DTTM               timestamp            NULL,
+    END_UTC_DTTM                 timestamp            NULL,
+    PERCENT_COMPLETE             smallint             NULL,
+    NUMBER_OF_FILES_SCANNED      bigint              NULL,
+    AMOUNT_OF_DATA_SCANNED       bigint              NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_EDQ_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    NUMBER_OF_FILES_MATCHED      bigint              NULL,
+    AMOUNT_OF_DATA_MATCHED       bigint              NULL,
+    NUMBER_OF_FILES_EVAL         bigint              NULL,
+    AMOUNT_OF_DATA_EVAL          bigint              NULL,
+    NUMBER_OF_FILES_INSPECT      bigint              NULL,
+    AMOUNT_OF_DATA_INSPECT       bigint              NULL,
+    NUMBER_OF_FILES_CLASS        bigint              NULL,
+    AMOUNT_OF_DATA_CLASS         bigint              NULL,
+    NUMBER_OF_FILES_NEW_CLASS    bigint              NULL,
+    AMOUNT_OF_DATA_NEW_CLASS     bigint              NULL,
+    CONSTRAINT EDISCOVERY_QUEUE_PK PRIMARY KEY  (EDISCOVERY_QUEUE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_RANGE
+ */
+
+CREATE TABLE EDISCOVERY_RANGE(
+    EDISCOVERY_RANGE_ID      UUID    NOT NULL,
+    EDISCOVERY_PROFILE_ID    UUID    NOT NULL,
+    RANGE_TYPE               smallint             NOT NULL,
+    RANGE_VALUE              varchar(128)       NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_EDR_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_RANGE_PK PRIMARY KEY  (EDISCOVERY_RANGE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_SCHEDULE
+ */
+
+CREATE TABLE EDISCOVERY_SCHEDULE(
+    EDISCOVERY_SCHEDULE_ID    UUID    NOT NULL,
+    SCHEDULE_TYPE             smallint             NOT NULL,
+    SCHEDULE_INTERVAL         smallint             NOT NULL,
+    START_MINUTE              int                 NOT NULL,
+    END_MINUTE                int                 NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_EDS_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_SCHEDULE_PK PRIMARY KEY  (EDISCOVERY_SCHEDULE_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_TARGET
+ */
+
+CREATE TABLE EDISCOVERY_TARGET(
+    EDISCOVERY_TARGET_ID        UUID    NOT NULL,
+    EDISCOVERY_CREDENTIAL_ID    UUID    NOT NULL,
+    EDISCOVERY_SCHEDULE_ID      UUID    NOT NULL,
+    TARGET_NAME                 varchar(256)       NOT NULL,
+    TARGET_DESCRIPTION          varchar(256)       NULL,
+    TARGET_SPEC                 varchar(256)       NOT NULL,
+    IS_ACTIVE                   BOOLEAN                 CONSTRAINT DF_EDIT_IS_AC DEFAULT TRUE NOT NULL,
+    DATABASE_BLOB               bit varying(83886080)      NULL,
+    MAX_KB_SEC                  int                 NOT NULL,
+    MAX_FILES_PER_MIN           int                 NOT NULL,
+    FOLLOW_FILE_LINKS           BOOLEAN                 NOT NULL,
+    FOLLOW_DIR_LINKS            BOOLEAN                 NOT NULL,
+    MOUNT_RECURSION             BOOLEAN                 NOT NULL,
+    MODIFIED_DTTM               timestamp            CONSTRAINT DF_EDT_MODDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_EDT_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    IS_SCAN_ONCE                BOOLEAN                 CONSTRAINT DF_EDIT_IS_SO DEFAULT FALSE NOT NULL,
+    CONSTRAINT EDISCOVERY_TARGET_PK PRIMARY KEY  (EDISCOVERY_TARGET_ID)
+
+)
+
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_TARGET_PATH
+ */
+
+CREATE TABLE EDISCOVERY_TARGET_PATH(
+    EDISCOVERY_TARGET_PATH_ID    UUID    NOT NULL,
+    EDISCOVERY_TARGET_ID         UUID    NOT NULL,
+    EDISCOVERY_PATH_ID           UUID    NOT NULL,
+    IS_EXCLUDED                  BOOLEAN                 CONSTRAINT DF_EDITP_IS_EX DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_EDTP_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_TARGET_PATH_PK PRIMARY KEY  (EDISCOVERY_TARGET_PATH_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: EDISCOVERY_TARGET_POLICY
+ */
+
+CREATE TABLE EDISCOVERY_TARGET_POLICY(
+    EDISCOVERY_TARGET_POLICY_ID    UUID    NOT NULL,
+    EDISCOVERY_TARGET_ID           UUID    NOT NULL,
+    APPLICATION_POLICY_ID          UUID    NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_EDTPO_CREATEDATE DEFAULT ((now() at time zone 'utc')) NOT NULL,
+    CONSTRAINT EDISCOVERY_TARGET_POLICY_PK PRIMARY KEY  (EDISCOVERY_TARGET_POLICY_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: GROUP_LINKAGE
+ */
+
+CREATE TABLE GROUP_LINKAGE(
+    GROUP_LINKAGE_ID        UUID    NOT NULL,
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    ULTIMATE_GROUP_ID       UUID    NOT NULL,
+    DERIVED_GROUP_ID        UUID    NULL,
+    PARENT_GROUP_ID         UUID    NULL,
+    GROUP_LINKAGE_ACTIVE    BOOLEAN                 CONSTRAINT DF_GL_GLACTIVE DEFAULT TRUE NOT NULL,
+    DERIVED_LINKAGE         BOOLEAN                 CONSTRAINT DF_GL_DERLINK DEFAULT FALSE NOT NULL,
+    ORIGINATOR_TYPE         smallint             CONSTRAINT DF_GL_OTYPE DEFAULT 0 NOT NULL,
+    MODIFIED_DTTM           timestamp            CONSTRAINT DF_GL_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_GL_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT GROUP_LINKAGE_PK PRIMARY KEY  (GROUP_LINKAGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: GROUP_SECTION_PRIVILEGE
+ */
+
+CREATE TABLE GROUP_SECTION_PRIVILEGE(
+    GROUP_SECTION_PRIVILEGE_ID    UUID    NOT NULL,
+    SECTION_PRIVILEGE_ID          UUID    NOT NULL,
+    APPLICATION_ROLE_ID           UUID    NOT NULL,
+    GROUP_SECTION_ACTIVE          BOOLEAN                 CONSTRAINT DF_GSP_GSACTIVE DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM                 timestamp            CONSTRAINT DF_GSP_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_GSP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT GROUP_SECTION_PRIVILEGE_PK PRIMARY KEY  (GROUP_SECTION_PRIVILEGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: IM_KEY_IMAGE_FORMATTED
+ */
+
+CREATE TABLE IM_KEY_IMAGE_FORMATTED(
+    KEYBOARD_CAPTURE_SLICE_ID    bigint           NOT NULL,
+    KEY_IMAGE_FORMATTED          text    NOT NULL,
+    CREATED_DTTM                 timestamp         CONSTRAINT DF_IM_KIF_CR_DATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_IM_KEY_IMAGE_FORMATTED PRIMARY KEY  (KEYBOARD_CAPTURE_SLICE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: IM_KEY_IMAGE_RAW
+ */
+
+CREATE TABLE IM_KEY_IMAGE_RAW(
+    KEYBOARD_CAPTURE_SLICE_ID    bigint           NOT NULL,
+    KEY_IMAGE_RAW                text    NOT NULL,
+    CREATED_DTTM                 timestamp         CONSTRAINT DF_IM_KIR_CR_DATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_IM_KEY_IMAGE_RAW PRIMARY KEY  (KEYBOARD_CAPTURE_SLICE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: IM_KEYBOARD_CAPTURE
+ */
+
+CREATE TABLE IM_KEYBOARD_CAPTURE(
+    KEYBOARD_CAPTURE_ID    UUID    NOT NULL,
+    ARTIFACT_ID            UUID    NOT NULL,
+    MACHINE_ID             UUID    NOT NULL,
+    APPLICATION_USER_ID    UUID    NOT NULL,
+    BEGIN_UTC_DTTM         timestamp            NOT NULL,
+    END_UTC_DTTM           timestamp            NOT NULL,
+    DATA_CRC               bigint              NULL,
+    CAPTURE_STATE          smallint             NOT NULL,
+    MODIFIED_DTTM          timestamp            CONSTRAINT DF_IM_KB_MOD_DATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_IM_KB_CR_DATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_IM_KEYBOARD_CAPTURE PRIMARY KEY  (KEYBOARD_CAPTURE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: IM_KEYBOARD_CAPTURE_SLICE
+ */
+
+CREATE TABLE IM_KEYBOARD_CAPTURE_SLICE(
+    KEYBOARD_CAPTURE_SLICE_ID    bigint              ,
+    KEYBOARD_CAPTURE_ID          UUID    NOT NULL,
+    HEADER_CRC                   bigint              NOT NULL,
+    USER_SESSION_ID              bigint              NOT NULL,
+    PROCESS_SEQ_NO               int                 NOT NULL,
+    STORE_SEQ_NO                 bigint              NOT NULL,
+    PROCESS_ID                   UUID    NOT NULL,
+    KEY_COUNT                    int                 NOT NULL,
+    PROCESS_NAME                 varchar(256)       NOT NULL,
+    PROCESS_DESCRIPTION          varchar(256)       NOT NULL,
+    WINDOW_TITLE                 varchar(256)       NULL,
+    SECONDARY_USER_ID            UUID    NULL,
+    BEGIN_UTC_DTTM               timestamp            NOT NULL,
+    END_UTC_DTTM                 timestamp            NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_IM_KBS_CR_DATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_IM_KEYBOARD_CAPTURE_SLICE PRIMARY KEY  (KEYBOARD_CAPTURE_SLICE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: IMAGE_DESCRIPTION
+ */
+
+CREATE TABLE IMAGE_DESCRIPTION(
+    IMAGE_DESCRIPTION_ID      UUID    NOT NULL, --md5
+    IMAGE_SHA1                varchar(40)         NULL,
+    IMAGE_SIZE                int                 NULL,
+    IMAGE_NAME                varchar(256)       NOT NULL,
+    COMPANY_NAME              varchar(255)       NULL,
+    PRODUCT_NAME              varchar(255)       NULL,
+    FILE_DESCRIPTION          varchar(255)       NULL,
+    FILE_VERSION              varchar(255)       NULL,
+    PRODUCT_VERSION           varchar(255)       NULL,
+    IMAGE_SHA256              varchar(64)         NULL,
+    IMAGE_CREATED_DTTM        timestamp           NULL,
+    IMAGE_MODIFIED_DTTM       timestamp           NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_ID2_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM             timestamp            CONSTRAINT DF_ID2_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT IMAGE_DESCRIPTION_PK PRIMARY KEY  (IMAGE_DESCRIPTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: INVESTIGATION
+ */
+
+CREATE TABLE INVESTIGATION(
+    INVESTIGATION_ID             int                 ,
+    APPLICATION_USER_ID          UUID    NOT NULL,
+    INVESTIGATION_NAME           varchar(128)       NOT NULL,
+    INVESTIGATION_DESCRIPTION    varchar(2000)      NULL,
+    IS_ACTIVE                    BOOLEAN                 CONSTRAINT DF_INV_ISACTIVE DEFAULT TRUE NOT NULL,
+    INVESTIGATION_VERSION        int                 CONSTRAINT DF_INV_VERSION DEFAULT 1 NOT NULL,
+    LAST_ACCESSED_DTTM           timestamp            CONSTRAINT DF_INV_LADTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                timestamp            CONSTRAINT DF_INV_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_INV_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT INVESTIGATION_PK PRIMARY KEY  (INVESTIGATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: INVESTIGATION_DETAIL
+ */
+
+CREATE TABLE INVESTIGATION_DETAIL(
+    INVESTIGATION_DETAIL_ID    int                 ,
+    INVESTIGATION_ID           int                 NOT NULL,
+    APPLICATION_USER_ID        UUID    NOT NULL,
+    DETAIL_NAME                varchar(128)       NOT NULL,
+    DETAIL_DESCRIPTION         varchar(2000)      NULL,
+    DETAIL_TYPE                smallint             NOT NULL,
+    DETAIL_VERSION             int                 CONSTRAINT DF_ID_DVERSION DEFAULT 1 NOT NULL,
+    DETAIL_RANK                smallint            CONSTRAINT DF_ID_DRANK DEFAULT 1 NOT NULL,
+    DETAIL_DATA                xml                 NOT NULL,
+    MODIFIED_DTTM              timestamp            CONSTRAINT DF_ID_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_ID_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT INVESTIGATION_DETAIL_PK PRIMARY KEY  (INVESTIGATION_DETAIL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: INVESTIGATION_NOTE
+ */
+
+CREATE TABLE INVESTIGATION_NOTE(
+    INVESTIGATION_NOTE_ID    int                 ,
+    INVESTIGATION_ID         int                 NOT NULL,
+    APPLICATION_USER_ID      UUID    NOT NULL,
+    INVESTIGATIVE_NOTE       text       NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_IN_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_IN_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT INVESTIGATION_NOTE_PK PRIMARY KEY  (INVESTIGATION_NOTE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+
+;
+/*
+ * TABLE: FILE_CAPTURE
+ */
+CREATE TABLE FILE_CAPTURE(
+    FILE_CAPTURE_ID uuid NOT NULL,
+    RECORD_ID UUID NOT NULL,
+    MACHINE_ID uuid NOT NULL,
+    MACHINE_EVENT_ID uuid NOT NULL,
+    MACHINE_EVENT_DETAIL_ID uuid NOT NULL,
+    META_DATA xml NOT NULL,
+    ARTIFACT_ID uuid NULL,
+    CREATED_DTTM  timestamp CONSTRAINT DF_FC_CREATED_DTTM DEFAULT (now() at time zone 'utc') NULL,
+    MODIFIED_DTTM timestamp CONSTRAINT DF_FC_MODIFIED_DTTM DEFAULT (now() at time zone 'utc') NULL,
+    STATE smallint NULL,
+ CONSTRAINT PK_FILE_CAPTURE PRIMARY KEY
+(
+    FILE_CAPTURE_ID
+)
+)
+
+;
+CREATE UNIQUE  INDEX IX_FILE_CAPTURE ON FILE_CAPTURE
+(
+    MACHINE_ID ASC,
+    RECORD_ID ASC
+)
+;
+
+
+
+
+;
+/*
+ * TABLE: JOB_RUN
+ */
+
+CREATE TABLE JOB_RUN(
+    JOB_RUN_ID              UUID    NOT NULL,
+    APPLICATION_JOB_ID      UUID    NOT NULL,
+    INTERNAL_JOB_ID         varchar(255)       NULL,
+    JOB_STATUS              int                 NOT NULL,
+    JOB_START_DTTM          timestamp            NULL,
+    JOB_END_DTTM            timestamp            NULL,
+    LAST_SUCCESSFUL_STEP    smallint            NULL,
+    JOB_SUBMITTER           varchar(255)       NOT NULL,
+    ADHOC_JOB               BOOLEAN                 CONSTRAINT DF_JR_ADHOCJOB DEFAULT TRUE NOT NULL,
+    JOB_RUN_SERVER          varchar(266)       NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_JR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    WINDOWS_DOMAIN_ID       UUID    NULL,
+    CONSTRAINT JOB_RUN_PK PRIMARY KEY  (JOB_RUN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: JOB_RUN_LDAP_AFFILIATION
+ */
+
+CREATE TABLE JOB_RUN_LDAP_AFFILIATION(
+    JOB_RUN_ID           UUID    NOT NULL,
+    STD_DOMAIN_ID        UUID    NOT NULL,
+    AD_GROUP_ID          UUID    NOT NULL,
+    CONNECTION_STRING    varchar(1024)      NOT NULL,
+    CREATED_DTTM         timestamp            CONSTRAINT DF_JRLA_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+
+
+
+
+/*
+ * TABLE: JOB_RUN_LDAP_OBJECT
+ */
+
+CREATE TABLE JOB_RUN_LDAP_OBJECT(
+    JOB_RUN_ID           UUID    NOT NULL,
+    STD_DOMAIN_ID        UUID    NOT NULL,
+    AD_OBJECT_ID         UUID    NOT NULL,
+    OBJECT_CLASS         varchar(50)        NOT NULL,
+    CONNECTION_STRING    varchar(1024)      NOT NULL,
+    OPERATION            varchar(10)        NOT NULL,
+    CREATED_DTTM         timestamp            CONSTRAINT DF_JR_LDAPOBJ_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL
+)
+;
+
+
+
+
+
+/*
+ * TABLE: JOB_RUN_OBJECT
+ */
+
+CREATE TABLE JOB_RUN_OBJECT(
+    JOB_RUN_OBJECT_ID    UUID    NOT NULL,
+    JOB_RUN_ID           UUID    NULL,
+    RUN_OBJECT_NAME      varchar(1024)      NOT NULL,
+    RUN_OBJECT_TYPE      smallint            NOT NULL,
+    RUN_OBJECT_STATUS    int                 NOT NULL,
+    RUN_OBJECT_SOURCE    varchar(255)       NULL,
+    CREATED_DTTM         timestamp            CONSTRAINT DF_JRO_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT JOB_RUN_OBJECT_PK PRIMARY KEY  (JOB_RUN_OBJECT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: JOB_RUN_STEP
+ */
+
+CREATE TABLE JOB_RUN_STEP(
+    JOB_RUN_STEP_ID            UUID    NOT NULL,
+    JOB_RUN_ID                 UUID    NOT NULL,
+    APPLICATION_JOB_STEP_ID    UUID    NOT NULL,
+    RUN_STEP_STATUS            int                 NOT NULL,
+    STEP_START_DTTM            timestamp            CONSTRAINT DF_JRS_SSDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    STEP_END_DTTM              timestamp            NULL,
+    JOB_RUN_OBJECT_ID          UUID    NULL,
+    CONSTRAINT JOB_RUN_STEP_PK PRIMARY KEY  (JOB_RUN_STEP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: KEY_ALGORITHM
+ */
+
+CREATE TABLE KEY_ALGORITHM(
+    KEY_ALGORITHM_ID             UUID    NOT NULL,
+    KEY_ALGORITHM_DESCRIPTION    varchar(260)       NOT NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_KA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT KEY_ALGORITHM_PK PRIMARY KEY  (KEY_ALGORITHM_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: KEY_PURPOSE
+ */
+
+CREATE TABLE KEY_PURPOSE(
+    KEY_PURPOSE_ID             UUID    NOT NULL,
+    KEY_PURPOSE_DESCRIPTION    varchar(260)       NOT NULL,
+    LAST_ACTIVITY_DTTM         timestamp            CONSTRAINT DF_KP_LA_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_KP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT KEY_PURPOSE_PK PRIMARY KEY  (KEY_PURPOSE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: KEY_REPOSITORY
+ */
+
+CREATE TABLE KEY_REPOSITORY(
+    KEY_REPOSITORY_ID     UUID    NOT NULL,
+    KEY_ALGORITHM_ID      UUID    NOT NULL,
+    KEY_PURPOSE_ID        UUID    NOT NULL,
+    MACHINE_ID            UUID    NOT NULL,
+    KEY_LENGTH            int                 NOT NULL,
+    KEY_BLOB              bit varying(83886080)      NOT NULL,
+    KEY_HASH              varchar(260)       NOT NULL,
+    KEY_PUBLISHED_DTTM    timestamp            NULL,
+    KEY_EXPIRED_DTTM      timestamp            NULL,
+    CREATED_DTTM          timestamp            CONSTRAINT DF_KR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT KEY_REPOSITORY_PK PRIMARY KEY  (KEY_REPOSITORY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: MACHINE
+ */
+
+CREATE TABLE MACHINE(
+    MACHINE_ID                       UUID    NOT NULL,
+    PREVIOUS_MACHINE_ID              UUID    NULL,
+    MACHINE_TYPE                     int                 NOT NULL,
+    AGENT_VERSION                    varchar(40)        NOT NULL,
+    OS_VERSION_MAJOR                 int                 NOT NULL,
+    OS_VERSION_MINOR                 int                 NOT NULL,
+    COMPUTER_SID                     varchar(260)       NULL,
+    BOOT_COUNTER                     int                 NULL,
+    AGENT_UNINSTALL_KEY              varchar(300)       NULL,
+    MACHINE_STATUS                   smallint             NULL,
+    LAST_COMMUNICATED_DTTM           timestamp            NULL,
+    DEFAULT_LOCALE_ID                varchar(25)        NULL,
+    MAC_ADDRESS                      varchar(17)        NULL,
+    AGENT_TYPE                       smallint             NULL,
+    SCANNER_PERCENTAGE               smallint             NULL,
+    IS_MOBILE_DEVICE                 BOOLEAN                 CONSTRAINT DF_MA_IMD DEFAULT FALSE NOT NULL,
+    MACHINE_TYPE_ARCHITECTURE        smallint             CONSTRAINT DF_MA_MTA DEFAULT 0 NOT NULL,
+    MACHINE_TYPE_STRING              varchar(200)       NULL,
+    RECOVERY_KEY                     varchar(300)       NULL,
+    SCANNER_STATUS                   smallint             NULL,
+    LAST_REBOOT_DTTM                 timestamp            NULL,
+    FDE_STATUS                       smallint             CONSTRAINT DF_MA_FDE_STATUS DEFAULT 0 NOT NULL,
+    AFE_STATUS                       smallint             CONSTRAINT DF_MA_AFE_STATUS DEFAULT 0 NOT NULL,
+    RME_STATUS                       smallint             CONSTRAINT DF_MA_RME_STATUS DEFAULT 0 NOT NULL,
+    SCANNER_ACTIVITY_STATUS          smallint             NULL,
+    SCANNER_LAST_START               timestamp            NULL,
+    SCANNER_LAST_STOP                timestamp            NULL,
+    SCANNER_LAST_DURATION            bigint              NULL,
+    SCANNER_LAST_DURATION_IN_SCAN    bigint              NULL,
+    LAST_REQUEST_TO_COMPILE_SETTINGS_DTTM   bigint       NULL,
+    RT_COMM_SERVER                   varchar(300)       NULL,
+    IS_LISTENING                     BOOLEAN                 NULL,
+    CONSTRAINT MACHINE_PK PRIMARY KEY  (MACHINE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_ALERT
+ */
+
+CREATE TABLE MACHINE_ALERT(
+    MACHINE_ALERT_ID               UUID    NOT NULL,
+    MACHINE_ID                     UUID    NOT NULL,
+    APPLICATION_RULE_VERSION_ID    UUID    NOT NULL,
+    APPLICATION_USER_ID            UUID    NOT NULL,
+    MACHINE_EVENT_ID               UUID    NOT NULL,
+    ALARM_LEVEL                    smallint             NOT NULL,
+    ALERT_TYPE                     smallint             NOT NULL,
+    USER_RESPONSE                  text       NULL,
+    ALERT_BLOCKED                  BOOLEAN                 CONSTRAINT DF_MA_ABLOCK DEFAULT FALSE NOT NULL,
+    ALERT_RESOLUTION_STATUS        BOOLEAN                 CONSTRAINT DF_MA_ARSTATUS DEFAULT FALSE NOT NULL,
+    ALERT_UTC_DTTM                 timestamp            NOT NULL,
+    ALERT_LOCAL_DTTM               timestamp            NOT NULL,
+    ALERT_SENT                     BOOLEAN                 CONSTRAINT DF_MA_ASENT DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_MA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    ALERT_ROLLUP_COUNT             int                 CONSTRAINT DF_MA_ARC DEFAULT 1 NOT NULL,
+    BUNDLE_ID                      UUID    NULL,
+    PROCESS_NAME                   varchar(80)        NOT NULL,
+    EVENT_TYPE                     smallint            NULL,
+    MAIL_SUBJECT                   varchar(255)       NULL,
+    SENDER_EMAIL_ADDRESS           varchar(255)       NULL,
+    NET_DEVICE_ALERT_ID            varchar(128)       NULL,
+    BLOCK_CODE                     smallint             CONSTRAINT DF_MA_BCODE DEFAULT 0 NOT NULL,
+    SURVEY_SELECTION               int                 NULL,
+    SURVEY_ID                      UUID    NULL,
+    IS_EXPEDITED                   BOOLEAN                 NULL,
+    HAS_CUSTOMDATA                 BOOLEAN                 NULL,
+    EVENT_DISPLAY                  varchar(80)        NULL,
+    CONSTRAINT MACHINE_ALERT_PK PRIMARY KEY  (MACHINE_ALERT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: MACHINE_ALERT_DETAIL
+ */
+
+CREATE TABLE MACHINE_ALERT_DETAIL(
+    MACHINE_ALERT_DETAIL_ID    UUID    NOT NULL,
+    MACHINE_ALERT_ID           UUID    NOT NULL,
+    MACHINE_EVENT_DETAIL_ID    UUID    NULL,
+    BYTES_READ                 bigint              NULL,
+    BYTES_WRITTEN              bigint              NULL,
+    PROTOCOL_TYPE              smallint             NULL,
+    LOCAL_PORT                 int                 NULL,
+    REMOTE_PORT                int                 NULL,
+    DNS_HOSTNAME               varchar(255)       NULL,
+    NETWORK_ADDRESS            varchar(60)        NULL,
+    SRC_FILE_NAME              varchar(255)       NULL,
+    SRC_FILE_DIRECTORY         varchar(255)       NULL,
+    SRC_DRIVE_TYPE             smallint             NULL,
+    DEST_FILE_NAME             varchar(255)       NULL,
+    DEST_FILE_DIRECTORY        varchar(255)       NULL,
+    DEST_DRIVE_TYPE            smallint             NULL,
+    DEST_REMOVABLE             BOOLEAN                 NOT NULL,
+    PRINTER_NAME               varchar(260)       NULL,
+    PRINTER_JOBNAME            varchar(260)       NULL,
+    IS_OUTBOUND                BOOLEAN                 NOT NULL,
+    EVENT_SUBTYPE              int                 NULL,
+    CREATED_DTTM               timestamp            CONSTRAINT DF_MAD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    IS_PRIVATE_ADDRESS         BOOLEAN                 NOT NULL,
+    DETAIL_FILE_SIZE           bigint              NOT NULL,
+    RECIPIENT_EMAIL_ADDRESS    varchar(255)       NULL,
+    RECIPIENT_TYPE             smallint             NULL,
+    WAS_WIRELESS               BOOLEAN                 NOT NULL,
+    WAS_TERMINAL_SESSION       BOOLEAN                 NOT NULL,
+    SRC_FILE_ENCRYPTION        smallint             NULL,
+    DEST_FILE_ENCRYPTION       smallint             NULL,
+    WAS_MOBILE_DEVICE          BOOLEAN                 NOT NULL,
+    HAS_SRC_CLASSIFICATION     BOOLEAN                 NOT NULL,
+    HAS_DEST_CLASSIFICATION    BOOLEAN                 NOT NULL,
+    SRC_FILE_ID                UUID    NULL,
+    DEST_FILE_ID               UUID    NULL,
+    URL_PATH                   varchar(2000)      NULL,
+    SRC_NETWORK_ADDRESS        varchar(60)        NULL,
+    SRC_DNS_HOSTNAME           varchar(255)       NULL,
+    ADE_OBJECT_TYPE            varchar(128)       NULL,
+    DR_PRODUCT_TYPE            smallint             NULL,
+    DR_USER_NAME               varchar(128)       NULL,
+    DR_SERVER_NAME             varchar(128)       NULL,
+    WAS_SRC_FILE_CAPTURED      BOOLEAN                 NULL,
+    WAS_DEST_FILE_CAPTURED     BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED        smallint             NULL,
+    SRC_DEVICE_DESCRIPTION_ID  UUID    NULL,
+    DEST_DEVICE_DESCRIPTION_ID UUID    NULL,
+    WAS_PKI_AUTH               BOOLEAN                 NULL,
+    GID                        varchar(80)        NULL,
+    EMAIL_ADDRESS              varchar(256)       NULL,
+    WAS_SMIME_ENCRYPTED        BOOLEAN                 NULL,
+    WAS_SMIME_SIGNED           BOOLEAN                 NULL,
+    DEVICE_TYPE                varchar(255)       NULL,
+    DEVICE_ID                  varchar(255)       NULL,
+    PROCESS_DESCRIPTION_ID     UUID    NULL,
+    IMAGE_LOAD_UTC_DTTM        timestamp               NULL,
+    IMAGE_LOAD_LOCAL_DTTM      timestamp               NULL,
+    IMAGE_MD5                  UUID    NULL,
+    IMAGE_SHA1                 varchar(40)         NULL,
+    IMAGE_NAME                 varchar(256)       NULL,
+    IMAGE_BASE                 varchar(128)       NULL,
+    IMAGE_SHA256               varchar(64)         NULL,
+    IMAGE_CREATED_DTTM         timestamp               NULL,
+    IMAGE_MODIFIED_DTTM        timestamp               NULL,
+    PROCESS_PID                int                 NULL,
+    CUSTOMSTRING1              varchar(1024)      NULL,
+    CUSTOMSTRING2              varchar(1024)      NULL,
+    CUSTOMSTRING3              varchar(1024)      NULL,
+    CUSTOMSTRING4              varchar(1024)      NULL,
+    CUSTOMSTRING5              varchar(1024)      NULL,
+    CUSTOMSTRING6              varchar(1024)      NULL,
+    CUSTOMINT1                 int                 NULL,
+    CUSTOMINT2                 int                 NULL,
+    CUSTOMINT3                 int                 NULL,
+    CUSTOMINT4                 int                 NULL,
+    CUSTOMDATE1                timestamp               NULL,
+    CUSTOMDATE2                timestamp               NULL,
+    CUSTOMDATE3                timestamp               NULL,
+    CUSTOMDATE4                timestamp               NULL,
+    REG_SRC_PATH               varchar(1024)      NULL,
+    REG_DEST_PATH              varchar(1024)      NULL,
+    REG_VALUE_TYPE             smallint             NULL,
+    REG_VALUE                  varchar(2048)      NULL,
+    HOOKED_BEFORE_DG           BOOLEAN                 NULL,
+    HOOKED_BY_DG               BOOLEAN                 NULL,
+    HOOKED_MODULE_NAME         varchar(260)       NULL,
+    HOOKED_FUNCTION_NAME       varchar(128)       NULL,
+    HOOKED_OWNER_MODULE        varchar(260)       NULL,
+    HOOKED_ADDRESS             varchar(128)       NULL,
+    WAS_DLL_LOADED_RT          BOOLEAN                 NULL,
+    WAS_DLL_LOADED_AI          BOOLEAN                 NULL,
+    WAS_DLL_LOADED_UI          BOOLEAN                 NULL,
+    WAS_DLL_LOADED_RF          BOOLEAN                 NULL,
+    CONSTRAINT MACHINE_ALERT_DETAIL_PK PRIMARY KEY  (MACHINE_ALERT_DETAIL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_ALERT_POLICY
+ */
+
+CREATE TABLE MACHINE_ALERT_POLICY(
+    MACHINE_ALERT_POLICY_ID          UUID    NOT NULL,
+    MACHINE_ALERT_ID                 UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_MAP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_ALERT_POLICY_PK PRIMARY KEY  (MACHINE_ALERT_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_ALERT_RESOLUTION
+ */
+
+CREATE TABLE MACHINE_ALERT_RESOLUTION(
+    MACHINE_ALERT_RESOLUTION_ID    UUID    NOT NULL,
+    MACHINE_ALERT_ID               UUID    NOT NULL,
+    APPLICATION_USER_ID            UUID    NOT NULL,
+    RESOLUTION_CODE                int                 NOT NULL,
+    RESOLUTION_REASON              text       NULL,
+    RESOLUTION_DTTM                timestamp            CONSTRAINT DF_MAR_RESDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_ALERT_RESOLUTION_PK PRIMARY KEY  (MACHINE_ALERT_RESOLUTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+
+/*
+ * TABLE: MACHINE_BUNDLE_INFO
+ */
+CREATE TABLE MACHINE_BUNDLE_INFO(
+    MACHINE_ID                      UUID    NOT NULL,
+    BUNDLE_COUNT                    bigint              NOT NULL ,
+    RECEIVED_DTTM                   timestamp           NULL,
+ CONSTRAINT MACHINE_BUNDLE_INFO_PK PRIMARY KEY (MACHINE_ID)
+)
+;
+
+
+
+
+/*
+ * TABLE: MACHINE_CONFIGURATION_XML
+ */
+
+CREATE TABLE MACHINE_CONFIGURATION_XML(
+    MACHINE_ID                     UUID    NOT NULL,
+    MACHINE_CONFIGURATION_XML      xml                 NOT NULL,
+    TVA_CLIENT_FILTER_LIST_XML     xml                 NULL,
+    TVA_SERVER_ADDRESS_LIST_XML    xml                 NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_MACH_CONFIG_XML_CR_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_MACH_CONFIG_XML_MOD_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    IS_DIRTY                       BOOLEAN                 CONSTRAINT DF_MCX_IS_DIRTY DEFAULT TRUE NOT NULL,
+    CONSTRAINT MACHINE_CONFIGURATION_XML_PK PRIMARY KEY (MACHINE_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+
+;
+--CREATE INDEX PXML_MACHINE_CONFIGURATION_XML ON MACHINE_CONFIGURATION_XML (MACHINE_CONFIGURATION_XML)
+--;
+/*
+ * TABLE: MACHINE_CREDENTIAL
+ */
+
+CREATE TABLE MACHINE_CREDENTIAL(
+    MACHINE_CREDENTIAL_ID    UUID    NOT NULL,
+    MACHINE_ID               UUID    NOT NULL,
+    PUBLIC_KEY               text       NOT NULL,
+    PUBLIC_KEY_ACTIVE        BOOLEAN                 CONSTRAINT DF_MCR_PKEYACTIVE DEFAULT TRUE NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_MCR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_CREDENTIAL_PK PRIMARY KEY  (MACHINE_CREDENTIAL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: MACHINE_ENCRYPTION_PASSWORD
+ */
+
+CREATE TABLE MACHINE_ENCRYPTION_PASSWORD(
+    MACHINE_ENCRYPTION_PWORD_ID    bigint              ,
+    EVENT_UTC_DTTM                 timestamp            NOT NULL,
+    EVENT_LOCAL_DTTM               timestamp            NOT NULL,
+    TICKET_ID                      varchar(12)        NOT NULL,
+    SENDER_EMAIL_ADDRESS           varchar(255)       NOT NULL,
+    RECIPIENT_EMAIL_ADDRESS        varchar(255)       NOT NULL,
+    RECIPIENT_TYPE                 smallint             NOT NULL,
+    DEST_FILE_NAME                 varchar(255)       NOT NULL,
+    ENCRYPTION_PASSWORD            varchar(255)       NOT NULL,
+    BUNDLE_ID                      UUID    NOT NULL,
+    CONSTRAINT MACHINE_ENCRYPTION_PASSWORD_PK PRIMARY KEY  (MACHINE_ENCRYPTION_PWORD_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_EVENT
+ */
+
+CREATE TABLE MACHINE_EVENT(
+    MACHINE_EVENT_ID          UUID    NOT NULL,
+    MACHINE_ID                UUID    NOT NULL,
+    APPLICATION_USER_ID       UUID    NOT NULL,
+    MACHINE_PROCESS_ID        UUID    NOT NULL,
+    SRC_MACHINE_PROCESS_ID    UUID    NULL,
+    USER_SESSION_ID           UUID    NULL,
+    EVENT_TYPE                smallint            NOT NULL,
+    EVENT_BEGIN_UTC_DTTM      timestamp            NULL,
+    EVENT_END_UTC_DTTM        timestamp            NULL,
+    EVENT_BEGIN_LOCAL_DTTM    timestamp            NULL,
+    EVENT_END_LOCAL_DTTM      timestamp            NULL,
+    PROTOCOL_TYPE             smallint             NULL,
+    NETWORK_ADDRESS           varchar(60)        NULL,
+    REMOTE_PORT               int                 NULL,
+    LOCAL_PORT                int                 NULL,
+    DNS_HOSTNAME              varchar(255)       NULL,
+    EVENT_SUBTYPE             int                 NULL,
+    IS_OUTBOUND               BOOLEAN                 CONSTRAINT DF_ME_ISOUT DEFAULT FALSE NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_ME_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    IS_REMOVABLE              BOOLEAN                 CONSTRAINT DF_ME_ISREMOVABLE DEFAULT FALSE NOT NULL,
+    HAS_ALERT                 BOOLEAN                 CONSTRAINT DF_ME_HASALERT DEFAULT FALSE NOT NULL,
+    BUNDLE_ID                 UUID    NULL,
+    PROCESS_DESCRIPTION_ID    UUID    NULL,
+    PROCESS_NAME              varchar(80)        NULL,
+    IS_PRIVATE_ADDRESS        BOOLEAN                 CONSTRAINT DF_ME_IPA DEFAULT FALSE NOT NULL,
+    FILE_SIZE                 bigint              CONSTRAINT DF_ME_FSIZE DEFAULT 0 NOT NULL,
+    DETAIL_ROWCOUNT           int                 CONSTRAINT DF_ME_DRWCNT DEFAULT 1 NOT NULL,
+    MAIL_SUBJECT              varchar(255)       NULL,
+    SENDER_EMAIL_ADDRESS      varchar(255)       NULL,
+    WAS_TERMINAL_SESSION      BOOLEAN                 CONSTRAINT DF_ME_WTS DEFAULT FALSE NOT NULL,
+    WAS_WIRELESS              BOOLEAN                 CONSTRAINT DF_ME_WW DEFAULT FALSE NOT NULL,
+    HAS_CLASSIFICATION        BOOLEAN                 CONSTRAINT DF_ME_HC DEFAULT FALSE NOT NULL,
+    WAS_MOBILE_DEVICE         BOOLEAN                 CONSTRAINT DF_ME_WMD DEFAULT FALSE NOT NULL,
+    URL_PATH                  varchar(2000)      NULL,
+    SRC_NETWORK_ADDRESS       varchar(60)        NULL,
+    SRC_DNS_HOSTNAME          varchar(255)       NULL,
+    ADE_OBJECT_TYPE           varchar(128)       NULL,
+    WAS_BLOCKED               BOOLEAN                 CONSTRAINT DF_ME_WBLOCK DEFAULT FALSE NOT NULL,
+    DR_PRODUCT_TYPE           smallint             NULL,
+    DR_USER_NAME              varchar(128)       NULL,
+    DR_SERVER_NAME            varchar(128)       NULL,
+    CD_BURNID                 UUID    NULL,
+    WAS_FILE_CAPTURED         BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED       smallint             NULL,
+    DEVICE_DESCRIPTION_ID     UUID    NULL,
+    WAS_PKI_AUTH              BOOLEAN                 NULL,
+    GID                       varchar(80)        NULL,
+    EMAIL_ADDRESS             varchar(256)       NULL,
+    WAS_SMIME_ENCRYPTED       BOOLEAN                 NULL,
+    WAS_SMIME_SIGNED          BOOLEAN                 NULL,
+    IMAGE_LOAD_UTC_DTTM       timestamp           NULL,
+    IMAGE_LOAD_LOCAL_DTTM     timestamp           NULL,
+    IMAGE_MD5                 UUID    NULL,
+    IMAGE_SHA1                varchar(40)         NULL,
+    IMAGE_NAME                varchar(256)       NULL,
+    IMAGE_BASE                varchar(128)       NULL,
+    IMAGE_SHA256              varchar(64)         NULL,
+    IMAGE_CREATED_DTTM        timestamp           NULL,
+    IMAGE_MODIFIED_DTTM       timestamp           NULL,
+    PROCESS_PID               int                 NULL,
+    CUSTOMSTRING1             varchar(1024)      NULL,
+    CUSTOMSTRING2             varchar(1024)      NULL,
+    CUSTOMSTRING3             varchar(1024)      NULL,
+    CUSTOMSTRING4             varchar(1024)      NULL,
+    CUSTOMSTRING5             varchar(1024)      NULL,
+    CUSTOMSTRING6             varchar(1024)      NULL,
+    CUSTOMINT1                int                 NULL,
+    CUSTOMINT2                int                 NULL,
+    CUSTOMINT3                int                 NULL,
+    CUSTOMINT4                int                 NULL,
+    CUSTOMDATE1               timestamp           NULL,
+    CUSTOMDATE2               timestamp           NULL,
+    CUSTOMDATE3               timestamp           NULL,
+    CUSTOMDATE4               timestamp           NULL,
+    HAS_CUSTOMDATA            BOOLEAN                 NULL,
+    EVENT_DISPLAY             varchar(80)        NULL,
+    WAS_DLL_LOADED_RT         BOOLEAN                 NULL,
+    WAS_DLL_LOADED_AI         BOOLEAN                 NULL,
+    WAS_DLL_LOADED_UI         BOOLEAN                 NULL,
+    WAS_DLL_LOADED_RF         BOOLEAN                 NULL,
+    CONSTRAINT MACHINE_EVENT_PK PRIMARY KEY  (MACHINE_EVENT_ID)
+    WITH (FILLFACTOR = 67)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_EVENT_DETAIL
+ */
+
+CREATE TABLE MACHINE_EVENT_DETAIL(
+    MACHINE_EVENT_DETAIL_ID      UUID    NOT NULL,
+    MACHINE_ID                   UUID    NOT NULL,
+    MACHINE_EVENT_ID             UUID    NOT NULL,
+    USER_SESSION_ID              UUID    NULL,
+    EVENT_DETAIL_TYPE            smallint             NOT NULL,
+    SRC_FILE_NAME                varchar(255)       NULL,
+    SRC_FILE_EXTENSION           varchar(40)        NULL,
+    SRC_FILE_DIRECTORY           varchar(255)       NULL,
+    SRC_VOLUME_SERIAL_NUMBER     int                 NULL,
+    SRC_DRIVE_TYPE               smallint             NULL,
+    SRC_REMOVABLE                BOOLEAN                 CONSTRAINT DF_MED_SREMOVABLE DEFAULT FALSE NOT NULL,
+    DEST_FILE_NAME               varchar(255)       NULL,
+    DEST_FILE_EXTENSION          varchar(40)        NULL,
+    DEST_FILE_DIRECTORY          varchar(255)       NULL,
+    DEST_VOLUME_SERIAL_NUMBER    int                 NULL,
+    BYTES_READ                   bigint              NULL,
+    DEST_DRIVE_TYPE              smallint             NULL,
+    DEST_REMOVABLE               BOOLEAN                 CONSTRAINT DF_MED_DREMOVABLE DEFAULT FALSE NOT NULL,
+    BYTES_WRITTEN                bigint              NULL,
+    PRINTER_JOBNAME              varchar(260)       NULL,
+    PRINTER_NAME                 varchar(260)       NULL,
+    CREATED_DTTM                 timestamp            CONSTRAINT DF_MED_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    FILE_SIZE                    bigint              CONSTRAINT DF_MED_FSIZE DEFAULT 0 NOT NULL,
+    HAS_ALERT                    BOOLEAN                 CONSTRAINT DF_MED_HAS_ALERT DEFAULT FALSE NOT NULL,
+    RECIPIENT_EMAIL_ADDRESS      varchar(255)       NULL,
+    RECIPIENT_TYPE               smallint             NULL,
+    SRC_FILE_ENCRYPTION          smallint             NULL,
+    DEST_FILE_ENCRYPTION         smallint             NULL,
+    HAS_SRC_CLASSIFICATION       BOOLEAN                 CONSTRAINT DF_MED_HSC DEFAULT FALSE NOT NULL,
+    HAS_DEST_CLASSIFICATION      BOOLEAN                 CONSTRAINT DF_MED_HDC DEFAULT FALSE NOT NULL,
+    SRC_FILE_ID                  UUID    NULL,
+    DEST_FILE_ID                 UUID    NULL,
+    WAS_BLOCKED                  BOOLEAN                 CONSTRAINT DF_MED_WBLOCK DEFAULT FALSE NOT NULL,
+    BLOCK_CODE                   smallint             CONSTRAINT DF_MED_BCODE DEFAULT 0 NOT NULL,
+    SURVEY_SELECTION             int                 NULL,
+    SURVEY_ID                    UUID    NULL,
+    USER_RESPONSE                text       NULL,
+    WAS_SRC_FILE_CAPTURED        BOOLEAN                 NULL,
+    WAS_DEST_FILE_CAPTURED       BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED          smallint             NULL,
+    SRC_DEVICE_DESCRIPTION_ID    UUID    NULL,
+    DEST_DEVICE_DESCRIPTION_ID   UUID    NULL,
+    DEVICE_TYPE                  varchar(255)       NULL,
+    DEVICE_ID                    varchar(255)       NULL,
+    REG_SRC_PATH                 varchar(1024)      NULL,
+    REG_DEST_PATH                varchar(1024)      NULL,
+    REG_VALUE_TYPE               smallint             NULL,
+    REG_VALUE                    varchar(2048)      NULL,
+    HOOKED_BEFORE_DG             BOOLEAN                 NULL,
+    HOOKED_BY_DG                 BOOLEAN                 NULL,
+    HOOKED_MODULE_NAME           varchar(260)       NULL,
+    HOOKED_FUNCTION_NAME         varchar(128)       NULL,
+    HOOKED_OWNER_MODULE          varchar(260)       NULL,
+    HOOKED_ADDRESS               varchar(128)       NULL,
+    CONSTRAINT MACHINE_EVENT_DETAIL_PK PRIMARY KEY  (MACHINE_EVENT_DETAIL_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_MSG_CONFIRMATION
+ */
+
+CREATE TABLE MACHINE_MSG_CONFIRMATION(
+    MACHINE_MSG_CONFIRMATION_ID    UUID    NOT NULL,
+    MACHINE_ID                     UUID    NOT NULL,
+    MSG_TYPE                       smallint             NOT NULL,
+    CONFIRMATION_XML               xml                 NOT NULL,
+    CONFIRMATION_DTTM              timestamp            NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_MACH_MSG_CON_CR_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_MSG_CONFIRMATION_PK PRIMARY KEY (MACHINE_MSG_CONFIRMATION_ID)
+    WITH (FILLFACTOR = 70)
+    ,
+    CONSTRAINT AK_MACHINE_MSG_CONFIRMATION  UNIQUE (MACHINE_ID, MSG_TYPE)
+    WITH (FILLFACTOR = 70)
+
+)
+;
+
+
+
+
+
+
+;
+--CREATE INDEX PXML_MACHINE_MSG_CONFIRMATION ON MACHINE_MSG_CONFIRMATION (CONFIRMATION_XML)
+--;
+/*
+ * TABLE: MACHINE_OPERATIONAL_ALERT
+ */
+
+CREATE TABLE MACHINE_OPERATIONAL_ALERT(
+    MACHINE_OPERATIONAL_ALERT_ID    bigint              ,
+    MACHINE_ID                      UUID    NOT NULL,
+    ALERT_ID                        smallint             NULL,
+    ALERT_TYPE                      char(4)             NOT NULL,
+    ALERT_DATA                      text       NOT NULL,
+    ALERT_SENT                      BOOLEAN                 CONSTRAINT DF_MOA_ASENT DEFAULT FALSE NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_MOA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_OPERATIONAL_ALERT_PK PRIMARY KEY  (MACHINE_OPERATIONAL_ALERT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: MACHINE_PROCESS
+ */
+
+CREATE TABLE MACHINE_PROCESS(
+    MACHINE_PROCESS_ID            UUID    NOT NULL, --h
+    MACHINE_ID                    UUID    NOT NULL,
+    APPLICATION_USER_ID           UUID    NOT NULL,
+    PROCESS_DESCRIPTION_ID        UUID    NOT NULL, --md5
+    APPLICATION_DIRECTORY_NAME    varchar(260)       NULL,
+    APPLICATION_FILE_NAME         varchar(260)       NULL,
+    FILE_EXTENSION                varchar(40)        NULL,
+    PROCESS_NAME                  varchar(80)        NOT NULL,
+    USER_SESSION_ID               UUID    NOT NULL,
+    PROCESS_BEGIN_UTC_DTTM        timestamp            CONSTRAINT DF_MP_BPUDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROCESS_STATE                 smallint             CONSTRAINT DF_MP_PROCSTATE DEFAULT 0 NOT NULL,
+    PROCESS_BEGIN_LOCAL_DTTM      timestamp            CONSTRAINT DF_MP_BBLDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROCESS_END_UTC_DTTM          timestamp            NULL,
+    PROCESS_END_LOCAL_DTTM        timestamp            NULL,
+    ESTIMATED_END_DTTM            timestamp            NULL,
+    MODIFIED_DTTM                 timestamp            CONSTRAINT DF_MP_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_MP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    WAS_TERMINAL_SESSION          BOOLEAN                 CONSTRAINT DF_MP_WAS_TERMINAL_SESSION DEFAULT FALSE NOT NULL,
+    PARENT_MACHINE_PROCESS_ID     UUID    NULL,
+    PROCESS_SHA1                  varchar(40)         NULL,
+    PROCESS_FLAGS                 varchar(256)       NULL,
+    PROCESS_SHA256                varchar(64)         NULL,
+    PROCESS_CREATED_DTTM          timestamp            NULL,
+    PROCESS_MODIFIED_DTTM         timestamp            NULL,
+    PROCESS_PID                   int                 NULL,
+    CONSTRAINT MACHINE_PROCESS_PK PRIMARY KEY  (MACHINE_PROCESS_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_SCAN_EVENT
+ */
+
+CREATE TABLE MACHINE_SCAN_EVENT(
+    MACHINE_SCAN_EVENT_ID       UUID    CONSTRAINT DF_MSE_MACHINE_SCAN_EVENT_ID DEFAULT uuid_generate_v4() NOT NULL,
+    MACHINE_ID                  UUID    NOT NULL,
+    WAS_MOBILE_DEVICE           BOOLEAN                 CONSTRAINT DF_MSE_WMD DEFAULT FALSE NOT NULL,
+    CLASSIFICATION_TYPE         smallint             NULL,
+    CLASSIFICATION_ID           UUID    NULL,
+    EVENT_LOCAL_DTTM            timestamp            NOT NULL,
+    EVENT_UTC_DTTM              timestamp            NOT NULL,
+    SCAN_COUNT                  bigint              NOT NULL,
+    SCAN_COUNT_ENCRYPTED        bigint              NOT NULL,
+    SCAN_FREQUENCY              bigint              NOT NULL,
+    SCAN_FREQUENCY_ENCRYPTED    bigint              NOT NULL,
+    BUNDLE_ID                   UUID    NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_MSE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_SCAN_EVENT_PK PRIMARY KEY  (MACHINE_SCAN_EVENT_ID)
+    WITH (FILLFACTOR = 80)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: NET_DEVICE_FAILURE_REP
+ */
+
+CREATE TABLE NET_DEVICE_FAILURE_REP(
+    BUNDLE_ID                UUID    NOT NULL,
+    PROCESS_RETRY_COUNT      int                 CONSTRAINT DF_NDFR_PRCNT DEFAULT 1 NOT NULL,
+    BUNDLE_FAILURE_ACTIVE    BOOLEAN                 CONSTRAINT DF_NDFR_BFACTIVE DEFAULT TRUE NOT NULL,
+    FAILURE_REASON           text       NULL,
+    FAILURE_ACTIVE_REASON    smallint             NULL,
+    RETRY_DTTM               timestamp            NULL,
+    RESOLUTION_DTTM          timestamp            NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_NDFR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NET_DEVICE_FAILURE_REP_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: NET_DEVICE_QUEUE
+ */
+
+CREATE TABLE NET_DEVICE_QUEUE(
+    BUNDLE_ID              UUID    NOT NULL,
+    SERVICE_ID             UUID    NULL,
+    BATCH_ID               UUID    NULL,
+    PROCESS_RETRY_COUNT    int                 CONSTRAINT DF_NDQ_PRCNT DEFAULT 0 NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_NDQ_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NET_DEVICE_QUEUE_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: NET_DEVICE_REPOSITORY
+ */
+
+CREATE TABLE NET_DEVICE_REPOSITORY(
+    BUNDLE_ID       UUID    NOT NULL,
+    ALERT_ID        varchar(128)       NOT NULL,
+    MACHINE_ID      UUID    NOT NULL,
+    SENSOR_NAME     varchar(128)       NOT NULL,
+    ALERT_XML       text       NOT NULL,
+    CREATED_DTTM    timestamp            CONSTRAINT DF_NDR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NET_DEVICE_REPOSITORY_PK PRIMARY KEY  (BUNDLE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+
+;
+/*
+ * TABLE: NETWORK_COMPUTER
+ */
+
+CREATE TABLE NETWORK_COMPUTER(
+    NETWORK_COMPUTER_ID    UUID    NOT NULL,
+    MACHINE_TYPE           int                 NOT NULL,
+    INSTALL_STATUS         smallint             CONSTRAINT DF_NC_INSTSTATUS DEFAULT 0 NOT NULL,
+    NETWORK_ADDRESS        varchar(60)        NULL,
+    OS_VERSION_MAJOR       int                 NULL,
+    OS_VERSION_MINOR       int                 NULL,
+    MACHINE_TYPE_STRING    varchar(255)       NULL,
+    CONSTRAINT NETWORK_COMPUTER_PK PRIMARY KEY  (NETWORK_COMPUTER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: NOTIFICATION_CRITERION
+ */
+
+CREATE TABLE NOTIFICATION_CRITERION(
+    NOTIFICATION_CRITERION_ID      UUID    NOT NULL,
+    APPLICATION_NOTIFICATION_ID    UUID    NOT NULL,
+    ARGUMENT_KEY                   varchar(128)       NOT NULL,
+    ARGUMENT_VALUE                 varchar(1024)       NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_NC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NOTIFICATION_CRITERION_PK PRIMARY KEY  (NOTIFICATION_CRITERION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: NOTIFICATION_DISTRIBUTOR
+ */
+
+CREATE TABLE NOTIFICATION_DISTRIBUTOR(
+    NOTIFICATION_DISTRIBUTOR_ID    UUID    NOT NULL,
+    APPLICATION_NOTIFICATION_ID    UUID    NOT NULL,
+    APPLICATION_DISTRIBUTOR_ID     int                 NOT NULL,
+    CONFIGURATION_KEY              varchar(128)       NOT NULL,
+    CONFIGURATION_VALUE            varchar(1024)      NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_ND_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NOTIFICATION_DISTRIBUTOR_PK PRIMARY KEY  (NOTIFICATION_DISTRIBUTOR_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: NOTIFICATION_SUBSCRIBER
+ */
+
+CREATE TABLE NOTIFICATION_SUBSCRIBER(
+    NOTIFICATION_SUBSCRIBER_ID     UUID    NOT NULL,
+    APPLICATION_NOTIFICATION_ID    UUID    NOT NULL,
+    APPLICATION_DISTRIBUTOR_ID     int                 NOT NULL,
+    SUBSCRIBER_TYPE                smallint             NOT NULL,
+    SUBSCRIBER_NAME                varchar(128)       NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_NS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT NOTIFICATION_SUBSCRIBER_PK PRIMARY KEY  (NOTIFICATION_SUBSCRIBER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: POLICY_GROUP
+ */
+
+CREATE TABLE POLICY_GROUP(
+    APPLICATION_POLICY_ID    UUID    NOT NULL,
+    APPLICATION_GROUP_ID     UUID    NOT NULL,
+    APPLICATION_USER_ID      UUID    NOT NULL,
+    POLICY_GROUP_ACTIVE      BOOLEAN                 CONSTRAINT DF_PG_PGACTIVE DEFAULT TRUE NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_PG_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_PG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT POLICY_GROUP_PK PRIMARY KEY  (APPLICATION_POLICY_ID, APPLICATION_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: POLICY_GROUP_RULE_EXCEPTION
+ */
+
+CREATE TABLE POLICY_GROUP_RULE_EXCEPTION(
+    APPLICATION_GROUP_ID     UUID    NOT NULL,
+    APPLICATION_RULE_ID      UUID    NOT NULL,
+    APPLICATION_POLICY_ID    UUID    NOT NULL,
+    EXCEPTION_ACTIVE         BOOLEAN                 CONSTRAINT DF_PGRE_EACTIVE DEFAULT TRUE NOT NULL,
+    APPLICATION_USER_ID      UUID    NOT NULL,
+    MODIFIED_DTTM            timestamp            CONSTRAINT DF_PGRE_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM             timestamp            CONSTRAINT DF_PGRE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    BLANKET_EXCEPTION        BOOLEAN                 CONSTRAINT DF_PGRE_BLANKET_EX DEFAULT FALSE NOT NULL,
+    CONSTRAINT POLICY_GROUP_RULE_EXCEPTION_PK PRIMARY KEY  (APPLICATION_GROUP_ID, APPLICATION_RULE_ID, APPLICATION_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: PROCEDURE_PARAMETER
+ */
+
+CREATE TABLE PROCEDURE_PARAMETER(
+    PROCEDURE_PARAMETER_ID    UUID    NOT NULL,
+    PROCEDURE_NAME            varchar(255)       NOT NULL,
+    PARAMETER_NAME            varchar(255)       NOT NULL,
+    PARAMETER_DATATYPE        varchar(255)       NOT NULL,
+    PARAMETER_OPTIONAL        BOOLEAN                 NOT NULL,
+    CONSTRAINT PROCEDURE_PARAMETER_PK PRIMARY KEY (PROCEDURE_PARAMETER_ID)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: PROCESS_DESCRIPTION
+ */
+
+CREATE TABLE PROCESS_DESCRIPTION(
+    PROCESS_DESCRIPTION_ID    UUID    NOT NULL,
+    COMPANY_NAME              varchar(255)       NULL,
+    PRODUCT_NAME              varchar(255)       NULL,
+    FILE_DESCRIPTION          varchar(255)       NULL,
+    FILE_VERSION              varchar(255)       NULL,
+    PRODUCT_VERSION           varchar(255)       NULL,
+    LEGAL_COPYRIGHT           varchar(255)       NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_PD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROCESS_NAME              varchar(80)        NOT NULL,
+    CONTROL_TYPE              smallint             CONSTRAINT DF_PD_CT DEFAULT 0 NOT NULL,
+    CONTROL_BY                smallint             CONSTRAINT DF_PD_CB DEFAULT 1 NOT NULL,
+    IS_NET_DEVICE_PROCESS     BOOLEAN                 CONSTRAINT DF_PD_ND DEFAULT FALSE NOT NULL,
+    FULL_PROCESS_NAME         varchar(260)       NULL,
+    PROCESS_SHA1              varchar(40)         NULL,
+    PROCESS_SHA256            varchar(64)         NULL,
+    PROCESS_CREATED_DTTM      timestamp            NULL,
+    PROCESS_MODIFIED_DTTM     timestamp            NULL,
+    VALUE_STATUS              smallint             NULL,
+    VALUE_STATUS_TEXT         varchar(256)       NULL,
+    VALUE_STATUS_DTTM         timestamp           NULL,
+    CONSTRAINT PROCESS_DESCRIPTION_PK PRIMARY KEY  (PROCESS_DESCRIPTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: PROMPT_RESOURCE
+ */
+
+CREATE TABLE PROMPT_RESOURCE(
+    PROMPT_RESOURCE_ID                UUID    NOT NULL,
+    PROMPT_RESOURCE_VERSION           int                 NOT NULL,
+    PROMPT_RESOURCE_NAME              varchar(50)        NOT NULL,
+    PROMPT_RESOURCE_DESC              varchar(255)       NULL,
+    PROMPT_RESOURCE_DATA              xml                 NOT NULL,
+    WORKFLOW_STATE_ID                 smallint             NOT NULL,
+    CREATED_DTTM                      timestamp            CONSTRAINT DF_PRES_CRDT DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                     timestamp            CONSTRAINT DF_PRES_MODDT DEFAULT (now() at time zone 'utc') NOT NULL,
+    PROMPT_RESOURCE_DEFAULT_LOCALE    int                 NOT NULL,
+    READ_ONLY                       BOOLEAN                 DEFAULT FALSE NOT NULL,
+    CONSTRAINT PK_PROMPT_RESOURCE PRIMARY KEY  (PROMPT_RESOURCE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: PROMPT_RESOURCE_MAP
+ */
+
+CREATE TABLE PROMPT_RESOURCE_MAP(
+    APPLICATION_PROMPT_ID    UUID    NOT NULL,
+    PROMPT_RESOURCE_ID       UUID    NOT NULL,
+    CONSTRAINT IK_PROMPT_RESOURCE_MAP  UNIQUE (APPLICATION_PROMPT_ID, PROMPT_RESOURCE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: PROMPT_RESOURCE_VERSION
+ */
+
+CREATE TABLE PROMPT_RESOURCE_VERSION(
+    PROMPT_RESOURCE_VERSION_ID    UUID    NOT NULL,
+    PROMPT_RESOURCE_ID            UUID    NOT NULL,
+    PROMPT_RESOURCE_VERSION       int                 NOT NULL,
+    PROMPT_RESOURCE_DATA          xml                 NOT NULL,
+    CREATED_DTTM                  timestamp            CONSTRAINT DF_PRV_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                 timestamp            CONSTRAINT DF_PRV_MODIFIED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_PROMPT_RESOURCE_VERSION PRIMARY KEY  (PROMPT_RESOURCE_VERSION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+/*
+ * TABLE: PARTNER
+ */
+
+CREATE TABLE PARTNER(
+    PARTNER_ID    INT NOT NULL,
+    PARTNER_NAME    varchar(255)   NOT NULL,
+    VERIFY_CALLER   BOOLEAN     NOT NULL,
+    CREATED_DTTM    timestamp CONSTRAINT DF_PARTNER_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_PARTNER PRIMARY KEY  (PARTNER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+/*
+ * TABLE: PARTNER_COMPONENT
+ */
+
+CREATE TABLE PARTNER_COMPONENT(
+    PARTNER_ID    INT    NOT NULL,
+    COMPONENT_DISPLAY_NAME varchar(1024) NOT NULL,
+    COMPONENT_NAME  varchar(512)   NOT NULL,
+    COMPONENT_HASH  bit(32)      NOT NULL,
+    CREATED_DTTM                  timestamp            DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_PARTNER_COMPONENT PRIMARY KEY  (PARTNER_ID,COMPONENT_HASH)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+ALTER TABLE PARTNER_COMPONENT ADD CONSTRAINT REF_PARTNER_ID
+    FOREIGN KEY (PARTNER_ID)
+    REFERENCES PARTNER(PARTNER_ID)
+;
+
+
+
+
+
+/*
+ * TABLE: RECOVERY_REQUEST
+ */
+
+CREATE TABLE RECOVERY_REQUEST(
+    RECOVERY_REQUEST_ID    bigint            ,
+    RECOVERY_STATUS        smallint           NOT NULL,
+    RECOVERY_TYPE          smallint           NOT NULL,
+    RECOVERY_VERSION       varchar(25)      NOT NULL,
+    RECOVERY_REASON        varchar(2000)    NULL,
+    BEGIN_DTTM             int               NULL,
+    END_DTTM               int               NULL,
+    IDENTIFIER_VALUE       varchar(255)     NULL,
+    CREATED_DTTM           timestamp          CONSTRAINT DF_RQ_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT RECOVERY_REQUEST_PK PRIMARY KEY  (RECOVERY_REQUEST_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: REPORT_FEED
+ */
+
+CREATE TABLE REPORT_FEED(
+    REPORT_FEED_ID        bigint              ,
+    BATCH_ID              UUID    NOT NULL,
+    FEED_TYPE             int                 NOT NULL,
+    REPORT_FEED_STATUS    smallint             NOT NULL,
+    FEED_BEGIN_DTTM       timestamp            NOT NULL,
+    FEED_END_DTTM         timestamp            NULL,
+    FEED_OBJECT_NAME      varchar(255)       NOT NULL,
+    CYCLED_DTTM           timestamp            NULL,
+    TRANSFER_DTTM         timestamp            NULL,
+    CLEANUP_DTTM          timestamp            NULL,
+    COMPLETED_DTTM        timestamp            NULL,
+    FEED_PRIORITY         smallint             NOT NULL,
+    TRANSFER_COUNT        int                 CONSTRAINT DF_RF_TCOUNT DEFAULT 0 NOT NULL,
+    AVERAGE_PER_AGENT     int                 CONSTRAINT DF_RF_APAGENT DEFAULT 0 NOT NULL,
+    ALERT_SENT            BOOLEAN                 CONSTRAINT DF_RF_ASENT DEFAULT FALSE NOT NULL,
+    CONSTRAINT REPORT_FEED_PK PRIMARY KEY  (REPORT_FEED_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: REPORT_NOTIFICATION
+ */
+
+CREATE TABLE REPORT_NOTIFICATION(
+    REPORT_NOTIFICATION_ID         UUID    NOT NULL,
+    APPLICATION_NOTIFICATION_ID    UUID    NOT NULL,
+    NOTIFICATION_NAME              varchar(128)       NOT NULL,
+    NOTIFICATION_DESCRIPTION       varchar(512)       NULL,
+    SCHEDULE_TYPE                  smallint             NULL,
+    SCHEDULE_INTERVAL              smallint             NULL,
+    SCHEDULE_TIME                  char(4)             CONSTRAINT DF_RN_SCHTIME DEFAULT '0' NOT NULL,
+    SEND_EMPTY_EMAIL               BOOLEAN                 CONSTRAINT DF_RN_SEEMAIL DEFAULT TRUE NOT NULL,
+    EMAIL_SUBJECT                  varchar(256)       NULL,
+    EMAIL_SUBJECT_EMPTY            varchar(256)       NULL,
+    MODIFIED_DTTM                  timestamp            CONSTRAINT DF_RN_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                   timestamp            CONSTRAINT DF_RN_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    RUN_TYPE                       smallint             CONSTRAINT DF_RN_RNTYPE DEFAULT 0 NOT NULL,
+    RUN_DTTM                       timestamp            NULL,
+    IS_ACTIVE                      BOOLEAN                 CONSTRAINT DF_RN_ISACTIVE DEFAULT TRUE NOT NULL,
+    REPORT_TEXT                    varchar(1500)      NULL,
+    REPORT_TEXT_EMPTY              varchar(256)       NULL,
+    INCLUDE_SCHEDULE               BOOLEAN                 CONSTRAINT DF_RN_INCSCHED DEFAULT TRUE NOT NULL,
+    ATTACH_PREFIX                  varchar(256)       NULL,
+    INCLUDE_QUERY_OPTIONS          BOOLEAN                 CONSTRAINT DF_RN_INCQUERY DEFAULT TRUE NOT NULL,
+    INCLUDE_DESCRIPTION            BOOLEAN                 CONSTRAINT DF_RN_INCDESC DEFAULT FALSE NOT NULL,
+    DELIVERY_TYPE                  smallint             CONSTRAINT DF_RN_DELTYPE DEFAULT 0 NOT NULL,
+    REPORT_DESCRIPTION             varchar(1500)      NULL,
+    INCLUDE_REPORT_DESCRIPTION     smallint             CONSTRAINT DF_RN_INCRD DEFAULT 0 NOT NULL,
+    CONSTRAINT REPORT_NOTIFICATION_PK PRIMARY KEY  (REPORT_NOTIFICATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: REPORT_NOTIFICATION_DETAIL
+ */
+
+CREATE TABLE REPORT_NOTIFICATION_DETAIL(
+    REPORT_NOTIFICATION_DETAIL_ID    UUID    NOT NULL,
+    REPORT_NOTIFICATION_ID           UUID    NOT NULL,
+    DGMC_USER_REPORT_ID              UUID    NOT NULL,
+    EMAIL_DELIVERY_TYPE              smallint             NULL,
+    MODIFIED_DTTM                    timestamp            CONSTRAINT DF_RND_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_RND_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT REPORT_NOTIFICATION_DETAIL_PK PRIMARY KEY  (REPORT_NOTIFICATION_DETAIL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: REPORT_NOTIFICATION_STATUS
+ */
+
+CREATE TABLE REPORT_NOTIFICATION_STATUS(
+    REPORT_NOTIFICATION_STATUS_ID    UUID    NOT NULL,
+    REPORT_NOTIFICATION_ID           UUID    NOT NULL,
+    REPORT_NOTIFICATION_DETAIL_ID    UUID    NULL,
+    NOTIFICATION_STATUS              smallint             DEFAULT 0 NOT NULL,
+    NOTIFICATION_MESSAGE             varchar(512)       NULL,
+    CREATED_DTTM                     timestamp            NOT NULL,
+    CONSTRAINT PK_REPORT_NOTIFICATION_STATUS PRIMARY KEY  (REPORT_NOTIFICATION_STATUS_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: RULE_AFFILIATION
+ */
+
+CREATE TABLE RULE_AFFILIATION(
+    RULE_AFFILIATION_ID    UUID    NOT NULL,
+    PARENT_RULE_ID         UUID    NOT NULL,
+    AFFILIATION_ID         UUID    NOT NULL,
+    AFFILIATION_TYPE       smallint             CONSTRAINT DF_RA_AFFTYPE DEFAULT 0 NOT NULL,
+    CREATED_DTTM           timestamp            CONSTRAINT DF_RA_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    NESTED_AFFILIATION     BOOLEAN                 CONSTRAINT DF_RA_NESTED_A DEFAULT FALSE NOT NULL,
+    CONSTRAINT RULE_AFFILIATION_PK PRIMARY KEY  (RULE_AFFILIATION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: RUN_STEP_ERROR
+ */
+
+CREATE TABLE RUN_STEP_ERROR(
+    RUN_STEP_ERROR_ID    UUID    NOT NULL,
+    JOB_RUN_STEP_ID      UUID    NOT NULL,
+    ERROR_SEVERITY       int                 NOT NULL,
+    ERROR_MESSAGE        varchar(2000)      NOT NULL,
+    CREATED_DTTM         timestamp            CONSTRAINT DF_RSE_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT RUN_STEP_ERROR_PK PRIMARY KEY  (RUN_STEP_ERROR_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: SECTION_PRIVILEGE
+ */
+
+CREATE TABLE SECTION_PRIVILEGE(
+    SECTION_PRIVILEGE_ID        UUID    NOT NULL,
+    APPLICATION_SECTION_ID      UUID    NOT NULL,
+    APPLICATION_PRIVILEGE_ID    int                 NOT NULL,
+    CREATED_DTTM                timestamp            CONSTRAINT DF_SP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT SECTION_PRIVILEGE_PK PRIMARY KEY  (SECTION_PRIVILEGE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: STORAGE_CONTENT_HANDLER
+ */
+
+CREATE TABLE STORAGE_CONTENT_HANDLER(
+    STORAGE_CONTENT_HANDLER_ID  UUID NOT NULL,
+    STORAGE_NAME                varchar(128) CONSTRAINT DF_STORAGE_NAME DEFAULT '' NOT NULL,
+    STORAGE_TYPE                smallint NOT NULL,
+    STORAGE_PARAM               xml,
+    CONSTRAINT PK_STORAGE_CONTENT_HANDLER PRIMARY KEY  (STORAGE_CONTENT_HANDLER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+CREATE UNIQUE INDEX AK_SCH_STORAGE_NAME ON STORAGE_CONTENT_HANDLER(STORAGE_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+
+/*
+ * TABLE: STORAGE_CONTENT
+ */
+
+CREATE TABLE STORAGE_CONTENT(
+
+    STORAGE_CONTENT_ID          UUID NOT NULL,
+    STORAGE_CONTENT_HANDLER_ID  UUID NOT NULL,
+    STORAGE_DATA_ID             UUID NULL,
+    MODIFIED_DTTM               timestamp CONSTRAINT DF_SC_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                timestamp CONSTRAINT DF_SC_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_STORAGE_CONTENT PRIMARY KEY  (STORAGE_CONTENT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: STORAGE_DATA
+ */
+
+CREATE TABLE STORAGE_DATA(
+
+    STORAGE_DATA_ID     UUID NOT NULL,
+    STORAGE_DATA        bit varying(83886080)  NOT NULL,
+    CREATED_DTTM        timestamp CONSTRAINT DF_SD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_STORAGE_DATA PRIMARY KEY  (STORAGE_DATA_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: SCREEN_CAPTURE_FRAME
+ */
+
+CREATE TABLE SCREEN_CAPTURE_FRAME(
+    SCREEN_CAPTURE_FRAME_ID     UUID NOT NULL,
+    MACHINE_ID                  UUID NOT NULL,
+    APPLICATION_USER_ID         UUID NOT NULL,
+    ARTIFACT_ID                 UUID NOT NULL,
+    CAPTURE_DTTM                timestamp NOT NULL,
+    -- Agent didn't send this yet
+    -- AGENT_SESSION_ID         bigint NOT NULL,
+    AGENT_FRAME_ID              UUID NOT NULL,
+    MONITOR_ID                  smallint CONSTRAINT DF_SCF_MONITOR_ID DEFAULT 0 NOT NULL,
+    FRAME_CONTENT_ID            UUID NOT NULL,
+    FRAME_THUMBNAIL_ID          UUID NULL,
+    FRAME_TYPE                  smallint NOT NULL,
+    FRAME_WIDTH                 int NULL,
+    FRAME_HEIGHT                int NULL,
+    KEY_FRAME_REASON            int NULL,
+    SEQUENCE_NUMBER             int NULL,
+    PARAMS                      XML NULL,
+    CREATED_DTTM                timestamp CONSTRAINT DF_SCF_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_SCREEN_CAPTURE_FRAME PRIMARY KEY  (SCREEN_CAPTURE_FRAME_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: SCREEN_CAPTURE_SESSION
+ */
+
+CREATE TABLE SCREEN_CAPTURE_SESSION(
+    SCREEN_CAPTURE_SESSION_ID   UUID NOT NULL,
+    MACHINE_ID                  UUID NOT NULL,
+    APPLICATION_USER_ID         UUID NOT NULL,
+    MACHINE_EVENT_ID            UUID NULL,
+    START_DTTM                  timestamp NOT NULL,
+    END_DTTM                    timestamp NULL,
+    SESSION_CONTENT_ID          UUID NULL,
+    SESSION_CONTENT_TYPE        int NULL,
+    SESSION_STATUS              smallint NOT NULL,
+    MODIFIED_DTTM               timestamp CONSTRAINT DF_SCS_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                timestamp CONSTRAINT DF_SCS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT PK_SCREEN_CAPTURE_SESSION PRIMARY KEY (SCREEN_CAPTURE_SESSION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: WINDOWS_DOMAIN
+ */
+
+CREATE TABLE WINDOWS_DOMAIN(
+    WINDOWS_DOMAIN_ID         UUID    NOT NULL,
+    DOMAIN_TYPE               smallint             NOT NULL,
+    DOMAIN_ACTIVE             BOOLEAN                 CONSTRAINT DF_WD_DACTIVE DEFAULT TRUE NOT NULL,
+    DOMAIN_USER_NAME          varchar(128)       NULL,
+    DOMAIN_USER_PASSWORD      varchar(128)       NULL,
+    DOMAIN_SID                varchar(260)       NULL,
+    ROOT_SERVER_NAME          varchar(260)       NOT NULL,
+    CREATED_DTTM              timestamp            CONSTRAINT DF_WD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    RETRIEVE_OU               BOOLEAN                 CONSTRAINT DF_WD_ROU DEFAULT TRUE NOT NULL,
+    SYNC_TYPE                 smallint             CONSTRAINT DF_WD_SYTY DEFAULT 0 NOT NULL,
+    IMPORT_USERS              BOOLEAN                 CONSTRAINT DF_WD_IU DEFAULT TRUE NOT NULL,
+    IMPORT_COMPUTERS          BOOLEAN                 CONSTRAINT DF_WD_IC DEFAULT TRUE NOT NULL,
+    IMPORT_SECURITY_GROUPS    BOOLEAN                 CONSTRAINT DF_WD_ISG DEFAULT TRUE NOT NULL,
+    SYNC_SECURITY_GROUPS      BOOLEAN                 CONSTRAINT DF_WD_SSG DEFAULT TRUE NOT NULL,
+    RETRIEVE_LOCATION_DATA    BOOLEAN                 CONSTRAINT DF_WD_RLD DEFAULT FALSE NOT NULL,
+    RETRIEVE_ORG_DATA         BOOLEAN                 CONSTRAINT DF_WD_ROD DEFAULT FALSE NOT NULL,
+    RETRIEVE_DEPT_DATA        BOOLEAN                 CONSTRAINT DF_WD_RDD DEFAULT FALSE NOT NULL,
+    LDAP_SECURE_CONNECTION    BOOLEAN                 CONSTRAINT DF_WD_LDAPSCON DEFAULT FALSE NOT NULL,
+    LDAP_REQUIRE_SIGNING      BOOLEAN                 CONSTRAINT DF_WD_LDAPREGS DEFAULT FALSE NOT NULL,
+    LDAP_SYNC_DELTA           BOOLEAN                 CONSTRAINT DF_WD_LDAPSYNCD DEFAULT FALSE NOT NULL,
+    LAST_SUCCESSFUL_SYNC      timestamp            NULL,
+    RETRIEVE_BUSINESS_DATA    BOOLEAN                 CONSTRAINT DF_WD_RBD DEFAULT FALSE NOT NULL,
+    SUPPORT_GID               BOOLEAN                 CONSTRAINT DF_WD_GID DEFAULT FALSE NOT NULL,
+    LDAP_SSL                  BOOLEAN                 CONSTRAINT DF_WD_LDAPSSL DEFAULT FALSE NOT NULL,
+    LDAP_PORT                 int                 CONSTRAINT DF_WD_LDAPPORT DEFAULT 389 NOT NULL,
+    GC_PORT                   int                 CONSTRAINT DF_WD_GCPORT DEFAULT 3268 NOT NULL,
+    HAS_EXTERNAL_DOMAIN       BOOLEAN                 CONSTRAINT DF_WD_HASEXTERNAL DEFAULT FALSE NOT NULL,
+    EXTERNAL_DOMAIN           varchar(260)       NULL,
+    EXTERNAL_LDAP_PREFFIX     varchar(512)       NULL,
+    LDAP_PATH_COMBINED        varchar(512)       NULL,
+    CONSTRAINT WINDOWS_DOMAIN_PK PRIMARY KEY  (WINDOWS_DOMAIN_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: WINDOWS_GROUP
+ */
+
+CREATE TABLE WINDOWS_GROUP(
+    WINDOWS_GROUP_ID        UUID    NOT NULL,
+    GROUP_SID               varchar(260)       NOT NULL,
+    WINDOWS_GROUP_ACTIVE    BOOLEAN                 CONSTRAINT DF_WG_WGACTIVE DEFAULT TRUE NOT NULL,
+    CONNECTION_STRING       varchar(1024)      NULL,
+    GROUP_TYPE              smallint             NOT NULL,
+    CREATED_DTTM            timestamp            CONSTRAINT DF_WG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT WINDOWS_GROUP_PK PRIMARY KEY  (WINDOWS_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: WINDOWS_USER
+ */
+
+CREATE TABLE WINDOWS_USER(
+    WINDOWS_USER_ID               UUID    NOT NULL,
+    USER_SID                      varchar(260)       NOT NULL,
+    AD_USER                       BOOLEAN                 CONSTRAINT DF_WU_ADUSER DEFAULT TRUE NOT NULL,
+    LOCAL_USER                    BOOLEAN                 CONSTRAINT DF_WU_LUSER DEFAULT FALSE NOT NULL,
+    WINDOWS_USER_ACTIVE           BOOLEAN                 CONSTRAINT DF_WU_WUACTIVE DEFAULT TRUE NOT NULL,
+    CONNECTION_STRING             varchar(1024)      NULL,
+    EMAIL_ADDRESS                 varchar(256)       NULL,
+    BUSINESS_TITLE                varchar(255)       NULL,
+    TELEPHONE_NUMBER              varchar(32)        NULL,
+    DEPARTMENT                    varchar(256)       NULL,
+    MANAGER_CONN_STRING           varchar(1024)      NULL,
+    EMAIL_NAME                    varchar(128)       NULL,
+    EMAIL_DOMAIN                  varchar(256)       NULL,
+    DESCRIPTION                 varchar(256)       NULL,
+    EMPLOYEEID                    varchar(256)       NULL,
+    COMPANY                       varchar(256)       NULL,
+    PHYSICALDELIVERYOFFICENAME    varchar(256)       NULL,
+    GIVENNAME                     varchar(256)       NULL,
+    SURNAME                       varchar(256)       NULL,
+    BUSINESS_CATEGORY             varchar(256)       NULL,
+    DIVISION                      varchar(256)       NULL,
+    USER_GID                      varchar(260)       NULL,
+    CONSTRAINT WINDOWS_USER_PK PRIMARY KEY  (WINDOWS_USER_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: WKR_DIRTY_AGENT
+ */
+
+CREATE TABLE WKR_DIRTY_AGENT(
+    ROWID                 int                 ,
+    MACHINE_ID            UUID    NOT NULL,
+    REQUIRED_RESOURCES    text       NOT NULL,
+    AGENT_VERSION         varchar(40)        NOT NULL,
+    AGENT_TYPE            smallint             NOT NULL,
+    HASHCODE              text       NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: HOTFIX_DETAIL
+ */
+CREATE TABLE HOTFIX_DETAIL(
+    HOTFIX_DETAILS_ID       int             ,
+    HOTFIX_NUM              varchar(20)     NOT NULL,
+    HOTFIX_DETAILS          varchar(1000)  NULL,
+    CREATED_DTTM            timestamp        CONSTRAINT DF_HT_CRDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    PRODUCT_VERSION         varchar(20)    NOT NULL
+
+)
+;
+
+
+
+
+/*
+ * TABLE: WKR_FED_USER_GROUP
+ */
+
+CREATE TABLE WKR_FED_USER_GROUP(
+    APPLICATION_USER_ID     UUID    NOT NULL,
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    CONSTRAINT WKR_FED_USER_GROUP_PK PRIMARY KEY  (APPLICATION_USER_ID, APPLICATION_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: WKR_USER_GROUP
+ */
+
+CREATE TABLE WKR_USER_GROUP(
+    APPLICATION_USER_ID     UUID    NOT NULL,
+    APPLICATION_GROUP_ID    UUID    NOT NULL,
+    CONSTRAINT WKR_USER_GROUP_PK PRIMARY KEY  (APPLICATION_USER_ID, APPLICATION_GROUP_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: DDNA_LICENSE_MAP
+ */
+
+CREATE TABLE DDNA_LICENSE_MAP(
+    DDNA_LICENSE_ID    UUID    NOT NULL,
+    MACHINE_ID         UUID    NOT NULL,
+    CONSTRAINT FK_DDNA_LICENSE_MAP  UNIQUE (DDNA_LICENSE_ID, MACHINE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * TABLE: MACHINE_CONFIG_FEATURE
+ */
+
+CREATE TABLE MACHINE_CONFIG_FEATURE(
+    MACHINE_ID                      UUID    NOT NULL,
+    AGENT_FEATURE_ID                int                 NOT NULL,
+    MACHINE_CONFIG_FEATURE_VALUE    smallint             NOT NULL,
+    CONSTRAINT PK_MACHINE_CONFIG_FEATURE PRIMARY KEY  (MACHINE_ID, AGENT_FEATURE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+
+/*
+ * INDEX: IK_ARA_MACHINE_ID
+ */
+
+CREATE INDEX IK_ARA_MACHINE_ID ON AGENT_RESOURCE_ASSIGNMENT(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_ARFILE_MACHINE_ID
+ */
+
+CREATE INDEX IK_ARFILE_MACHINE_ID ON AGENT_RESOURCE_FILE(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AEG_APP_GROUP_ID
+ */
+
+CREATE INDEX FK_AEG_APP_GROUP_ID ON APPLICATION_EMAIL_GROUP(APPLICATION_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AG_GRP_NAME
+ */
+
+CREATE INDEX IK_AG_GRP_NAME ON APPLICATION_GROUP(GROUP_NAME,GROUP_TYPE,SYNCH_ACTIVE,ORIGINATOR_TYPE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AGS_AP_GRP_ID
+ */
+
+CREATE INDEX FK_AGS_AP_GRP_ID ON APPLICATION_GROUP_SYNCH(APPLICATION_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AGS_SY_GRP_ID
+ */
+
+CREATE INDEX IK_AGS_SY_GRP_ID ON APPLICATION_GROUP_SYNCH(SYNCH_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_AJ_JOB_NAME
+ */
+
+CREATE UNIQUE INDEX AK_AJ_JOB_NAME ON APPLICATION_JOB(JOB_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AJS_APP_JOB_ID
+ */
+
+CREATE INDEX FK_AJS_APP_JOB_ID ON APPLICATION_JOB_STEP(APPLICATION_JOB_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_AL_LICENSE_TYPE
+ */
+
+CREATE UNIQUE INDEX AK_AL_LICENSE_TYPE ON APPLICATION_LICENSE(LICENSE_TYPE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_AL_LNAME
+ */
+
+CREATE UNIQUE INDEX AK_AL_LNAME ON APPLICATION_LICENSE(LICENSE_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_ALL_APP_LK_ID
+ */
+
+CREATE INDEX FK_ALL_APP_LK_ID ON APPLICATION_LOOKUP_LANGUAGE(APPLICATION_LOOKUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_AN_USR_NME_ID
+ */
+
+CREATE UNIQUE INDEX AK_AN_USR_NME_ID ON APPLICATION_NOTIFICATION(APPLICATION_USER_ID, NOTIFICATION_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AOM_APP_USER_ID
+ */
+
+CREATE INDEX FK_AOM_APP_USER_ID ON APPLICATION_ORG_METADATA(APPLICATION_USER_ID)
+
+;
+
+/*
+ * INDEX: AK_AP_POLICY_NAME
+ */
+
+CREATE UNIQUE INDEX AK_AP_POLICY_NAME ON APPLICATION_POLICY(POLICY_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AP_POL_VER_ID
+ */
+
+CREATE INDEX IK_AP_POL_VER_ID ON APPLICATION_POLICY(APPLICATION_POLICY_VERSION_ID, POLICY_STATUS)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_APT_PROMPT_NAME
+ */
+
+CREATE UNIQUE INDEX AK_APT_PROMPT_NAME ON APPLICATION_PROMPT(PROMPT_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_APL_APPLICATION_PROMPT_ID
+ */
+
+CREATE INDEX FK_APL_APPLICATION_PROMPT_ID ON APPLICATION_PROMPT_LOCALE(APPLICATION_PROMPT_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_ARL_RULE_NAME
+ */
+
+CREATE UNIQUE INDEX AK_ARL_RULE_NAME ON APPLICATION_RULE(RULE_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AR_ARVID
+ */
+
+CREATE INDEX IK_AR_ARVID ON APPLICATION_RULE(APPLICATION_RULE_VERSION_ID, RULE_STATUS)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_AS_SKIN_NAME
+ */
+
+CREATE UNIQUE INDEX AK_AS_SKIN_NAME ON APPLICATION_SKIN(SKIN_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_ASF_SKIN_FILE_NAME
+ */
+
+CREATE INDEX IK_ASF_SKIN_FILE_NAME ON APPLICATION_SKIN_FILE(SKIN_FILE_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AT_DURID
+ */
+
+CREATE INDEX FK_AT_DURID ON APPLICATION_TREND(DGMC_USER_REPORT_ID)
+
+;
+
+/*
+ * INDEX: IK_AT_WH
+ */
+
+CREATE INDEX IK_AT_WH ON APPLICATION_TREND(EVENT_DTTM)
+
+;
+
+/*
+ * INDEX: FK_AT_RID_OID
+ */
+
+CREATE INDEX FK_AT_RID_OID ON APPLICATION_TREND ( DGMC_USER_REPORT_ID, ORIGINATOR_ID, EVENT_HOUR, TOTAL_OPERATION, CREATED_DTTM )
+WITH (FILLFACTOR = 90)
+;
+
+/*
+ * INDEX: FK_AT_OID
+ */
+
+CREATE INDEX FK_ATA_OID ON APPLICATION_TREND_AVG ( ORIGINATOR_ID )
+WITH (FILLFACTOR = 90)
+;
+
+/*
+ * INDEX: IK_AU_USER_NAME
+ */
+
+CREATE INDEX IK_AU_USER_NAME ON APPLICATION_USER(APPLICATION_USER_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AU_USER_TYPE
+ */
+
+CREATE INDEX IK_AU_USER_TYPE ON APPLICATION_USER(USER_TYPE,APPLICATION_USER_ID,APPLICATION_USER_NAME,OBFUSCATED_NAME,DOMAIN_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AUG_APP_USR_ID
+ */
+
+CREATE INDEX FK_AUG_APP_USR_ID ON APPLICATION_USER_GROUP(APPLICATION_USER_ID,APPLICATION_GROUP_ID, GROUP_USER_ACTIVE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AUG_APP_GRP_ID
+ */
+
+CREATE INDEX FK_AUG_APP_GRP_ID ON APPLICATION_USER_GROUP(APPLICATION_GROUP_ID, APPLICATION_USER_ID, GROUP_USER_ACTIVE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AUS_SY_USR_ID
+ */
+
+CREATE INDEX IK_AUS_SY_USR_ID ON APPLICATION_USER_SYNCH(SYNCH_USER_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AUS_APP_USR_ID
+ */
+
+CREATE INDEX FK_AUS_APP_USR_ID ON APPLICATION_USER_SYNCH(APPLICATION_USER_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AJRT_RUN_ID
+ */
+
+CREATE INDEX FK_AJRT_RUN_ID ON APPLIED_JOB_RUN_TASK(JOB_RUN_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AMP_APV_ID
+ */
+
+CREATE INDEX FK_AMP_APV_ID ON APPLIED_MACHINE_POLICY(APPLICATION_POLICY_VERSION_ID, MACHINE_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: FK_AMP_MA_ID1
+ */
+
+CREATE INDEX FK_AMP_MA_ID1 ON APPLIED_MACHINE_POLICY(MACHINE_ID, APPLICATION_POLICY_VERSION_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+CREATE INDEX IX_AMP_APID_MPA_MID ON APPLIED_MACHINE_POLICY(APPLICATION_POLICY_VERSION_ID,MACHINE_POLICY_ACTIVE,MACHINE_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: IDX_AMP_MPA_CD
+ */
+CREATE  INDEX IDX_AMP_MPA_CD
+ ON APPLIED_MACHINE_POLICY (MACHINE_POLICY_ACTIVE,CREATED_DTTM,APPLICATION_POLICY_VERSION_ID)
+ WITH (FILLFACTOR = 90)
+;
+
+/*
+ * INDEX: FK_AMP_MA_ID2
+ */
+
+CREATE INDEX FK_AMP_MA_ID2 ON APPLIED_MACHINE_PROMPT(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AMRE_MA_ID
+ */
+
+CREATE INDEX FK_AMRE_MA_ID ON APPLIED_MACHINE_RULE_EXCEPTION(MACHINE_ID, APPLICATION_USER_ID, APPLICATION_POLICY_ID, MACHINE_RULE_EXCEPTION_ACTIVE, APPLICATION_RULE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AMS_MA_ID
+ */
+
+CREATE INDEX FK_AMS_MA_ID ON APPLIED_MACHINE_SKIN(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AMT_MACHINE_ID
+ */
+
+CREATE INDEX FK_AMT_MACHINE_ID ON APPLIED_MACHINE_TASK(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_AMUP_MA_ID
+ */
+
+CREATE INDEX FK_AMUP_MA_ID ON APPLIED_MACHINE_USER_POLICY(MACHINE_ID, APPLICATION_USER_ID, MACHINE_USER_POLICY_ACTIVE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_AMUP_APID
+ */
+
+CREATE INDEX IK_AMUP_APID ON APPLIED_MACHINE_USER_POLICY(APPLICATION_POLICY_ID, MACHINE_ID, APPLICATION_USER_ID, MACHINE_USER_POLICY_ACTIVE)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: FK_ARS_ARCHI_ID
+ */
+
+CREATE INDEX FK_ARS_ARCHI_ID ON ARCHIVE_REQUEST_SUBJECT(ARCHIVE_REQUEST_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_CE_ME_ID
+ */
+
+CREATE INDEX FK_CE_ME_ID ON CLSFY_EVENT(MACHINE_EVENT_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: FK_CED_MED_ID
+ */
+
+CREATE INDEX FK_CED_MED_ID ON CLSFY_EVENT_DETAIL(MACHINE_EVENT_DETAIL_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: IK_CED_CLS_ID
+ */
+
+CREATE INDEX IK_CED_CLS_ID ON CLSFY_EVENT_DETAIL(CLASSIFICATION_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: FK_DUR_ASL_ID
+ */
+
+CREATE INDEX FK_DUR_ASL_ID ON DGMC_USER_REPORT(APPLICATION_SIDENAV_LINK_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_GL_DR_GRP_ID
+ */
+
+CREATE INDEX FK_GL_DR_GRP_ID ON GROUP_LINKAGE(DERIVED_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_GL_PT_GRP_ID
+ */
+
+CREATE INDEX FK_GL_PT_GRP_ID ON GROUP_LINKAGE(PARENT_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_GL_APP_GRP_ID
+ */
+
+CREATE INDEX FK_GL_APP_GRP_ID ON GROUP_LINKAGE(APPLICATION_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_GL_UT_GRP_ID
+ */
+
+CREATE INDEX FK_GL_UT_GRP_ID ON GROUP_LINKAGE(ULTIMATE_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_INV_AU_INAME
+ */
+
+CREATE UNIQUE INDEX AK_INV_AU_INAME ON INVESTIGATION(APPLICATION_USER_ID, INVESTIGATION_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_ID_INV_ID
+ */
+
+CREATE INDEX FK_ID_INV_ID ON INVESTIGATION_DETAIL(INVESTIGATION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: AK_ID_ID_DN_ID
+ */
+
+CREATE UNIQUE INDEX AK_ID_ID_DN_ID ON INVESTIGATION_DETAIL(INVESTIGATION_ID, DETAIL_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_IN_INV_ID
+ */
+
+CREATE INDEX FK_IN_INV_ID ON INVESTIGATION_NOTE(INVESTIGATION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_JR_APP_JOB_ID
+ */
+
+CREATE INDEX FK_JR_APP_JOB_ID ON JOB_RUN(APPLICATION_JOB_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_JRO_JOB_RUN_ID
+ */
+
+CREATE INDEX FK_JRO_JOB_RUN_ID ON JOB_RUN_OBJECT(JOB_RUN_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_JRS_JOB_STP_ID
+ */
+
+CREATE INDEX FK_JRS_JOB_STP_ID ON JOB_RUN_STEP(APPLICATION_JOB_STEP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_JRS_JOB_RUN_ID
+ */
+
+CREATE INDEX FK_JRS_JOB_RUN_ID ON JOB_RUN_STEP(JOB_RUN_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_KR_PRP_MA_ID
+ */
+
+CREATE INDEX IK_KR_PRP_MA_ID ON KEY_REPOSITORY(KEY_PURPOSE_ID, MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_M_MACHINE_STATUS
+ */
+
+CREATE INDEX IK_M_MACHINE_STATUS ON MACHINE(MACHINE_STATUS, AGENT_TYPE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MA_AP_USR_ID
+ */
+
+CREATE INDEX FK_MA_AP_USR_ID ON MACHINE_ALERT(APPLICATION_USER_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MA_MACHINE_ID
+ */
+
+CREATE INDEX FK_MA_MACHINE_ID ON MACHINE_ALERT(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MAD_MACH_ALRT_ID
+ */
+
+CREATE INDEX FK_MAD_MACH_ALRT_ID ON MACHINE_ALERT_DETAIL(MACHINE_ALERT_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MAP_PMA_ID
+ */
+
+CREATE INDEX FK_MAP_PMA_ID ON MACHINE_ALERT_POLICY(MACHINE_ALERT_ID, APPLICATION_POLICY_VERSION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MAR_MA_ID
+ */
+
+CREATE INDEX FK_MAR_MA_ID ON MACHINE_ALERT_RESOLUTION(MACHINE_ALERT_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_MCR_MACHINE_ID
+ */
+
+CREATE INDEX FK_MCR_MACHINE_ID ON MACHINE_CREDENTIAL(MACHINE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_ME_APP_USER_ID
+ */
+
+CREATE INDEX FK_ME_APP_USER_ID ON MACHINE_EVENT(APPLICATION_USER_ID)
+WITH (FILLFACTOR = 67)
+
+;
+
+/*
+ * INDEX: FK_ME_MACHINE_ID
+ */
+
+CREATE INDEX FK_ME_MACHINE_ID ON MACHINE_EVENT(MACHINE_ID)
+WITH (FILLFACTOR = 67)
+
+;
+
+/*
+ * INDEX: FK_MED_ME_ID
+ */
+
+CREATE INDEX FK_MED_ME_ID ON MACHINE_EVENT_DETAIL(MACHINE_EVENT_ID)
+WITH (FILLFACTOR = 50)
+
+;
+
+/*
+ * INDEX: FK_MP_MID
+ */
+
+CREATE INDEX FK_MP_MID ON MACHINE_PROCESS(MACHINE_ID)
+WITH (FILLFACTOR = 50)
+
+;
+
+/*
+ * INDEX: FK_MP_UID
+ */
+
+CREATE INDEX FK_MP_UID ON MACHINE_PROCESS(APPLICATION_USER_ID)
+WITH (FILLFACTOR = 50)
+
+;
+
+/*
+ * INDEX: IK_MP_PNAME
+ */
+
+CREATE INDEX IK_MP_PNAME ON MACHINE_PROCESS(PROCESS_NAME)
+WITH (FILLFACTOR = 50)
+
+;
+
+/*
+ * INDEX: FK_MSE_MA_ID
+ */
+
+CREATE INDEX FK_MSE_MA_ID ON MACHINE_SCAN_EVENT(MACHINE_ID)
+WITH (FILLFACTOR = 80)
+
+;
+
+/*
+ * INDEX: IX_ALERT_ID
+ */
+
+CREATE UNIQUE INDEX IX_ALERT_ID ON NET_DEVICE_REPOSITORY(ALERT_ID, SENSOR_NAME)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_NC_APP_NOT_ID
+ */
+
+CREATE INDEX FK_NC_APP_NOT_ID ON NOTIFICATION_CRITERION(APPLICATION_NOTIFICATION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_ND_APP_DIS_ID
+ */
+
+CREATE INDEX FK_ND_APP_DIS_ID ON NOTIFICATION_DISTRIBUTOR(APPLICATION_DISTRIBUTOR_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_NS_APP_NOT_ID
+ */
+
+CREATE INDEX FK_NS_APP_NOT_ID ON NOTIFICATION_SUBSCRIBER(APPLICATION_NOTIFICATION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_RA_APP_RULE_ID
+ */
+
+CREATE INDEX FK_RA_APP_RULE_ID ON RULE_AFFILIATION(AFFILIATION_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_RA_PRT_RULE_ID
+ */
+
+CREATE INDEX FK_RA_PRT_RULE_ID ON RULE_AFFILIATION(PARENT_RULE_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: FK_RSE_RUN_STP_ID
+ */
+
+CREATE INDEX FK_RSE_RUN_STP_ID ON RUN_STEP_ERROR(JOB_RUN_STEP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_WU_USER_SID
+ */
+
+CREATE INDEX IK_WU_USER_SID ON WINDOWS_USER(USER_SID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_WU_EMAIL
+ */
+
+CREATE INDEX IK_WU_EMAIL ON WINDOWS_USER(EMAIL_ADDRESS)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_WKR_FED_USER_GROUP_AG
+ */
+
+CREATE INDEX IK_WKR_FED_USER_GROUP_AG ON WKR_FED_USER_GROUP(APPLICATION_USER_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_WKR_USER_GROUP_AG
+ */
+
+CREATE INDEX IK_WKR_USER_GROUP_AG ON WKR_USER_GROUP(APPLICATION_GROUP_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IK_MCF_AGENT_FEATURE_ID
+ */
+
+CREATE INDEX IK_MCF_AGENT_FEATURE_ID ON MACHINE_CONFIG_FEATURE(AGENT_FEATURE_ID, MACHINE_CONFIG_FEATURE_VALUE)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: IX_SMM_MID_AMTID
+ */
+
+CREATE  INDEX IX_SMM_MID_AMTID ON SCHEDULE_MACHINE_MAP (MACHINE_ID,APPLIED_MACHINE_TASK_ID)
+WITH (FILLFACTOR = 90)
+
+;
+
+/*
+ * INDEX: GL_PGID_GLA_DL_AGID_DGID
+ */
+
+CREATE  INDEX GL_PGID_GLA_DL_AGID_DGID ON GROUP_LINKAGE (PARENT_GROUP_ID,GROUP_LINKAGE_ACTIVE,DERIVED_LINKAGE, APPLICATION_GROUP_ID,DERIVED_GROUP_ID)
+WITH (FILLFACTOR = 90)
+;
+
+
+/*
+ * TABLE: ARTIFACT_ASSEMBLED_BLOB
+ */
+
+ALTER TABLE ARTIFACT_ASSEMBLED_BLOB ADD CONSTRAINT REF_AAB_ARTIFACT_ID
+    FOREIGN KEY (ARTIFACT_ID)
+    REFERENCES ARTIFACT(ARTIFACT_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_TYPE
+ */
+
+ALTER TABLE ARTIFACT_TYPE ADD CONSTRAINT REF_AT_ARTIFACT_APPLICATION_ID
+    FOREIGN KEY (ARTIFACT_APPLICATION_ID)
+    REFERENCES ARTIFACT_APPLICATION(ARTIFACT_APPLICATION_ID)
+;
+
+/*
+ * TABLE: AGENT_COMPONENT_STATUS_DETAIL
+ */
+
+ALTER TABLE AGENT_COMPONENT_STATUS_DETAIL ADD CONSTRAINT FK_ACSD_ASC_ID
+    FOREIGN KEY (SUB_COMPONENT_ID)
+    REFERENCES AGENT_SUB_COMPONENT(SUB_COMPONENT_ID)
+;
+ALTER TABLE AGENT_COMPONENT_STATUS_DETAIL ADD CONSTRAINT FK_ACSD_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+/*
+ * TABLE: AGENT_RESOURCE
+ */
+
+ALTER TABLE AGENT_RESOURCE ADD CONSTRAINT FK_AR_APP_FILE_ID
+    FOREIGN KEY (APPLICATION_FILE_ID)
+    REFERENCES APPLICATION_FILE(APPLICATION_FILE_ID)
+;
+
+
+/*
+ * TABLE: AGENT_RESOURCE_ASSIGNMENT
+ */
+
+ALTER TABLE AGENT_RESOURCE_ASSIGNMENT ADD CONSTRAINT FK_ARA_CURRENT_A_R_ID
+    FOREIGN KEY (CURRENT_AGENT_RESOURCE_ID)
+    REFERENCES AGENT_RESOURCE(APPLICATION_FILE_ID)
+;
+
+ALTER TABLE AGENT_RESOURCE_ASSIGNMENT ADD CONSTRAINT FK_ARA_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+ALTER TABLE AGENT_RESOURCE_ASSIGNMENT ADD CONSTRAINT FK_ARM_ARM_ID
+    FOREIGN KEY (AGENT_RESOURCE_MAP_ID)
+    REFERENCES AGENT_RESOURCE_MAP(AGENT_RESOURCE_MAP_ID)
+;
+
+
+/*
+ * TABLE: AGENT_RESOURCE_FILE
+ */
+
+ALTER TABLE AGENT_RESOURCE_FILE ADD CONSTRAINT REF_ARF_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: AGENT_RESOURCE_GROUP
+ */
+
+ALTER TABLE AGENT_RESOURCE_GROUP ADD CONSTRAINT FK_ARG_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: AGENT_RESOURCE_MAP
+ */
+
+ALTER TABLE AGENT_RESOURCE_MAP ADD CONSTRAINT FK_ARM_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES AGENT_RESOURCE_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE AGENT_RESOURCE_MAP ADD CONSTRAINT FK_ARM_REQ_AGNT_R_ID
+    FOREIGN KEY (REQUIRED_AGENT_RESOURCE_ID)
+    REFERENCES AGENT_RESOURCE(APPLICATION_FILE_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_CONSOLE_LOG
+ */
+
+ALTER TABLE APPLICATION_CONSOLE_LOG ADD CONSTRAINT REF_ACL_AP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_EMAIL_GROUP
+ */
+
+ALTER TABLE APPLICATION_EMAIL_GROUP ADD CONSTRAINT REF_AE_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE APPLICATION_EMAIL_GROUP ADD CONSTRAINT REF_AMG_AP_EML_ID
+    FOREIGN KEY (APPLICATION_EMAIL_ID)
+    REFERENCES APPLICATION_EMAIL(APPLICATION_EMAIL_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_GROUP_SYNCH
+ */
+
+ALTER TABLE APPLICATION_GROUP_SYNCH ADD CONSTRAINT REF_AGS_AP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_JOB
+ */
+
+ALTER TABLE APPLICATION_JOB ADD CONSTRAINT REF_AJ_APLUG_ID
+    FOREIGN KEY (APPLICATION_PLUGIN_ID)
+    REFERENCES APPLICATION_PLUGIN(APPLICATION_PLUGIN_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_JOB_SCHEDULE
+ */
+
+ALTER TABLE APPLICATION_JOB_SCHEDULE ADD CONSTRAINT REF_AJH_APP_JOB_ID
+    FOREIGN KEY (APPLICATION_JOB_ID)
+    REFERENCES APPLICATION_JOB(APPLICATION_JOB_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_JOB_STEP
+ */
+
+ALTER TABLE APPLICATION_JOB_STEP ADD CONSTRAINT REF_AJS_APP_JOB_ID
+    FOREIGN KEY (APPLICATION_JOB_ID)
+    REFERENCES APPLICATION_JOB(APPLICATION_JOB_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_LOOKUP_LANGUAGE
+ */
+
+ALTER TABLE APPLICATION_LOOKUP_LANGUAGE ADD CONSTRAINT REF_ALL_AP_LG_ID
+    FOREIGN KEY (APPLICATION_LANGUAGE_ID)
+    REFERENCES APPLICATION_LANGUAGE(APPLICATION_LANGUAGE_ID)
+;
+
+ALTER TABLE APPLICATION_LOOKUP_LANGUAGE ADD CONSTRAINT REF_ALL_AP_LK_ID
+    FOREIGN KEY (APPLICATION_LOOKUP_ID)
+    REFERENCES APPLICATION_LOOKUP(APPLICATION_LOOKUP_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_NOTIFICATION
+ */
+
+ALTER TABLE APPLICATION_NOTIFICATION ADD CONSTRAINT REF_AN_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_ORG_METADATA
+ */
+
+ALTER TABLE APPLICATION_ORG_METADATA ADD CONSTRAINT FK_AOM_APP_USER_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_PLUGIN
+ */
+
+ALTER TABLE APPLICATION_PLUGIN ADD CONSTRAINT REF_AGU_AL_ID
+    FOREIGN KEY (APPLICATION_LICENSE_ID)
+    REFERENCES APPLICATION_LICENSE(APPLICATION_LICENSE_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_POLICY_RULE
+ */
+
+ALTER TABLE APPLICATION_POLICY_RULE ADD CONSTRAINT REF_APR_APP_APV_ID
+    FOREIGN KEY (APPLICATION_POLICY_VERSION_ID)
+    REFERENCES APPLICATION_POLICY_VERSION(APPLICATION_POLICY_VERSION_ID)
+;
+
+ALTER TABLE APPLICATION_POLICY_RULE ADD CONSTRAINT REF_APR_APP_ARV_ID
+    FOREIGN KEY (APPLICATION_RULE_VERSION_ID)
+    REFERENCES APPLICATION_RULE_VERSION(APPLICATION_RULE_VERSION_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_POLICY_VERSION
+ */
+
+ALTER TABLE APPLICATION_POLICY_VERSION ADD CONSTRAINT REF_APV_APP_PLY_ID
+    FOREIGN KEY (APPLICATION_POLICY_ID)
+    REFERENCES APPLICATION_POLICY(APPLICATION_POLICY_ID)
+;
+
+ALTER TABLE APPLICATION_POLICY_VERSION ADD CONSTRAINT REF_APV_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_PROMPT_LOCALE
+ */
+
+ALTER TABLE APPLICATION_PROMPT_LOCALE ADD CONSTRAINT REF_APL_APP_PMP_ID
+    FOREIGN KEY (APPLICATION_PROMPT_ID)
+    REFERENCES APPLICATION_PROMPT(APPLICATION_PROMPT_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_ROLE
+ */
+
+ALTER TABLE APPLICATION_ROLE ADD CONSTRAINT RefAPPLICATION_GROUP1282
+    FOREIGN KEY (APPLICATION_ROLE_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_RULE
+ */
+
+ALTER TABLE APPLICATION_RULE ADD CONSTRAINT REF_AR_AP_PRMT_ID
+    FOREIGN KEY (APPLICATION_PROMPT_ID)
+    REFERENCES APPLICATION_PROMPT(APPLICATION_PROMPT_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_RULE_VERSION
+ */
+
+ALTER TABLE APPLICATION_RULE_VERSION ADD CONSTRAINT REF_ARV_APP_RL_ID
+    FOREIGN KEY (APPLICATION_RULE_ID)
+    REFERENCES APPLICATION_RULE(APPLICATION_RULE_ID)
+;
+
+ALTER TABLE APPLICATION_RULE_VERSION ADD CONSTRAINT REF_ARV_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SET_MAP
+ */
+
+ALTER TABLE APPLICATION_SET_MAP ADD CONSTRAINT REF_ASMAP_ASID
+    FOREIGN KEY (APPLICATION_SET_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE APPLICATION_SET_MAP ADD CONSTRAINT REF_ASMAP_DGID
+    FOREIGN KEY (DYNAMIC_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SET_MEMBER
+ */
+
+ALTER TABLE APPLICATION_SET_MEMBER ADD CONSTRAINT REF_ASM_SMID_AUID
+    FOREIGN KEY (SET_MEMBER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE APPLICATION_SET_MEMBER ADD CONSTRAINT RF_ASM_ASMID_AGID
+    FOREIGN KEY (APPLICATION_SET_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_LINK
+ */
+
+ALTER TABLE APPLICATION_SIDENAV_LINK ADD CONSTRAINT REF_ASL_AS_ID
+    FOREIGN KEY (APPLICATION_SECTION_ID)
+    REFERENCES APPLICATION_SECTION(APPLICATION_SECTION_ID)
+;
+
+ALTER TABLE APPLICATION_SIDENAV_LINK ADD CONSTRAINT REF_ASL_ASC_ID
+    FOREIGN KEY (APPLICATION_SIDENAV_SECTION_ID)
+    REFERENCES APPLICATION_SIDENAV_SECTION(APPLICATION_SIDENAV_SECTION_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_SECTION
+ */
+
+ALTER TABLE APPLICATION_SIDENAV_SECTION ADD CONSTRAINT REF_ASC_AS_ID
+    FOREIGN KEY (APPLICATION_SECTION_ID)
+    REFERENCES APPLICATION_SECTION(APPLICATION_SECTION_ID)
+;
+
+ALTER TABLE APPLICATION_SIDENAV_SECTION ADD CONSTRAINT REF_ASC_AST_ID
+    FOREIGN KEY (APPLICATION_SIDENAV_TAB_ID)
+    REFERENCES APPLICATION_SIDENAV_TAB(APPLICATION_SIDENAV_TAB_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SIDENAV_TAB
+ */
+
+ALTER TABLE APPLICATION_SIDENAV_TAB ADD CONSTRAINT REF_AST_AP_LIC_ID
+    FOREIGN KEY (APPLICATION_LICENSE_ID)
+    REFERENCES APPLICATION_LICENSE(APPLICATION_LICENSE_ID)
+;
+
+ALTER TABLE APPLICATION_SIDENAV_TAB ADD CONSTRAINT REF_AST_AS_ID
+    FOREIGN KEY (APPLICATION_SECTION_ID)
+    REFERENCES APPLICATION_SECTION(APPLICATION_SECTION_ID)
+;
+
+ALTER TABLE APPLICATION_SIDENAV_TAB ADD CONSTRAINT REF_AST_ASL_ID
+    FOREIGN KEY (APPLICATION_SIDENAV_LINK_ID)
+    REFERENCES APPLICATION_SIDENAV_LINK(APPLICATION_SIDENAV_LINK_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SKIN_FILE
+ */
+
+ALTER TABLE APPLICATION_SKIN_FILE ADD CONSTRAINT REF_ASF_APP_SKN_ID
+    FOREIGN KEY (APPLICATION_SKIN_ID)
+    REFERENCES APPLICATION_SKIN(APPLICATION_SKIN_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_SKIN_PROMPT
+ */
+
+ALTER TABLE APPLICATION_SKIN_PROMPT ADD CONSTRAINT REF_ASP_APP_PMP_ID
+    FOREIGN KEY (APPLICATION_PROMPT_ID)
+    REFERENCES APPLICATION_PROMPT(APPLICATION_PROMPT_ID)
+;
+
+ALTER TABLE APPLICATION_SKIN_PROMPT ADD CONSTRAINT REF_ASP_APP_SKN_ID
+    FOREIGN KEY (APPLICATION_SKIN_ID)
+    REFERENCES APPLICATION_SKIN(APPLICATION_SKIN_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_TAG_DEPENDENCY
+ */
+
+ALTER TABLE APPLICATION_TAG_DEPENDENCY ADD CONSTRAINT REF_ATDEP_APP_TAG_ENID
+    FOREIGN KEY (APPLICATION_TAG_ENGINE_ID)
+    REFERENCES APPLICATION_TAG_ENGINE(APPLICATION_TAG_ENGINE_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_TAG_ENGINE
+ */
+
+ALTER TABLE APPLICATION_TAG_ENGINE ADD CONSTRAINT REF_APPTAGENG_APPTAGID
+    FOREIGN KEY (APPLICATION_TAG_ID)
+    REFERENCES APPLICATION_TAG(APPLICATION_TAG_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_TREND
+ */
+
+ALTER TABLE APPLICATION_TREND ADD CONSTRAINT REF_AT_DG_RPT_ID
+    FOREIGN KEY (DGMC_USER_REPORT_ID)
+    REFERENCES DGMC_USER_REPORT(DGMC_USER_REPORT_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_TREND_AVG
+ */
+
+ALTER TABLE APPLICATION_TREND_AVG ADD CONSTRAINT REF_ATA_DG_RPT_ID
+    FOREIGN KEY (DGMC_USER_REPORT_ID)
+    REFERENCES DGMC_USER_REPORT(DGMC_USER_REPORT_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_USER_GROUP
+ */
+
+ALTER TABLE APPLICATION_USER_GROUP ADD CONSTRAINT REF_AUG_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE APPLICATION_USER_GROUP ADD CONSTRAINT REF_AUG_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLICATION_USER_SYNCH
+ */
+
+ALTER TABLE APPLICATION_USER_SYNCH ADD CONSTRAINT REF_AUS_AP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_JOB_RUN_TASK
+ */
+
+ALTER TABLE APPLIED_JOB_RUN_TASK ADD CONSTRAINT REF_AJRT_RUN_ID
+    FOREIGN KEY (JOB_RUN_ID)
+    REFERENCES JOB_RUN(JOB_RUN_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_POLICY
+ */
+
+ALTER TABLE APPLIED_MACHINE_POLICY ADD CONSTRAINT REF_AMP_APV_ID
+    FOREIGN KEY (APPLICATION_POLICY_VERSION_ID)
+    REFERENCES APPLICATION_POLICY_VERSION(APPLICATION_POLICY_VERSION_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_POLICY ADD CONSTRAINT REF_AMP_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_PROMPT
+ */
+
+ALTER TABLE APPLIED_MACHINE_PROMPT ADD CONSTRAINT REF_AMM_APP_PRT_ID
+    FOREIGN KEY (APPLICATION_PROMPT_LOCALE_ID)
+    REFERENCES APPLICATION_PROMPT_LOCALE(APPLICATION_PROMPT_LOCALE_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_PROMPT ADD CONSTRAINT REF_AMM_APP_USR_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_RULE_EXCEPTION
+ */
+
+ALTER TABLE APPLIED_MACHINE_RULE_EXCEPTION ADD CONSTRAINT REF_AMRE_AP_PLY_ID
+    FOREIGN KEY (APPLICATION_POLICY_ID)
+    REFERENCES APPLICATION_POLICY(APPLICATION_POLICY_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_RULE_EXCEPTION ADD CONSTRAINT REF_AMRE_AP_RUL_ID
+    FOREIGN KEY (APPLICATION_RULE_ID)
+    REFERENCES APPLICATION_RULE(APPLICATION_RULE_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_RULE_EXCEPTION ADD CONSTRAINT REF_AMRE_MA_ID
+    FOREIGN KEY (MACHINE_ID, APPLICATION_USER_ID)
+    REFERENCES APPLIED_MACHINE_USER(MACHINE_ID, APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_SKIN
+ */
+
+ALTER TABLE APPLIED_MACHINE_SKIN ADD CONSTRAINT REF_AMS_APP_SKN_ID
+    FOREIGN KEY (APPLICATION_SKIN_ID)
+    REFERENCES APPLICATION_SKIN(APPLICATION_SKIN_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_SKIN ADD CONSTRAINT REF_AMS_APP_USR_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_TASK
+ */
+
+ALTER TABLE APPLIED_MACHINE_TASK ADD CONSTRAINT REF_AMT_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_USER
+ */
+
+ALTER TABLE APPLIED_MACHINE_USER ADD CONSTRAINT REF_AMU_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_USER ADD CONSTRAINT REF_AMU_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: APPLIED_MACHINE_USER_POLICY
+ */
+
+ALTER TABLE APPLIED_MACHINE_USER_POLICY ADD CONSTRAINT REF_AMUP_APO_ID
+    FOREIGN KEY (APPLICATION_POLICY_ID)
+    REFERENCES APPLICATION_POLICY(APPLICATION_POLICY_ID)
+;
+
+ALTER TABLE APPLIED_MACHINE_USER_POLICY ADD CONSTRAINT REF_AMUP_MA_ID
+    FOREIGN KEY (MACHINE_ID, APPLICATION_USER_ID)
+    REFERENCES APPLIED_MACHINE_USER(MACHINE_ID, APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: AR_BUNDLE
+ */
+
+ALTER TABLE AR_BUNDLE ADD CONSTRAINT REF_ARBL_ARQ_ID
+    FOREIGN KEY (AR_QUEUE_ID)
+    REFERENCES AR_QUEUE(AR_QUEUE_ID)
+;
+
+
+/*
+ * TABLE: AR_QUEUE_FILE
+ */
+
+ALTER TABLE AR_QUEUE_FILE ADD CONSTRAINT REF_AQF_ARQ_ID
+    FOREIGN KEY (AR_QUEUE_ID)
+    REFERENCES AR_QUEUE(AR_QUEUE_ID)
+;
+
+
+/*
+ * TABLE: AR_QUEUE_LOG
+ */
+
+ALTER TABLE AR_QUEUE_LOG ADD CONSTRAINT REF_AQL_ARQ_ID
+    FOREIGN KEY (AR_QUEUE_ID)
+    REFERENCES AR_QUEUE(AR_QUEUE_ID)
+;
+
+
+/*
+ * TABLE: ARCHIVE_REQUEST_SUBJECT
+ */
+
+ALTER TABLE ARCHIVE_REQUEST_SUBJECT ADD CONSTRAINT REF_ARS_ARCH_ID
+    FOREIGN KEY (ARCHIVE_REQUEST_ID)
+    REFERENCES ARCHIVE_REQUEST(ARCHIVE_REQUEST_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT
+ */
+
+ALTER TABLE ARTIFACT ADD CONSTRAINT REF_AFT_ARTIFACT_STATE_ID
+    FOREIGN KEY (ARTIFACT_STATE_ID)
+    REFERENCES ARTIFACT_STATE(ARTIFACT_STATE_ID)
+;
+
+ALTER TABLE ARTIFACT ADD CONSTRAINT REF_AFT_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK
+ */
+
+ALTER TABLE ARTIFACT_CHUNK ADD CONSTRAINT REF_AC_ARTIFACT_ID
+    FOREIGN KEY (ARTIFACT_ID)
+    REFERENCES ARTIFACT(ARTIFACT_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK_BLOB
+ */
+
+ALTER TABLE ARTIFACT_CHUNK_BLOB ADD CONSTRAINT REF_ACB_ARTIFACT_CHUNK_ID
+    FOREIGN KEY (ARTIFACT_CHUNK_ID)
+    REFERENCES ARTIFACT_CHUNK(ARTIFACT_CHUNK_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_CHUNK_KEY
+ */
+
+ALTER TABLE ARTIFACT_CHUNK_KEY ADD CONSTRAINT REF_ACK_ARTIFACT_CHUNK_ID
+    FOREIGN KEY (ARTIFACT_CHUNK_ID)
+    REFERENCES ARTIFACT_CHUNK(ARTIFACT_CHUNK_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_CONFIG_MAP
+ */
+
+ALTER TABLE ARTIFACT_CONFIG_MAP ADD CONSTRAINT REF_ACM_ARTIFACT_CONFIG_ID
+    FOREIGN KEY (ARTIFACT_CONFIG_ID)
+    REFERENCES ARTIFACT_CONFIG(ARTIFACT_CONFIG_ID)
+;
+
+ALTER TABLE ARTIFACT_CONFIG_MAP ADD CONSTRAINT REF_ACM_ARTIFACT_TYPE_ID
+    FOREIGN KEY (ARTIFACT_TYPE_ID)
+    REFERENCES ARTIFACT_TYPE(ARTIFACT_TYPE_ID)
+;
+
+
+/*
+ * TABLE: ARTIFACT_METADATA_MAP
+ */
+
+ALTER TABLE ARTIFACT_METADATA_MAP ADD CONSTRAINT REF_AMM_ARTIFACT_ID
+    FOREIGN KEY (ARTIFACT_ID)
+    REFERENCES ARTIFACT(ARTIFACT_ID)
+;
+
+ALTER TABLE ARTIFACT_METADATA_MAP ADD CONSTRAINT REF_AMM_ARTIFACT_METADATA_ID
+    FOREIGN KEY (ARTIFACT_METADATA_ID)
+    REFERENCES ARTIFACT_METADATA(ARTIFACT_METADATA_ID)
+;
+
+
+/*
+ * TABLE: BUNDLE_REPOSITORY
+ */
+
+ALTER TABLE BUNDLE_REPOSITORY ADD CONSTRAINT REF_BR_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: BUNDLE_REPOSITORY_LARGE
+ */
+
+ALTER TABLE BUNDLE_REPOSITORY_LARGE ADD CONSTRAINT REF_BRF_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: CONFIGURATION_RESOURCE
+ */
+
+ALTER TABLE CONFIGURATION_RESOURCE ADD CONSTRAINT REF_AR_AF_ID
+    FOREIGN KEY (CONFIGURATION_RESOURCE_ID)
+    REFERENCES AGENT_RESOURCE(APPLICATION_FILE_ID)
+;
+
+ALTER TABLE CONFIGURATION_RESOURCE ADD CONSTRAINT REF_CRT_CRT_ID
+    FOREIGN KEY (CONFIGURATION_RESOURCE_TYPE_ID)
+    REFERENCES CONFIGURATION_RESOURCE_TYPE(CONFIGURATION_RESOURCE_TYPE_ID)
+;
+
+
+/*
+ * TABLE: CUSTOM_ATTRIBUTE_VALUE
+ */
+
+ALTER TABLE CUSTOM_ATTRIBUTE_VALUE ADD CONSTRAINT REF_CAV_CA_ID
+    FOREIGN KEY (CUSTOM_ATTRIBUTE_ID)
+    REFERENCES CUSTOM_ATTRIBUTE(CUSTOM_ATTRIBUTE_ID)
+;
+
+ALTER TABLE CUSTOM_ATTRIBUTE_VALUE ADD CONSTRAINT REF_CAV_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: DDNA_MODULE
+ */
+
+ALTER TABLE DDNA_MODULE ADD CONSTRAINT REF_DDNAM_ARTIFACT_ID
+    FOREIGN KEY (ARTIFACT_ID)
+    REFERENCES ARTIFACT(ARTIFACT_ID)
+;
+
+ALTER TABLE DDNA_MODULE ADD CONSTRAINT REF_DDNAMODULE_DDNA_PROCESS_ID
+    FOREIGN KEY (DDNA_PROCESS_ID)
+    REFERENCES DDNA_PROCESS(DDNA_PROCESS_ID)
+;
+
+
+/*
+ * TABLE: DDNA_PROCESS
+ */
+
+ALTER TABLE DDNA_PROCESS ADD CONSTRAINT REF_DDNAPROCESS_DDNA_XML_ID
+    FOREIGN KEY (DDNA_XML_ID)
+    REFERENCES DDNA_XML(DDNA_XML_ID)
+;
+
+
+/*
+ * TABLE: DDNA_TRAIT
+ */
+
+ALTER TABLE DDNA_TRAIT ADD CONSTRAINT REF_DDNATRAIT_DDNA_MODULE_ID
+    FOREIGN KEY (DDNA_MODULE_ID)
+    REFERENCES DDNA_MODULE(DDNA_MODULE_ID)
+;
+
+
+/*
+ * TABLE: DDNA_XML
+ */
+
+ALTER TABLE DDNA_XML ADD CONSTRAINT REF_DDNA_XML_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: DGMC_USER
+ */
+
+ALTER TABLE DGMC_USER ADD CONSTRAINT RefAPPLICATION_USER1227
+    FOREIGN KEY (DGMC_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: DGMC_USER_REPORT
+ */
+
+ALTER TABLE DGMC_USER_REPORT ADD CONSTRAINT REF_DUR_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE DGMC_USER_REPORT ADD CONSTRAINT REF_DUR_ASL_ID
+    FOREIGN KEY (APPLICATION_SIDENAV_LINK_ID)
+    REFERENCES APPLICATION_SIDENAV_LINK(APPLICATION_SIDENAV_LINK_ID)
+;
+
+
+/*
+ * TABLE: DGMC_USER_REPORT_ASSIGN
+ */
+
+ALTER TABLE DGMC_USER_REPORT_ASSIGN ADD CONSTRAINT REF_DURA_DG_RPT_ID
+    FOREIGN KEY (DGMC_USER_REPORT_ID)
+    REFERENCES DGMC_USER_REPORT(DGMC_USER_REPORT_ID)
+;
+
+
+/*
+ * TABLE: DYNAMIC_USER_GROUP
+ */
+
+ALTER TABLE DYNAMIC_USER_GROUP ADD CONSTRAINT FK_DYNAMIC_USER_GROUP_APPLICATION_GROUP
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: GROUP_LINKAGE
+ */
+
+ALTER TABLE GROUP_LINKAGE ADD CONSTRAINT REF_GL_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE GROUP_LINKAGE ADD CONSTRAINT REF_GL_DER_PRT_ID
+    FOREIGN KEY (DERIVED_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE GROUP_LINKAGE ADD CONSTRAINT REF_GL_PRT_GRP_ID
+    FOREIGN KEY (PARENT_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE GROUP_LINKAGE ADD CONSTRAINT REF_GL_ULT_GRP_ID
+    FOREIGN KEY (ULTIMATE_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: GROUP_SECTION_PRIVILEGE
+ */
+
+ALTER TABLE GROUP_SECTION_PRIVILEGE ADD CONSTRAINT REF_GSP_AP_ROLE_ID
+    FOREIGN KEY (APPLICATION_ROLE_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE GROUP_SECTION_PRIVILEGE ADD CONSTRAINT REF_GSP_APP_SEC_ID
+    FOREIGN KEY (SECTION_PRIVILEGE_ID)
+    REFERENCES SECTION_PRIVILEGE(SECTION_PRIVILEGE_ID)
+;
+
+
+/*
+ * TABLE: IM_KEY_IMAGE_FORMATTED
+ */
+
+ALTER TABLE IM_KEY_IMAGE_FORMATTED ADD CONSTRAINT FK_IM_KIFMT_CAPTURE_SLICE_ID
+    FOREIGN KEY (KEYBOARD_CAPTURE_SLICE_ID)
+    REFERENCES IM_KEYBOARD_CAPTURE_SLICE(KEYBOARD_CAPTURE_SLICE_ID)
+;
+
+
+/*
+ * TABLE: IM_KEY_IMAGE_RAW
+ */
+
+ALTER TABLE IM_KEY_IMAGE_RAW ADD CONSTRAINT FK_IM_KIRAW_CAPTURE_SLICE_ID
+    FOREIGN KEY (KEYBOARD_CAPTURE_SLICE_ID)
+    REFERENCES IM_KEYBOARD_CAPTURE_SLICE(KEYBOARD_CAPTURE_SLICE_ID)
+;
+
+
+/*
+ * TABLE: IM_KEYBOARD_CAPTURE
+ */
+
+ALTER TABLE IM_KEYBOARD_CAPTURE ADD CONSTRAINT FK_IM_KBC_AUID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE IM_KEYBOARD_CAPTURE ADD CONSTRAINT FK_IM_KBC_MID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: IM_KEYBOARD_CAPTURE_SLICE
+ */
+
+ALTER TABLE IM_KEYBOARD_CAPTURE_SLICE ADD CONSTRAINT FK_IM_KB_CAPTURE_SLICE_ID
+    FOREIGN KEY (KEYBOARD_CAPTURE_ID)
+    REFERENCES IM_KEYBOARD_CAPTURE(KEYBOARD_CAPTURE_ID)
+;
+
+
+/*
+ * TABLE: INVESTIGATION
+ */
+
+ALTER TABLE INVESTIGATION ADD CONSTRAINT REF_INV_AU_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: INVESTIGATION_DETAIL
+ */
+
+ALTER TABLE INVESTIGATION_DETAIL ADD CONSTRAINT REF_ID_AU_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE INVESTIGATION_DETAIL ADD CONSTRAINT REF_ID_INV_ID
+    FOREIGN KEY (INVESTIGATION_ID)
+    REFERENCES INVESTIGATION(INVESTIGATION_ID)
+;
+
+
+/*
+ * TABLE: INVESTIGATION_NOTE
+ */
+
+ALTER TABLE INVESTIGATION_NOTE ADD CONSTRAINT REF_IN_AU_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE INVESTIGATION_NOTE ADD CONSTRAINT REF_IN_INV_ID
+    FOREIGN KEY (INVESTIGATION_ID)
+    REFERENCES INVESTIGATION(INVESTIGATION_ID)
+;
+
+
+/*
+ * TABLE: JOB_RUN
+ */
+
+ALTER TABLE JOB_RUN ADD CONSTRAINT REF_JR_APP_JOB_ID
+    FOREIGN KEY (APPLICATION_JOB_ID)
+    REFERENCES APPLICATION_JOB(APPLICATION_JOB_ID)
+;
+
+
+/*
+ * TABLE: JOB_RUN_LDAP_OBJECT
+ */
+
+ALTER TABLE JOB_RUN_LDAP_OBJECT ADD CONSTRAINT REF_JR_LDAP_OBJ_JR_ID
+    FOREIGN KEY (JOB_RUN_ID)
+    REFERENCES JOB_RUN(JOB_RUN_ID)
+;
+
+
+/*
+ * TABLE: JOB_RUN_OBJECT
+ */
+
+ALTER TABLE JOB_RUN_OBJECT ADD CONSTRAINT REF_JRO_JOB_RUN_ID
+    FOREIGN KEY (JOB_RUN_ID)
+    REFERENCES JOB_RUN(JOB_RUN_ID)
+;
+
+
+/*
+ * TABLE: JOB_RUN_STEP
+ */
+
+ALTER TABLE JOB_RUN_STEP ADD CONSTRAINT REF_AJS_AP_STEP_ID
+    FOREIGN KEY (APPLICATION_JOB_STEP_ID)
+    REFERENCES APPLICATION_JOB_STEP(APPLICATION_JOB_STEP_ID)
+;
+
+ALTER TABLE JOB_RUN_STEP ADD CONSTRAINT REF_JRS_JOB_RUN_ID
+    FOREIGN KEY (JOB_RUN_ID)
+    REFERENCES JOB_RUN(JOB_RUN_ID)
+;
+
+ALTER TABLE JOB_RUN_STEP ADD CONSTRAINT REF_JRS_JRO_ID
+    FOREIGN KEY (JOB_RUN_OBJECT_ID)
+    REFERENCES JOB_RUN_OBJECT(JOB_RUN_OBJECT_ID)
+;
+
+
+/*
+ * TABLE: KEY_REPOSITORY
+ */
+
+ALTER TABLE KEY_REPOSITORY ADD CONSTRAINT REF_KR_KY_PRP_ID
+    FOREIGN KEY (KEY_PURPOSE_ID)
+    REFERENCES KEY_PURPOSE(KEY_PURPOSE_ID)
+;
+
+ALTER TABLE KEY_REPOSITORY ADD CONSTRAINT REF_KRP_KEY_ALG_ID
+    FOREIGN KEY (KEY_ALGORITHM_ID)
+    REFERENCES KEY_ALGORITHM(KEY_ALGORITHM_ID)
+;
+
+
+/*
+ * TABLE: MACHINE
+ */
+
+ALTER TABLE MACHINE ADD CONSTRAINT RefAPPLICATION_USER1236
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_ALERT
+ */
+
+ALTER TABLE MACHINE_ALERT ADD CONSTRAINT REF_MA_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+ALTER TABLE MACHINE_ALERT ADD CONSTRAINT REF_MA_MACHINE_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+ALTER TABLE MACHINE_ALERT ADD CONSTRAINT REF_MA_RULE_ID
+    FOREIGN KEY (APPLICATION_RULE_VERSION_ID)
+    REFERENCES APPLICATION_RULE_VERSION(APPLICATION_RULE_VERSION_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_ALERT_POLICY
+ */
+
+ALTER TABLE MACHINE_ALERT_POLICY ADD CONSTRAINT REF_MAP_APV_ID
+    FOREIGN KEY (APPLICATION_POLICY_VERSION_ID)
+    REFERENCES APPLICATION_POLICY_VERSION(APPLICATION_POLICY_VERSION_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_ALERT_RESOLUTION
+ */
+
+ALTER TABLE MACHINE_ALERT_RESOLUTION ADD CONSTRAINT REF_MAR_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_CONFIGURATION_XML
+ */
+
+ALTER TABLE MACHINE_CONFIGURATION_XML ADD CONSTRAINT REF_MACH_CONXML_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_CREDENTIAL
+ */
+
+ALTER TABLE MACHINE_CREDENTIAL ADD CONSTRAINT REF_MC_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_MSG_CONFIRMATION
+ */
+
+ALTER TABLE MACHINE_MSG_CONFIRMATION ADD CONSTRAINT REF_MACH_MSGC_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_OPERATIONAL_ALERT
+ */
+
+ALTER TABLE MACHINE_OPERATIONAL_ALERT ADD CONSTRAINT REF_MOA_MID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: NETWORK_COMPUTER
+ */
+
+ALTER TABLE NETWORK_COMPUTER ADD CONSTRAINT RefAPPLICATION_USER1229
+    FOREIGN KEY (NETWORK_COMPUTER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: NOTIFICATION_CRITERION
+ */
+
+ALTER TABLE NOTIFICATION_CRITERION ADD CONSTRAINT REF_NC_APP_NOT_ID
+    FOREIGN KEY (APPLICATION_NOTIFICATION_ID)
+    REFERENCES APPLICATION_NOTIFICATION(APPLICATION_NOTIFICATION_ID)
+;
+
+
+/*
+ * TABLE: NOTIFICATION_DISTRIBUTOR
+ */
+
+ALTER TABLE NOTIFICATION_DISTRIBUTOR ADD CONSTRAINT REF_ND_APP_DST_ID
+    FOREIGN KEY (APPLICATION_DISTRIBUTOR_ID)
+    REFERENCES APPLICATION_DISTRIBUTOR(APPLICATION_DISTRIBUTOR_ID)
+;
+
+ALTER TABLE NOTIFICATION_DISTRIBUTOR ADD CONSTRAINT REF_ND_APP_NOT_ID
+    FOREIGN KEY (APPLICATION_NOTIFICATION_ID)
+    REFERENCES APPLICATION_NOTIFICATION(APPLICATION_NOTIFICATION_ID)
+;
+
+
+/*
+ * TABLE: NOTIFICATION_SUBSCRIBER
+ */
+
+ALTER TABLE NOTIFICATION_SUBSCRIBER ADD CONSTRAINT REF_NS_APP_DST_ID
+    FOREIGN KEY (APPLICATION_DISTRIBUTOR_ID)
+    REFERENCES APPLICATION_DISTRIBUTOR(APPLICATION_DISTRIBUTOR_ID)
+;
+
+ALTER TABLE NOTIFICATION_SUBSCRIBER ADD CONSTRAINT REF_NS_APP_NOT_ID
+    FOREIGN KEY (APPLICATION_NOTIFICATION_ID)
+    REFERENCES APPLICATION_NOTIFICATION(APPLICATION_NOTIFICATION_ID)
+;
+
+
+/*
+ * TABLE: POLICY_GROUP
+ */
+
+ALTER TABLE POLICY_GROUP ADD CONSTRAINT REF_PG_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE POLICY_GROUP ADD CONSTRAINT REF_PG_APP_PLY_ID
+    FOREIGN KEY (APPLICATION_POLICY_ID)
+    REFERENCES APPLICATION_POLICY(APPLICATION_POLICY_ID)
+;
+
+ALTER TABLE POLICY_GROUP ADD CONSTRAINT REF_PG_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: POLICY_GROUP_RULE_EXCEPTION
+ */
+
+ALTER TABLE POLICY_GROUP_RULE_EXCEPTION ADD CONSTRAINT REF_PGRE_AP_ARU_ID
+    FOREIGN KEY (APPLICATION_RULE_ID)
+    REFERENCES APPLICATION_RULE(APPLICATION_RULE_ID)
+;
+
+ALTER TABLE POLICY_GROUP_RULE_EXCEPTION ADD CONSTRAINT REF_PGRE_AP_GP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE POLICY_GROUP_RULE_EXCEPTION ADD CONSTRAINT REF_PGRE_AP_PY_ID
+    FOREIGN KEY (APPLICATION_POLICY_ID)
+    REFERENCES APPLICATION_POLICY(APPLICATION_POLICY_ID)
+;
+
+ALTER TABLE POLICY_GROUP_RULE_EXCEPTION ADD CONSTRAINT REF_PGRE_AP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: PROMPT_RESOURCE_MAP
+ */
+
+ALTER TABLE PROMPT_RESOURCE_MAP ADD CONSTRAINT REF_PRM_APP_PMP_ID
+    FOREIGN KEY (APPLICATION_PROMPT_ID)
+    REFERENCES APPLICATION_PROMPT(APPLICATION_PROMPT_ID)
+;
+
+ALTER TABLE PROMPT_RESOURCE_MAP ADD CONSTRAINT REF_PRM_RES_ID
+    FOREIGN KEY (PROMPT_RESOURCE_ID)
+    REFERENCES PROMPT_RESOURCE(PROMPT_RESOURCE_ID)
+;
+
+
+/*
+ * TABLE: PROMPT_RESOURCE_VERSION
+ */
+
+ALTER TABLE PROMPT_RESOURCE_VERSION ADD CONSTRAINT REF_PRV_PRES_ID
+    FOREIGN KEY (PROMPT_RESOURCE_ID)
+    REFERENCES PROMPT_RESOURCE(PROMPT_RESOURCE_ID)
+;
+
+
+/*
+ * TABLE: REPORT_NOTIFICATION_DETAIL
+ */
+
+ALTER TABLE REPORT_NOTIFICATION_DETAIL ADD CONSTRAINT REF_RND_DGMC_REP_ID
+    FOREIGN KEY (DGMC_USER_REPORT_ID)
+    REFERENCES DGMC_USER_REPORT(DGMC_USER_REPORT_ID)
+;
+
+ALTER TABLE REPORT_NOTIFICATION_DETAIL ADD CONSTRAINT REF_RND_REP_NOT_ID
+    FOREIGN KEY (REPORT_NOTIFICATION_ID)
+    REFERENCES REPORT_NOTIFICATION(REPORT_NOTIFICATION_ID)
+;
+
+
+/*
+ * TABLE: REPORT_NOTIFICATION_STATUS
+ */
+
+ALTER TABLE REPORT_NOTIFICATION_STATUS ADD CONSTRAINT REF_RNS_REP_NOT_ID
+    FOREIGN KEY (REPORT_NOTIFICATION_ID)
+    REFERENCES REPORT_NOTIFICATION(REPORT_NOTIFICATION_ID)
+;
+
+
+/*
+ * TABLE: RULE_AFFILIATION
+ */
+
+ALTER TABLE RULE_AFFILIATION ADD CONSTRAINT REF_RA_PRT_RULE_ID
+    FOREIGN KEY (PARENT_RULE_ID)
+    REFERENCES APPLICATION_RULE(APPLICATION_RULE_ID)
+;
+
+
+/*
+ * TABLE: RUN_STEP_ERROR
+ */
+
+ALTER TABLE RUN_STEP_ERROR ADD CONSTRAINT REF_RSE_JOB_STP_ID
+    FOREIGN KEY (JOB_RUN_STEP_ID)
+    REFERENCES JOB_RUN_STEP(JOB_RUN_STEP_ID)
+;
+
+
+/*
+ * TABLE: SECTION_PRIVILEGE
+ */
+
+ALTER TABLE SECTION_PRIVILEGE ADD CONSTRAINT REF_SP_APP_PRV_ID
+    FOREIGN KEY (APPLICATION_PRIVILEGE_ID)
+    REFERENCES APPLICATION_PRIVILEGE(APPLICATION_PRIVILEGE_ID)
+;
+
+ALTER TABLE SECTION_PRIVILEGE ADD CONSTRAINT REF_SP_APP_SEC_ID
+    FOREIGN KEY (APPLICATION_SECTION_ID)
+    REFERENCES APPLICATION_SECTION(APPLICATION_SECTION_ID)
+;
+
+/*
+ * TABLE: SCREEN_CAPTURE_FRAME
+ */
+ALTER TABLE SCREEN_CAPTURE_FRAME  ADD  CONSTRAINT FK_SCREEN_CAPTURE_FRAME_APPLICATION_USER FOREIGN KEY(APPLICATION_USER_ID)
+REFERENCES APPLICATION_USER (APPLICATION_USER_ID)
+;
+
+--ALTER TABLE SCREEN_CAPTURE_FRAME  ADD CONSTRAINT FK_SCREEN_CAPTURE_FRAME_MACHINE_ID FOREIGN KEY(MACHINE_ID)
+--REFERENCES MACHINE_CONFIGURATION_XML (MACHINE_ID)
+--;
+
+--ALTER TABLE SCREEN_CAPTURE_FRAME CHECK CONSTRAINT FK_SCREEN_CAPTURE_FRAME_MACHINE_ID
+--;
+
+ALTER TABLE SCREEN_CAPTURE_FRAME  ADD CONSTRAINT FK_SCREEN_CAPTURE_FRAME_CONTENT_ID FOREIGN KEY(FRAME_CONTENT_ID)
+REFERENCES STORAGE_CONTENT (STORAGE_CONTENT_ID)
+;
+
+
+/*
+ * TABLE: SCREEN_CAPTURE_SESSION
+ */
+ALTER TABLE SCREEN_CAPTURE_SESSION  ADD CONSTRAINT FK_SCREEN_CAPTURE_SESSION_APPLICATION_USER FOREIGN KEY(APPLICATION_USER_ID)
+REFERENCES APPLICATION_USER (APPLICATION_USER_ID)
+;
+
+
+
+--ALTER TABLE SCREEN_CAPTURE_SESSION  ADD CONSTRAINT FK_SCREEN_CAPTURE_SESSION_MACHINE_ID FOREIGN KEY(MACHINE_ID)
+--REFERENCES MACHINE_CONFIGURATION_XML (MACHINE_ID)
+--;
+
+--ALTER TABLE SCREEN_CAPTURE_SESSION CHECK CONSTRAINT FK_SCREEN_CAPTURE_SESSION_MACHINE_ID
+--;
+
+
+
+/*
+ * TABLE: STORAGE_CONTENT
+ */
+ALTER TABLE STORAGE_CONTENT  ADD CONSTRAINT FK_STORAGE_CONTENT_HANDLER_ID FOREIGN KEY(STORAGE_CONTENT_HANDLER_ID)
+REFERENCES STORAGE_CONTENT_HANDLER (STORAGE_CONTENT_HANDLER_ID)
+;
+
+/*
+ * TABLE: WINDOWS_DOMAIN
+ */
+
+ALTER TABLE WINDOWS_DOMAIN ADD CONSTRAINT RefAPPLICATION_GROUP1309
+    FOREIGN KEY (WINDOWS_DOMAIN_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: WINDOWS_GROUP
+ */
+
+ALTER TABLE WINDOWS_GROUP ADD CONSTRAINT RefAPPLICATION_GROUP1310
+    FOREIGN KEY (WINDOWS_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+
+/*
+ * TABLE: WINDOWS_USER
+ */
+
+ALTER TABLE WINDOWS_USER ADD CONSTRAINT RefAPPLICATION_USER1311
+    FOREIGN KEY (WINDOWS_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: WKR_USER_GROUP
+ */
+
+ALTER TABLE WKR_USER_GROUP ADD CONSTRAINT REF_WUG_APP_GRP_ID
+    FOREIGN KEY (APPLICATION_GROUP_ID)
+    REFERENCES APPLICATION_GROUP(APPLICATION_GROUP_ID)
+;
+
+ALTER TABLE WKR_USER_GROUP ADD CONSTRAINT REF_WUG_APP_USR_ID
+    FOREIGN KEY (APPLICATION_USER_ID)
+    REFERENCES APPLICATION_USER(APPLICATION_USER_ID)
+;
+
+
+/*
+ * TABLE: DDNA_LICENSE_MAP
+ */
+
+ALTER TABLE DDNA_LICENSE_MAP ADD CONSTRAINT REF_DDNALM_LIC_ID
+    FOREIGN KEY (DDNA_LICENSE_ID)
+    REFERENCES DDNA_LICENSE(DDNA_LICENSE_ID)
+;
+
+ALTER TABLE DDNA_LICENSE_MAP ADD CONSTRAINT REF_DDNALM_MACH_ID
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE(MACHINE_ID)
+;
+
+
+/*
+ * TABLE: MACHINE_CONFIG_FEATURE
+ */
+
+ALTER TABLE MACHINE_CONFIG_FEATURE ADD CONSTRAINT REF_MCF_AGENT_FEATURE
+    FOREIGN KEY (AGENT_FEATURE_ID)
+    REFERENCES AGENT_FEATURE(AGENT_FEATURE_ID)
+;
+
+ALTER TABLE MACHINE_CONFIG_FEATURE ADD CONSTRAINT REF_MCF_MACHINE_CONFIG_XML
+    FOREIGN KEY (MACHINE_ID)
+    REFERENCES MACHINE_CONFIGURATION_XML(MACHINE_ID)
+;
+
+
+--/*
+-- * TRIGGER: TRU_APPLICATION_CONFIGURATION
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_CONFIGURATION AFTER UPDATE ON APPLICATION_CONFIGURATION
+--
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_CONFIGURATION           *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on application_user *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        09/22/04    New program                         *
+---- ****************************************************************
+--        UPDATE APPLICATION_CONFIGURATION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_CONFIGURATION M, INSERTED I
+--     WHERE M.APPLICATION_CONFIGURATION_ID = I.APPLICATION_CONFIGURATION_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_CONFIGURATION') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_CONFIGURATION >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_CONFIGURATION >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_GROUP
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_GROUP ON APPLICATION_GROUP FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_GROUP                   *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        08/02/04    New program                         *
+---- *   MDF        02/25/05    FIXED BUG 4075 FOR LDAP SYNCHR      *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM APPLICATION_GROUP C
+--              JOIN DELETED D
+--                ON C.APPLICATION_GROUP_ID = D.APPLICATION_GROUP_ID
+--               AND ((C.GROUP_TYPE <> D.GROUP_TYPE) OR
+--                    ( C.GROUP_NAME <> D.GROUP_NAME ) OR
+--                    ( C.ORIGINATOR_TYPE <> D.ORIGINATOR_TYPE )
+--                    )
+--           )
+--           BEGIN
+--
+--        UPDATE APPLICATION_GROUP
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_GROUP M, INSERTED I
+--         WHERE M.APPLICATION_GROUP_ID = I.APPLICATION_GROUP_ID
+--           END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_GROUP') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_GROUP >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_GROUP >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_LICENSE
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_LICENSE ON APPLICATION_LICENSE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_LICENSE                 *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_LICENSE
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- ****************************************************************
+--
+--        UPDATE APPLICATION_LICENSE
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_LICENSE M, INSERTED I
+--     WHERE M.APPLICATION_LICENSE_ID = I.APPLICATION_LICENSE_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_LICENSE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_LICENSE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_LICENSE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_LOCATION
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_LOCATION ON APPLICATION_LOCATION FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_LOCATION                *
+---- *   Author       :     Rob D                                   *
+---- *   Synopsis     :     Changes modified date on APPLICATION_LOCATION
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   RJD        01/21/08    New program                         *
+---- ****************************************************************
+--    UPDATE APPLICATION_LOCATION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_LOCATION M, INSERTED I
+--     WHERE M.APPLICATION_LOCATION_ID = I.APPLICATION_LOCATION_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_LOCATION') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_LOCATION >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_LOCATION >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_NOTIFICATION
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_NOTIFICATION ON APPLICATION_NOTIFICATION FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_NOTIFICATION            *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_NOTIFICATION *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        05/11/06    New program                         *
+---- ****************************************************************
+--        UPDATE APPLICATION_NOTIFICATION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_NOTIFICATION M, INSERTED I
+--     WHERE M.APPLICATION_NOTIFICATION_ID = I.APPLICATION_NOTIFICATION_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_NOTIFICATION') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_NOTIFICATION >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_NOTIFICATION >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_ORG_METADATA
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_ORG_METADATA ON APPLICATION_ORG_METADATA FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_ORG_METADATA                *
+---- *   Author       :     Rob D                                   *
+---- *   Synopsis     :     Changes modified date on APPLICATION_ORG_METADATA
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   RJD        05/28/08    New program                         *
+---- ****************************************************************
+--    UPDATE APPLICATION_ORG_METADATA
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_ORG_METADATA M, INSERTED I
+--     WHERE M.MANAGEMENT_ID = I.MANAGEMENT_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_ORG_METADATA') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_ORG_METADATA >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_ORG_METADATA >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_PLUGIN
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_PLUGIN ON APPLICATION_PLUGIN FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_PLUGIN                  *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_PLUGIN
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        03/20/06    New program                         *
+---- ****************************************************************
+--    UPDATE APPLICATION_PLUGIN
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_PLUGIN M, INSERTED I
+--     WHERE M.APPLICATION_PLUGIN_ID = I.APPLICATION_PLUGIN_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_PLUGIN') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_PLUGIN >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_PLUGIN >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_POLICY
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_POLICY ON APPLICATION_POLICY FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_POLICY                 *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_POLICY
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- ****************************************************************
+--
+--        UPDATE APPLICATION_POLICY
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_POLICY M, INSERTED I
+--     WHERE M.APPLICATION_POLICY_ID = I.APPLICATION_POLICY_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_POLICY') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_POLICY >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_POLICY >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_RULE
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_RULE ON APPLICATION_RULE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_RULE                 *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_RULE
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- ****************************************************************
+--
+--        UPDATE APPLICATION_RULE
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_RULE M, INSERTED I
+--     WHERE M.APPLICATION_RULE_ID = I.APPLICATION_RULE_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_RULE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_RULE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_RULE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_SIDENAV_LINK
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_SIDENAV_LINK ON APPLICATION_SIDENAV_LINK FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_SIDENAV_LINK           *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_SIDENAV_LINK *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        03/28/08    New program                         *
+---- ****************************************************************
+--        UPDATE APPLICATION_SIDENAV_LINK
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_SIDENAV_LINK M, INSERTED I
+--     WHERE M.APPLICATION_SIDENAV_LINK_ID = I.APPLICATION_SIDENAV_LINK_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_SIDENAV_LINK') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_SIDENAV_LINK >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_SIDENAV_LINK >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_SIDENAV_SCT
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_SIDENAV_SCT ON APPLICATION_SIDENAV_SECTION FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_SIDENAV_SCT             *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_SIDENAV_SECTION *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        03/28/08    New program                         *
+---- ****************************************************************
+--        UPDATE APPLICATION_SIDENAV_SECTION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_SIDENAV_SECTION M, INSERTED I
+--     WHERE M.APPLICATION_SIDENAV_SECTION_ID = I.APPLICATION_SIDENAV_SECTION_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_SIDENAV_SCT') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_SIDENAV_SCT >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_SIDENAV_SCT >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_SIDENAV_TAB
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_SIDENAV_TAB ON APPLICATION_SIDENAV_TAB FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_SIDENAV_TAB           *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_SIDENAV_TAB *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        03/28/08    New program                         *
+---- ****************************************************************
+--        UPDATE APPLICATION_SIDENAV_TAB
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_SIDENAV_TAB M, INSERTED I
+--     WHERE M.APPLICATION_SIDENAV_TAB_ID = I.APPLICATION_SIDENAV_TAB_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_SIDENAV_TAB') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_SIDENAV_TAB >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_SIDENAV_TAB >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_TAG
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_TAG ON APPLICATION_TAG FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_TAG                     *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on APPLICATION_TAG
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/16/06    New program                         *
+---- ****************************************************************
+--
+--        UPDATE APPLICATION_TAG
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM APPLICATION_TAG M, INSERTED I
+--     WHERE M.APPLICATION_TAG_ID = I.APPLICATION_TAG_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_TAG') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_TAG >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_TAG >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_USER
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_USER ON APPLICATION_USER FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_USER                    *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        07/12/04    New program                         *
+---- *   MDF        02/25/05    FIXED BUG 4075. CRITICAL FIELD UPDATE
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM APPLICATION_USER C
+--              JOIN DELETED D
+--                ON C.APPLICATION_USER_ID = D.APPLICATION_USER_ID
+--               AND ((C.APPLICATION_USER_NAME      <> D.APPLICATION_USER_NAME)      OR
+--                    ( C.USER_TYPE                 <> D.USER_TYPE )                 OR
+--                    ( C.ORIGINATOR_TYPE           <> D.ORIGINATOR_TYPE )           OR
+--                    ( COALESCE(C.CITY_NAME,'')    <> COALESCE(D.CITY_NAME,'' ))    OR
+--                    ( COALESCE(C.STATE_NAME,'')   <> COALESCE(D.STATE_NAME,'' ))   OR
+--                    ( COALESCE(C.POSTAL_CODE,'')  <> COALESCE(D.POSTAL_CODE,'' ))  OR
+--                    ( COALESCE(C.COUNTRY_CODE,'') <> COALESCE(D.COUNTRY_CODE,'' )) OR
+--                    ( C.USER_ACTIVE <> D.USER_ACTIVE )
+--                    )
+--           )
+--           BEGIN
+--
+--        UPDATE APPLICATION_USER
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_USER M, INSERTED I
+--         WHERE M.APPLICATION_USER_ID = I.APPLICATION_USER_ID
+--           END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_USER') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_USER >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_USER >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_APPLICATION_USER_GROUP
+-- */
+--
+--CREATE TRIGGER TRU_APPLICATION_USER_GROUP ON APPLICATION_USER_GROUP FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_APPLICATION_USER_GROUP              *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        08/02/04    New program                         *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- *   DV         04/20/06   CHANGED JOIN FIELDS
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM APPLICATION_USER_GROUP C
+--              JOIN DELETED D
+--                ON C.APPLICATION_USER_GROUP_ID  = D.APPLICATION_USER_GROUP_ID
+--               AND C.GROUP_USER_ACTIVE  <> D.GROUP_USER_ACTIVE
+--           )
+--   BEGIN
+--      -- UPDATE THE MAIN SECTION FOR TRANSFER
+--         UPDATE APPLICATION_USER_GROUP
+--            SET MODIFIED_DTTM = (now() at time zone 'utc')
+--           FROM APPLICATION_USER_GROUP M, INSERTED I
+--          WHERE M.APPLICATION_USER_GROUP_ID = I.APPLICATION_USER_GROUP_ID
+--
+--   END
+--
+--
+--
+--
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_APPLICATION_USER_GROUP') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_APPLICATION_USER_GROUP >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_APPLICATION_USER_GROUP >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_AR_QUEUE
+-- */
+--
+--/*
+-- * TRIGGER: TRU_AR_QUEUE
+-- */
+--
+--CREATE TRIGGER TRU_AR_QUEUE ON AR_QUEUE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_AR_QUEUE                            *
+---- *   Author       :     Dharmender Verma                        *
+---- *   Synopsis     :     Changes modified date on AR_QUEUE       *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   DV         01/25/07    New program                         *
+---- ****************************************************************
+--
+--        UPDATE AR_QUEUE
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM AR_QUEUE M, INSERTED I
+--     WHERE M.AR_QUEUE_ID = I.AR_QUEUE_ID
+--;
+--
+--
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_AR_QUEUE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_AR_QUEUE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_AR_QUEUE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_DGMC_USER
+-- */
+--
+--CREATE TRIGGER TRU_DGMC_USER ON DGMC_USER FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_DGMC_USER                           *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on DGMC_USER      *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM DGMC_USER C
+--              JOIN DELETED D
+--                ON C.DGMC_USER_ID  = D.DGMC_USER_ID
+--               AND ((COALESCE(C.EMAIL_ADDRESS,'')  <> COALESCE(D.EMAIL_ADDRESS,''))
+--                    )
+--           )
+--           BEGIN
+--            UPDATE APPLICATION_USER
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_USER M, INSERTED I
+--         WHERE M.APPLICATION_USER_ID = I.DGMC_USER_ID
+--     END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_DGMC_USER') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_DGMC_USER >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_DGMC_USER >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_GROUP_LINKAGE
+-- */
+--
+--CREATE TRIGGER TRU_GROUP_LINKAGE ON GROUP_LINKAGE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_GROUP_LINKAGE                       *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        08/02/04    New program                         *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM GROUP_LINKAGE C
+--              JOIN DELETED D
+--                ON C.GROUP_LINKAGE_ID  = D.GROUP_LINKAGE_ID
+--               AND ((C.GROUP_LINKAGE_ACTIVE  <> D.GROUP_LINKAGE_ACTIVE)
+--                    )
+--           )
+--           BEGIN
+--        UPDATE GROUP_LINKAGE
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM GROUP_LINKAGE M, INSERTED I
+--         WHERE M.GROUP_LINKAGE_ID = I.GROUP_LINKAGE_ID
+--           END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_GROUP_LINKAGE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_GROUP_LINKAGE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_GROUP_LINKAGE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_GROUP_SECTION_PRIVILEGE
+-- */
+--
+--CREATE TRIGGER TRU_GROUP_SECTION_PRIVILEGE ON GROUP_SECTION_PRIVILEGE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_GROUP_SECTION_PRIVILEGE             *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on GROUP_SECTION_PRIVILEGE
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        07/25/05    New program                         *
+---- ****************************************************************
+--
+--        UPDATE GROUP_SECTION_PRIVILEGE
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM GROUP_SECTION_PRIVILEGE M, INSERTED I
+--     WHERE M.GROUP_SECTION_PRIVILEGE_ID = I.GROUP_SECTION_PRIVILEGE_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_GROUP_SECTION_PRIVILEGE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_GROUP_SECTION_PRIVILEGE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_GROUP_SECTION_PRIVILEGE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_INVESTIGATION
+-- */
+--
+--CREATE TRIGGER TRU_INVESTIGATION ON INVESTIGATION FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_INVESTIGATION                       *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on INVESTIGATION  *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        06/12/06    New program                         *
+---- ****************************************************************
+--        UPDATE INVESTIGATION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM INVESTIGATION M, INSERTED I
+--     WHERE M.INVESTIGATION_ID = I.INVESTIGATION_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_INVESTIGATION') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_INVESTIGATION >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_INVESTIGATION >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_INVESTIGATION_DETAIL
+-- */
+--
+--CREATE TRIGGER TRU_INVESTIGATION_DETAIL ON INVESTIGATION_DETAIL FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_INVESTIGATION_DETAIL                *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on INVESTIGATION_DETAIL  *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        06/12/06    New program                         *
+---- ****************************************************************
+--        UPDATE INVESTIGATION_DETAIL
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM INVESTIGATION_DETAIL M, INSERTED I
+--     WHERE M.INVESTIGATION_DETAIL_ID = I.INVESTIGATION_DETAIL_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_INVESTIGATION_DETAIL') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_INVESTIGATION_DETAIL >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_INVESTIGATION_DETAIL >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_INVESTIGATION_NOTE
+-- */
+--
+--CREATE TRIGGER TRU_INVESTIGATION_NOTE ON INVESTIGATION_NOTE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_INVESTIGATION_NOTE                  *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on INVESTIGATION_NOTE  *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        06/12/06    New program                         *
+---- ****************************************************************
+--        UPDATE INVESTIGATION_NOTE
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM INVESTIGATION_NOTE M, INSERTED I
+--     WHERE M.INVESTIGATION_NOTE_ID = I.INVESTIGATION_NOTE_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_INVESTIGATION_NOTE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_INVESTIGATION_NOTE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_INVESTIGATION_NOTE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRI_JOB_RUN
+-- */
+--
+--CREATE TRIGGER TRI_JOB_RUN ON JOB_RUN FOR INSERT
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRI_JOB_RUN                             *
+---- *   Author       :     Joseph Ficara                           *
+---- *   Synopsis     :     Inserts the job run steps for the job   *
+---- *                :     run just queued to the JOB_RUN table    *
+---- *                :                                             *
+---- *   Used By      :     SP_QUEUE_WORK stored procedure          *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   JSF        09/13/04    New program                         *
+---- *   JSF        10/18/04    Modified to not insert steps for    *
+---- *                          jobs that are run by the database   *
+---- *                          engine because these jobs may have  *
+---- *                          steps repeated, its not a 1-1       *
+---- *                          relationship between the            *
+---- *                          APPLICATION_JOB_STEP and the        *
+---- *                          JOB_RUN_STEP                        *
+---- ****************************************************************
+--
+---- Note: The JOB_RUN_TYPES ARE DEFINED AS FOLLOWS
+---- 0 = RUN BY DATABASE ENGINE
+---- 1 = RUN BY JOB SCHEDULER
+--
+--INSERT INTO JOB_RUN_STEP (JOB_RUN_STEP_ID, JOB_RUN_ID, APPLICATION_JOB_STEP_ID, RUN_STEP_STATUS)
+--  ( SELECT uuid_generate_v4() AS JOB_RUN_STEP_ID, JOB_RUN_ID, APPLICATION_JOB_STEP_ID, 0 AS RUN_STEP_STATUS
+--      FROM INSERTED JR1
+--      INNER JOIN APPLICATION_JOB_STEP AJS1 ON JR1.APPLICATION_JOB_ID = AJS1.APPLICATION_JOB_ID
+--      INNER JOIN APPLICATION_JOB AJ1 ON AJ1.APPLICATION_JOB_ID = JR1.APPLICATION_JOB_ID
+--      WHERE AJ1.JOB_RUN_TYPE = 1
+--   )
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRI_JOB_RUN') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRI_JOB_RUN >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRI_JOB_RUN >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_KEY_REPOSITORY
+-- */
+--
+--CREATE TRIGGER TRU_KEY_REPOSITORY ON KEY_REPOSITORY FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_KEY_REPOSITORY                      *
+---- *   Author       :     I;r Odnovorov                          *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   IMO        02/09/06    New program                         *
+---- *   MDF        11/01/06    CHANGED LOGIC FOR NEW TABLES
+---- ****************************************************************
+--IF UPDATE(KEY_PUBLISHED_DTTM) OR UPDATE(KEY_EXPIRED_DTTM)
+--BEGIN
+--    UPDATE KEY_PURPOSE
+--       SET LAST_ACTIVITY_DTTM = (now() at time zone 'utc')
+--     FROM INSERTED B
+--    WHERE KEY_PURPOSE.KEY_PURPOSE_ID = B.KEY_PURPOSE_ID
+--END
+--
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_KEY_REPOSITORY') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_KEY_REPOSITORY >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_KEY_REPOSITORY >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_MACHINE
+-- */
+--
+--CREATE TRIGGER TRU_MACHINE ON MACHINE FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_MACHINE                             *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on application_user *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        07/19/04    New program                         *
+---- *   MDF        10/18/04    CHANGED FROM BOOLEAN PROCESSING TO
+---- *                          NAMED
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM MACHINE C
+--              JOIN DELETED D
+--                ON C.MACHINE_ID  = D.MACHINE_ID
+--               AND ((C.MACHINE_TYPE  <> D.MACHINE_TYPE)
+--                    )
+--           )
+--           BEGIN
+--            UPDATE APPLICATION_USER
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_USER M, INSERTED I
+--         WHERE M.APPLICATION_USER_ID = I.MACHINE_ID
+--     END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_MACHINE') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_MACHINE >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_MACHINE >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_MACHINE_PROCESS
+-- */
+--
+--CREATE TRIGGER TRU_MACHINE_PROCESS ON MACHINE_PROCESS FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_MACHINE_PROCESS                     *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on MACHINE_PROCESS*
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/13/04    New program                         *
+---- ****************************************************************
+--        UPDATE MACHINE_PROCESS
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM MACHINE_PROCESS M, INSERTED I
+--     WHERE M.MACHINE_PROCESS_ID = I.MACHINE_PROCESS_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_MACHINE_PROCESS') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_MACHINE_PROCESS >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_MACHINE_PROCESS >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_POLICY_GROUP
+-- */
+--
+--CREATE TRIGGER TRU_POLICY_GROUP ON POLICY_GROUP FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_POLICY_GROUP                       *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- ****************************************************************
+--        -- UPDATE THE MAIN SECTION FOR TRANSFER
+--    UPDATE POLICY_GROUP
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM POLICY_GROUP M, INSERTED I
+--     WHERE M.APPLICATION_GROUP_ID = I.APPLICATION_GROUP_ID
+--           AND M.APPLICATION_POLICY_ID = I.APPLICATION_POLICY_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_POLICY_GROUP') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_POLICY_GROUP >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_POLICY_GROUP >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_POLICY_GRP_RULE_EXCEPTION
+-- */
+--
+--CREATE TRIGGER TRU_POLICY_GRP_RULE_EXCEPTION ON POLICY_GROUP_RULE_EXCEPTION FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_POLICY_GRP_RULE_EXCEPTION                       *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        10/18/04    New program                         *
+---- ****************************************************************
+--        -- UPDATE THE MAIN SECTION FOR TRANSFER
+--    UPDATE POLICY_GROUP_RULE_EXCEPTION
+--       SET MODIFIED_DTTM = (now() at time zone 'utc')
+--      FROM POLICY_GROUP_RULE_EXCEPTION M, INSERTED I
+--     WHERE M.APPLICATION_GROUP_ID = I.APPLICATION_GROUP_ID
+--           AND M.APPLICATION_POLICY_ID = I.APPLICATION_POLICY_ID
+--           AND M.APPLICATION_RULE_ID = I.APPLICATION_RULE_ID
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_POLICY_GRP_RULE_EXCEPTION') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_POLICY_GRP_RULE_EXCEPTION >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_POLICY_GRP_RULE_EXCEPTION >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_WINDOWS_DOMAIN
+-- */
+--
+--CREATE TRIGGER TRU_WINDOWS_DOMAIN ON WINDOWS_DOMAIN FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_WINDOWS_DOMAIN                    *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        08/02/04    New program                              *
+---- *   MDF        10/18/04    CHNAGED TO REFLECT ONLY NECESSARY UPDATES *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM WINDOWS_DOMAIN C
+--              JOIN DELETED D
+--                ON C.WINDOWS_DOMAIN_ID  = D.WINDOWS_DOMAIN_ID
+--               AND ((C.DOMAIN_ACTIVE  <> D.DOMAIN_ACTIVE)
+--                    )
+--           )
+--           BEGIN
+--            -- UPDATE THE MAIN SECTION FOR TRANSFER
+--        UPDATE APPLICATION_GROUP
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_GROUP M, INSERTED I
+--         WHERE M.APPLICATION_GROUP_ID = I.WINDOWS_DOMAIN_ID
+--    END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_WINDOWS_DOMAIN') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_WINDOWS_DOMAIN >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_WINDOWS_DOMAIN >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_WINDOWS_GROUP
+-- */
+--
+--CREATE TRIGGER TRU_WINDOWS_GROUP ON WINDOWS_GROUP FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_WINDOWS_GROUP                       *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date                   *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        08/02/04    New program                         *
+---- *   MDF        10/18/04    REMVOED INTERNAL UPDATE             *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM WINDOWS_GROUP C
+--              JOIN DELETED D
+--                ON C.WINDOWS_GROUP_ID  = D.WINDOWS_GROUP_ID
+--               AND ((C.WINDOWS_GROUP_ACTIVE  <> D.WINDOWS_GROUP_ACTIVE)
+--                    )
+--           )
+--           BEGIN
+--        UPDATE APPLICATION_GROUP
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_GROUP M, INSERTED I
+--         WHERE M.APPLICATION_GROUP_ID = I.WINDOWS_GROUP_ID
+--           END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_WINDOWS_GROUP') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_WINDOWS_GROUP >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_WINDOWS_GROUP >>>'
+--END IF
+--END $$
+--;
+--
+--
+--/*
+-- * TRIGGER: TRU_WINDOWS_USER
+-- */
+--
+--CREATE TRIGGER TRU_WINDOWS_USER ON WINDOWS_USER FOR UPDATE
+--AS
+---- ****************************************************************
+---- *   Program Name :     TRU_WINDOWS_USER                        *
+---- *   Author       :     Marc French                             *
+---- *   Synopsis     :     Changes modified date on application_user *
+---- *   Used By      :     None                                    *
+---- *   Maintenance Log :                                          *
+---- *   Who        When        Why                                 *
+---- *   ---------------------------------------------------------- *
+---- *   MDF        07/12/04    New program                         *
+---- *   MDF        10/18/04    CHANGED TO REFLECT NEW SCHEMA       *
+---- *   MDF        02/25/05   FIXED BUG 4075 FOR CRITICAL FIELDS   *
+---- ****************************************************************
+--IF EXISTS ( SELECT 'X'
+--              FROM WINDOWS_USER C
+--              JOIN DELETED D
+--                ON C.WINDOWS_USER_ID = D.WINDOWS_USER_ID
+--               AND ((C.WINDOWS_USER_ACTIVE  <> D.WINDOWS_USER_ACTIVE) OR
+--                    (COALESCE(C.EMAIL_ADDRESS,'')  <> COALESCE(D.EMAIL_ADDRESS,'')) OR
+--                    (COALESCE(C.BUSINESS_TITLE,'')  <> COALESCE(D.BUSINESS_TITLE,'')) OR
+--                    (COALESCE(C.TELEPHONE_NUMBER,'')  <> COALESCE(D.TELEPHONE_NUMBER,'')) OR
+--                    (COALESCE(C.MANAGER_CONN_STRING,'')  <> COALESCE(D.MANAGER_CONN_STRING,''))
+--                    )
+--           )
+--           BEGIN
+--            UPDATE APPLICATION_USER
+--           SET MODIFIED_DTTM = (now() at time zone 'utc')
+--          FROM APPLICATION_USER M, INSERTED I
+--         WHERE M.APPLICATION_USER_ID = I.WINDOWS_USER_ID
+--     END
+--;
+--DO $$
+--BEGIN
+--IF to_regclass('TRU_WINDOWS_USER') IS NOT NULL THEN
+--    RAISE NOTICE '<<< CREATED TRIGGER TRU_WINDOWS_USER >>>'
+--ELSE
+--    RAISE NOTICE '<<< FAILED CREATING TRIGGER TRU_WINDOWS_USER >>>'
+--END IF
+--END $$
+--;
+
+
+ CREATE TABLE PACKAGE_TYPE(
+    PACKAGE_TYPE_ID int NOT NULL,
+    NAME varchar(80) NOT NULL,
+    AGENT_LOCAL_PATH varchar (255) NOT NULL,
+    ALGORITHM     varchar(20) NOT NULL,
+ CONSTRAINT PK_PACKAGE_TYPE PRIMARY KEY
+(
+    PACKAGE_TYPE_ID
+)
+)
+;
+
+
+
+CREATE TABLE PACKAGE(
+    PACKAGE_ID uuid NOT NULL,
+    PACKAGE_TYPE_ID int NOT NULL,
+    APPLICATION_FILE_ID uuid NOT NULL,
+    PACKAGE_NAME varchar(128) NOT NULL,
+    PACKAGE_DESCRIPTION varchar (512) NOT NULL,
+    ENCRYPT_KEY bit varying(512) NULL,
+    KEY_LENGTH int NULL,
+    ENCRYPTED_APPLICATION_FILE_ID uuid NULL,
+    CREATED_DTTM timestamp NOT NULL,
+    MODIFIED_DTTM timestamp CONSTRAINT DF_PACKAGE_MODIFIED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+
+ CONSTRAINT PK_PACKAGE PRIMARY KEY
+(
+    PACKAGE_ID
+)
+)
+
+;
+
+
+
+ALTER TABLE PACKAGE  ADD CONSTRAINT FK_PACKAGE_APPLICATION_FILE FOREIGN KEY(APPLICATION_FILE_ID)
+REFERENCES APPLICATION_FILE (APPLICATION_FILE_ID)
+;
+
+
+;
+
+ALTER TABLE PACKAGE  ADD CONSTRAINT FK_PACKAGE_APPLICATION_FILE1 FOREIGN KEY(ENCRYPTED_APPLICATION_FILE_ID)
+REFERENCES APPLICATION_FILE (APPLICATION_FILE_ID)
+;
+
+
+
+ALTER TABLE PACKAGE  ADD CONSTRAINT FK_PACKAGE_PACKAGE_TYPE FOREIGN KEY(PACKAGE_TYPE_ID)
+REFERENCES PACKAGE_TYPE (PACKAGE_TYPE_ID)
+;
+
+
+;
+
+CREATE TABLE DISTRIBUTION_SERVER(
+    DISTRIBUTION_SERVER_ID uuid NOT NULL,
+    VERSION   varchar(32) NOT NULL,
+    NAME varchar(255) NOT NULL,
+    DESCRIPTION varchar(10485760) NULL,
+    URI  varchar(10485760) NOT NULL,
+    MAX_BANDWIDTH int NOT NULL,
+    STATUS smallint NOT NULL,
+    CREATED_DTTM timestamp NOT NULL,
+    MODIFIED_DTTM timestamp NOT NULL,
+ CONSTRAINT PK_DISTRIBUTION_SERVER PRIMARY KEY
+(
+    DISTRIBUTION_SERVER_ID
+)
+)
+
+;
+
+
+
+CREATE TABLE DISTRIBUTION_SERVER_TASK(
+    DISTRIBUTION_SERVER_TASK_ID uuid NOT NULL,
+    DISTRIBUTION_SERVER_ID uuid NOT NULL,
+    TASK_OPERATION varchar(50) NOT NULL,
+    TASK_XML varchar(10485760) NOT NULL,
+    CREATED_DTTM timestamp CONSTRAINT DF_DST_CREATED_DTTM DEFAULT (now() at time zone 'utc') NOT NULL,
+    RECEIVED_DTTM timestamp NULL,
+ CONSTRAINT PK_DISTRIBUTION_SERVER_TASK PRIMARY KEY
+(
+    DISTRIBUTION_SERVER_TASK_ID
+)
+)
+
+;
+
+ALTER TABLE DISTRIBUTION_SERVER_TASK  ADD CONSTRAINT FK_DISTRIBUTION_SERVER_TASK_DISTRIBUTION_SERVER FOREIGN KEY(DISTRIBUTION_SERVER_ID)
+REFERENCES DISTRIBUTION_SERVER (DISTRIBUTION_SERVER_ID)
+;
+
+
+
+
+CREATE TABLE DISTRIBUTION_SERVER_USAGE(
+    DISTRIBUTION_SERVER_ID uuid NOT NULL,
+    KB_SINCE_LAST_COMM bigint NOT NULL,
+    REQUESTS_SINCE_LAST_COMM int NOT NULL,
+    CREATED_DTTM timestamp NOT NULL
+)
+
+;
+
+ALTER TABLE DISTRIBUTION_SERVER_USAGE  ADD CONSTRAINT FK_DISTRIBUTION_SERVER_USAGE_DISTRIBUTION_SERVER FOREIGN KEY(DISTRIBUTION_SERVER_ID)
+REFERENCES DISTRIBUTION_SERVER (DISTRIBUTION_SERVER_ID)
+;
+CREATE TABLE PACKAGE_DISTRIBUTION_SERVER_MAP(
+    PACKAGE_ID uuid NOT NULL,
+    DISTRIBUTION_SERVER_ID uuid NOT NULL,
+    STATUS smallint NOT NULL,
+    CREATED_DTTM timestamp NOT NULL,
+    MODIFIED_DTTM timestamp NOT NULL,
+ CONSTRAINT PK_PACKAGE_DISTRIBUTION_SERVER_MAP PRIMARY KEY
+(
+    PACKAGE_ID,
+    DISTRIBUTION_SERVER_ID
+)
+)
+
+;
+
+ALTER TABLE PACKAGE_DISTRIBUTION_SERVER_MAP  ADD CONSTRAINT FK_PACKAGE_DISTRIBUTION_SERVER_MAP_DISTRIBUTION_SERVER FOREIGN KEY(DISTRIBUTION_SERVER_ID)
+REFERENCES DISTRIBUTION_SERVER (DISTRIBUTION_SERVER_ID)
+;
+
+ALTER TABLE PACKAGE_DISTRIBUTION_SERVER_MAP  ADD CONSTRAINT FK_PACKAGE_DISTRIBUTION_SERVER_MAP_PACKAGE FOREIGN KEY(PACKAGE_ID)
+REFERENCES PACKAGE (PACKAGE_ID)
+;
+CREATE TABLE DEPLOYMENT(
+    DEPLOYMENT_ID uuid NOT NULL,
+    NAME varchar(255) NULL,
+    PACKAGE_ID uuid NOT NULL,
+    SCHEDULE varchar(20) NOT NULL,
+    CREATED_DTTM  timestamp NOT NULL,
+    APPLICATION_USER_ID uuid NOT NULL,
+    EXTRA_PARAMS  varchar(512) NULL,
+ CONSTRAINT PK_DEPLOYMENT PRIMARY KEY
+(
+    DEPLOYMENT_ID
+)
+)
+
+;
+
+
+ALTER TABLE DEPLOYMENT  ADD CONSTRAINT FK_DEPLOYMENT_APPLICATION_USER FOREIGN KEY(APPLICATION_USER_ID)
+REFERENCES APPLICATION_USER (APPLICATION_USER_ID)
+;
+
+
+;
+
+ALTER TABLE DEPLOYMENT  ADD CONSTRAINT FK_DEPLOYMENT_PACKAGE FOREIGN KEY(PACKAGE_ID)
+REFERENCES PACKAGE (PACKAGE_ID)
+;
+
+
+CREATE TABLE DEPLOYMENT_DISTRIBUTION_SERVER_MAP(
+    DEPLOYMENT_ID uuid NOT NULL,
+    DISTRIBUTION_SERVER_ID uuid NOT NULL,
+ CONSTRAINT PK_DEPLOYMENT_DISTRIBUTION_SERVER_MAP PRIMARY KEY
+(
+    DEPLOYMENT_ID,
+    DISTRIBUTION_SERVER_ID
+)
+)
+
+;
+
+ALTER TABLE DEPLOYMENT_DISTRIBUTION_SERVER_MAP  ADD CONSTRAINT FK_DEPLOYMENT_DISTRIBUTION_SERVER_MAP_DEPLOYMENT FOREIGN KEY(DEPLOYMENT_ID)
+REFERENCES DEPLOYMENT (DEPLOYMENT_ID)
+;
+
+ALTER TABLE DEPLOYMENT_DISTRIBUTION_SERVER_MAP  ADD CONSTRAINT FK_DEPLOYMENT_DISTRIBUTION_SERVER_MAP_DISTRIBUTION_SERVER FOREIGN KEY(DISTRIBUTION_SERVER_ID)
+REFERENCES DISTRIBUTION_SERVER (DISTRIBUTION_SERVER_ID)
+;
+
+CREATE TABLE PACKAGE_AGENT_MAP(
+    PACKAGE_AGENT_MAP_ID uuid NOT NULL,
+    DEPLOYMENT_ID UUID NOT NULL,
+    PACKAGE_ID uuid NOT NULL,
+    MACHINE_ID uuid NOT NULL,
+    DEPLOYMENT_STATUS smallint NOT NULL,
+    PRECENTAGE_DOWNLOADED int NOT NULL,
+ CONSTRAINT PK_PACKAGE_AGENT_MAP PRIMARY KEY
+(
+    PACKAGE_AGENT_MAP_ID
+)
+)
+
+;
+
+ALTER TABLE PACKAGE_AGENT_MAP  ADD CONSTRAINT FK_PACKAGE_AGENT_MAP_APPLICATION_USER FOREIGN KEY(MACHINE_ID)
+REFERENCES MACHINE (MACHINE_ID)
+;
+
+
+;
+
+ALTER TABLE PACKAGE_AGENT_MAP  ADD CONSTRAINT FK_PACKAGE_AGENT_MAP_PACKAGE FOREIGN KEY(PACKAGE_ID)
+REFERENCES PACKAGE (PACKAGE_ID)
+;
+
+
+;
+
+CREATE TABLE PACKAGE_AGENT_EVENT(
+    PACKAGE_AGENT_MAP_ID uuid NOT NULL,
+    PACKAGE_AGENT_EVENT_CODE nchar(20) NOT NULL,
+    PACKAGE_AGENT_EVENT_DETAIL varchar(512) NOT NULL,
+    CREATED_DTTM timestamp NOT NULL
+)
+
+;
+
+ALTER TABLE PACKAGE_AGENT_EVENT  ADD CONSTRAINT FK_PACKAGE_AGENT_EVENT_PACKAGE_AGENT_MAP FOREIGN KEY(PACKAGE_AGENT_MAP_ID)
+REFERENCES PACKAGE_AGENT_MAP (PACKAGE_AGENT_MAP_ID)
+;
+
+
+;
+
+
+/*
+ * TABLE: EXPORT_DATA
+ */
+CREATE TABLE EXPORT_DATA(
+    EXPORT_DATA_ID                  UUID    NOT NULL,
+    EXPORT_DATA_NAME                varchar(128)       NOT NULL,
+    EXPORT_DATA_DESCRIPTION         varchar(512)       NULL,
+    OUTPUT_TYPE                     smallint             NOT NULL,
+    DATA_TYPE                       smallint             NOT NULL,
+    IS_ACTIVE                       BOOLEAN                 NOT NULL,
+    EXPORT_DATA_XML                 xml                 NULL,
+    GENERATED_QUERY                 text       NULL,
+    LAST_RUN_DTTM                   timestamp            NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_ED_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_ED_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT EXPORT_DATA_PK PRIMARY KEY  (EXPORT_DATA_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_CONTROL
+ */
+CREATE TABLE EXPORT_CONTROL(
+    EXPORT_CONTROL_ID               bigint              NOT NULL,
+    NUM_ROWS                        bigint              NOT NULL,
+    EXPORT_DTTM                     timestamp           NOT NULL,
+    EXPORT_DURATION                 bigint              NULL,
+    DELETE_DTTM                     timestamp           NULL,
+    DELETE_DURATION                 bigint              NULL,
+    NUM_DETAILS                     int                 NULL,
+    CONSTRAINT EXPORT_CONTROL_PK PRIMARY KEY (EXPORT_CONTROL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_DATA_CONTROL
+ */
+CREATE TABLE EXPORT_DATA_CONTROL(
+    EXPORT_DATA_CONTROL_ID          UUID    NOT NULL,
+    EXPORT_DATA_ID                  UUID    NOT NULL,
+    EXPORT_CONTROL_ID               bigint              NOT NULL,
+    EXPORT_STATUS                   smallint             NOT NULL,
+    EXPORT_DTTM                     timestamp           NOT NULL,
+    CONSUME_DTTM                    timestamp           NULL,
+    CONSUME_DURATION                bigint              NULL,
+    NUM_DETAILS                     int                 NULL,
+    CONSTRAINT EXPORT_DATA_CONTROL_PK PRIMARY KEY  (EXPORT_DATA_CONTROL_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: EXPORT_DATA_GAP
+ */
+CREATE TABLE EXPORT_DATA_GAP(
+    EXPORT_DATA_GAP_ID      bigint          ,
+    EXPORT_GAP_START        timestamp       NOT NULL,
+    EXPORT_GAP_END          timestamp       NOT NULL,
+    WAS_PROCESSED           BOOLEAN             NOT NULL,
+    MODIFIED_DTTM           timestamp       CONSTRAINT DF_EDG_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM            timestamp       CONSTRAINT DF_EDG_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT EXPORT_DATA_GAP_PK PRIMARY KEY  (EXPORT_DATA_GAP_ID) WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_DATA_LAST_RUN
+ */
+CREATE TABLE EXPORT_DATA_LAST_RUN(
+    EXPORT_DATA_LAST_RUN_ID bigint          ,
+    NEXT_EXPORT_ID          bigint          NOT NULL,
+    LAST_RUN_DTTM           timestamp       NOT NULL,
+    IS_GAP                  BOOLEAN             NOT NULL,
+    CREATED_DTTM            timestamp       CONSTRAINT DF_EDLR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT EXPORT_DATA_LAST_RUN_PK PRIMARY KEY  (EXPORT_DATA_LAST_RUN_ID) WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_APPLICATION_CONSOLE_LOG
+ */
+
+CREATE TABLE EXPORT_APPLICATION_CONSOLE_LOG(
+    APPLICATION_CONSOLE_LOG_ID    UUID    NOT NULL,
+    APPLICATION_USER_ID           UUID    NOT NULL,
+    CONSOLE_MODULE                varchar(80)        NOT NULL,
+    CONSOLE_DETAIL                text       NOT NULL,
+    CREATED_DTTM                  timestamp            NOT NULL,
+    DETAIL_ENCRYPTED              BOOLEAN                 NULL
+)
+;
+
+
+
+
+
+-- nothing gets stored here - just the template table
+--
+--;
+
+
+
+/*
+ * TABLE: EXPORT_MACHINE_EVENT
+ */
+CREATE TABLE EXPORT_MACHINE_EVENT(
+    MACHINE_EVENT_ID                UUID    NOT NULL,
+    MACHINE_ID                      UUID    NOT NULL,
+    APPLICATION_USER_ID             UUID    NOT NULL,
+    MACHINE_PROCESS_ID              UUID    NOT NULL,
+    SRC_MACHINE_PROCESS_ID          UUID    NULL,
+    USER_SESSION_ID                 UUID    NULL,
+    EVENT_TYPE                      smallint            NOT NULL,
+    EVENT_BEGIN_UTC_DTTM            timestamp            NULL,
+    EVENT_END_UTC_DTTM              timestamp            NULL,
+    EVENT_BEGIN_LOCAL_DTTM          timestamp            NULL,
+    EVENT_END_LOCAL_DTTM            timestamp            NULL,
+    PROTOCOL_TYPE                   smallint             NULL,
+    NETWORK_ADDRESS                 varchar(60)        NULL,
+    REMOTE_PORT                     int                 NULL,
+    LOCAL_PORT                      int                 NULL,
+    DNS_HOSTNAME                    varchar(255)       NULL,
+    EVENT_SUBTYPE                   int                 NULL,
+    IS_OUTBOUND                     BOOLEAN                 NOT NULL,
+    CREATED_DTTM                    timestamp            NOT NULL,
+    IS_REMOVABLE                    BOOLEAN                 NOT NULL,
+    HAS_ALERT                       BOOLEAN                 NOT NULL,
+    BUNDLE_ID                       UUID    NULL,
+    PROCESS_DESCRIPTION_ID          UUID    NULL,
+    PROCESS_NAME                    varchar(80)        NULL,
+    IS_PRIVATE_ADDRESS              BOOLEAN                 NOT NULL,
+    FILE_SIZE                       bigint              NOT NULL,
+    DETAIL_ROWCOUNT                 int                 NOT NULL,
+    MAIL_SUBJECT                    varchar(255)       NULL,
+    SENDER_EMAIL_ADDRESS            varchar(255)       NULL,
+    WAS_TERMINAL_SESSION            BOOLEAN                 NOT NULL,
+    WAS_WIRELESS                    BOOLEAN                 NOT NULL,
+    HAS_CLASSIFICATION              BOOLEAN                 NOT NULL,
+    WAS_MOBILE_DEVICE               BOOLEAN                 NOT NULL,
+    URL_PATH                        varchar(2000)      NULL,
+    SRC_NETWORK_ADDRESS             varchar(60)        NULL,
+    SRC_DNS_HOSTNAME                varchar(255)       NULL,
+    ADE_OBJECT_TYPE                 varchar(128)       NULL,
+    WAS_BLOCKED                     BOOLEAN                 NOT NULL,
+    CD_BURNID                       UUID    NULL,
+    DR_PRODUCT_TYPE                 smallint             NULL,
+    DR_USER_NAME                    varchar(128)       NULL,
+    DR_SERVER_NAME                  varchar(128)       NULL,
+    WAS_FILE_CAPTURED               BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED             smallint             NULL,
+    DEVICE_DESCRIPTION_ID           UUID    NULL,
+    WAS_PKI_AUTH                    BOOLEAN                 NULL,
+    GID                             varchar(80)        NULL,
+    EMAIL_ADDRESS                   varchar(256)       NULL,
+    WAS_SMIME_ENCRYPTED             BOOLEAN                 NULL,
+    WAS_SMIME_SIGNED                BOOLEAN                 NULL,
+    IMAGE_LOAD_UTC_DTTM             timestamp           NULL,
+    IMAGE_LOAD_LOCAL_DTTM           timestamp           NULL,
+    IMAGE_MD5                       UUID    NULL,
+    IMAGE_SHA1                      varchar(40)         NULL,
+    IMAGE_NAME                      varchar(256)       NULL,
+    IMAGE_BASE                      varchar(128)       NULL,
+    IMAGE_SHA256                    varchar(64)         NULL,
+    IMAGE_CREATED_DTTM              timestamp           NULL,
+    IMAGE_MODIFIED_DTTM             timestamp           NULL,
+    PROCESS_PID                     int                 NULL,
+    CUSTOMSTRING1                   varchar(1024)      NULL,
+    CUSTOMSTRING2                   varchar(1024)      NULL,
+    CUSTOMSTRING3                   varchar(1024)      NULL,
+    CUSTOMSTRING4                   varchar(1024)      NULL,
+    CUSTOMSTRING5                   varchar(1024)      NULL,
+    CUSTOMSTRING6                   varchar(1024)      NULL,
+    CUSTOMINT1                      int                 NULL,
+    CUSTOMINT2                      int                 NULL,
+    CUSTOMINT3                      int                 NULL,
+    CUSTOMINT4                      int                 NULL,
+    CUSTOMDATE1                     timestamp           NULL,
+    CUSTOMDATE2                     timestamp           NULL,
+    CUSTOMDATE3                     timestamp           NULL,
+    CUSTOMDATE4                     timestamp           NULL,
+    HAS_CUSTOMDATA                  BOOLEAN                 NULL,
+    EVENT_DISPLAY                   varchar(80)        NULL,
+    WAS_DLL_LOADED_RT               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_AI               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_UI               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_RF               BOOLEAN                 NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_MACHINE_EVENT_DETAIL
+ */
+CREATE TABLE EXPORT_MACHINE_EVENT_DETAIL(
+    MACHINE_EVENT_DETAIL_ID         UUID    NOT NULL,
+    MACHINE_EVENT_ID                UUID    NOT NULL,
+    EVENT_DETAIL_TYPE               smallint             NOT NULL,
+    SRC_FILE_NAME                   varchar(255)       NULL,
+    SRC_FILE_EXTENSION              varchar(40)        NULL,
+    SRC_FILE_DIRECTORY              varchar(255)       NULL,
+    SRC_VOLUME_SERIAL_NUMBER        int                 NULL,
+    SRC_DRIVE_TYPE                  smallint             NULL,
+    SRC_REMOVABLE                   BOOLEAN                 NOT NULL,
+    DEST_FILE_NAME                  varchar(255)       NULL,
+    DEST_FILE_EXTENSION             varchar(40)        NULL,
+    DEST_FILE_DIRECTORY             varchar(255)       NULL,
+    DEST_VOLUME_SERIAL_NUMBER       int                 NULL,
+    BYTES_READ                      bigint              NULL,
+    DEST_DRIVE_TYPE                 smallint             NULL,
+    DEST_REMOVABLE                  BOOLEAN                 NOT NULL,
+    BYTES_WRITTEN                   bigint              NULL,
+    PRINTER_JOBNAME                 varchar(260)       NULL,
+    PRINTER_NAME                    varchar(260)       NULL,
+    CREATED_DTTM                    timestamp            NOT NULL,
+    FILE_SIZE                       bigint              NOT NULL,
+    HAS_ALERT                       BOOLEAN                 NOT NULL,
+    RECIPIENT_EMAIL_ADDRESS         varchar(255)       NULL,
+    RECIPIENT_TYPE                  smallint             NULL,
+    SRC_FILE_ENCRYPTION             smallint             NULL,
+    DEST_FILE_ENCRYPTION            smallint             NULL,
+    HAS_SRC_CLASSIFICATION          BOOLEAN                 NOT NULL,
+    HAS_DEST_CLASSIFICATION         BOOLEAN                 NOT NULL,
+    SRC_FILE_ID                     UUID    NULL,
+    DEST_FILE_ID                    UUID    NULL,
+    WAS_BLOCKED                     BOOLEAN                 NOT NULL,
+    BLOCK_CODE                      smallint             NOT NULL,
+    SURVEY_SELECTION                int                 NULL,
+    SURVEY_ID                       UUID    NULL,
+    USER_RESPONSE                   text       NULL,
+    WAS_SRC_FILE_CAPTURED           BOOLEAN                 NULL,
+    WAS_DEST_FILE_CAPTURED          BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED             smallint             NULL,
+    SRC_DEVICE_DESCRIPTION_ID       UUID    NULL,
+    DEST_DEVICE_DESCRIPTION_ID      UUID    NULL,
+    DEVICE_TYPE                     varchar(255)       NULL,
+    DEVICE_ID                       varchar(255)       NULL,
+    REG_SRC_PATH                    varchar(1024)      NULL,
+    REG_DEST_PATH                   varchar(1024)      NULL,
+    REG_VALUE_TYPE                  smallint             NULL,
+    REG_VALUE                       varchar(2048)      NULL,
+    HOOKED_BEFORE_DG                BOOLEAN                 NULL,
+    HOOKED_BY_DG                    BOOLEAN                 NULL,
+    HOOKED_MODULE_NAME              varchar(260)       NULL,
+    HOOKED_FUNCTION_NAME            varchar(128)       NULL,
+    HOOKED_OWNER_MODULE             varchar(260)       NULL,
+    HOOKED_ADDRESS                  varchar(128)       NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_CLSFY_EVENT
+ */
+CREATE TABLE EXPORT_CLSFY_EVENT(
+    CLSFY_EVENT_ID                  UUID    NOT NULL,
+    MACHINE_EVENT_ID                UUID    NOT NULL,
+    CLASSIFICATION_TYPE             smallint             NOT NULL,
+    CLASSIFICATION_ID               UUID    NOT NULL,
+    TAG_COUNT                       bigint              NULL,
+    CREATED_DTTM                    timestamp            NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_CLSFY_EVENT_DETAIL
+ */
+CREATE TABLE EXPORT_CLSFY_EVENT_DETAIL(
+    CLSFY_EVENT_DETAIL_ID           UUID    NOT NULL,
+    MACHINE_EVENT_DETAIL_ID         UUID    NOT NULL,
+    MACHINE_EVENT_ID                UUID    NOT NULL,
+    CLASSIFICATION_TYPE             smallint             NOT NULL,
+    CLASSIFICATION_ID               UUID    NOT NULL,
+    DETAIL_FILE_ID                  UUID    NOT NULL,
+    TAG_COUNT                       bigint              NULL,
+    CREATED_DTTM                    timestamp            NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_MACHINE_ALERT
+ */
+CREATE TABLE EXPORT_MACHINE_ALERT(
+    MACHINE_ALERT_ID                UUID    NOT NULL,
+    MACHINE_ID                      UUID    NOT NULL,
+    APPLICATION_RULE_VERSION_ID     UUID    NOT NULL,
+    APPLICATION_USER_ID             UUID    NOT NULL,
+    MACHINE_EVENT_ID                UUID    NOT NULL,
+    ALARM_LEVEL                     smallint             NOT NULL,
+    ALERT_TYPE                      smallint             NOT NULL,
+    USER_RESPONSE                   text       NULL,
+    ALERT_BLOCKED                   BOOLEAN                 NOT NULL,
+    ALERT_RESOLUTION_STATUS         BOOLEAN                 NOT NULL,
+    ALERT_UTC_DTTM                  timestamp            NOT NULL,
+    ALERT_LOCAL_DTTM                timestamp            NOT NULL,
+    ALERT_SENT                      BOOLEAN                 NOT NULL,
+    CREATED_DTTM                    timestamp            NOT NULL,
+    ALERT_ROLLUP_COUNT              int                 NOT NULL,
+    BUNDLE_ID                       UUID    NULL,
+    PROCESS_NAME                    varchar(80)        NOT NULL,
+    EVENT_TYPE                      smallint            NULL,
+    MAIL_SUBJECT                    varchar(255)       NULL,
+    SENDER_EMAIL_ADDRESS            varchar(255)       NULL,
+    NET_DEVICE_ALERT_ID             varchar(128)       NULL,
+    BLOCK_CODE                      smallint             NULL,
+    SURVEY_SELECTION                int                 NULL,
+    SURVEY_ID                       UUID    NULL,
+    IS_EXPEDITED                    BOOLEAN                 NULL,
+    HAS_CUSTOMDATA                  BOOLEAN                 NULL,
+    EVENT_DISPLAY                   varchar(80)        NULL
+)
+;
+
+
+
+
+;
+
+/*
+ * TABLE: EXPORT_MACHINE_ALERT_DETAIL
+ */
+CREATE TABLE EXPORT_MACHINE_ALERT_DETAIL(
+    MACHINE_ALERT_DETAIL_ID         UUID    NOT NULL,
+    MACHINE_ALERT_ID                UUID    NOT NULL,
+    MACHINE_EVENT_DETAIL_ID         UUID    NULL,
+    BYTES_READ                      bigint              NULL,
+    BYTES_WRITTEN                   bigint              NULL,
+    PROTOCOL_TYPE                   smallint             NULL,
+    LOCAL_PORT                      int                 NULL,
+    REMOTE_PORT                     int                 NULL,
+    DNS_HOSTNAME                    varchar(255)       NULL,
+    NETWORK_ADDRESS                 varchar(60)        NULL,
+    SRC_FILE_NAME                   varchar(255)       NULL,
+    SRC_FILE_DIRECTORY              varchar(255)       NULL,
+    SRC_DRIVE_TYPE                  smallint             NULL,
+    DEST_FILE_NAME                  varchar(255)       NULL,
+    DEST_FILE_DIRECTORY             varchar(255)       NULL,
+    DEST_DRIVE_TYPE                 smallint             NULL,
+    DEST_REMOVABLE                  BOOLEAN                 NOT NULL,
+    PRINTER_NAME                    varchar(260)       NULL,
+    PRINTER_JOBNAME                 varchar(260)       NULL,
+    IS_OUTBOUND                     BOOLEAN                 NOT NULL,
+    EVENT_SUBTYPE                   int                 NULL,
+    CREATED_DTTM                    timestamp            NOT NULL,
+    IS_PRIVATE_ADDRESS              BOOLEAN                 NOT NULL,
+    DETAIL_FILE_SIZE                bigint              NOT NULL,
+    RECIPIENT_EMAIL_ADDRESS         varchar(255)       NULL,
+    RECIPIENT_TYPE                  smallint             NULL,
+    WAS_WIRELESS                    BOOLEAN                 NOT NULL,
+    WAS_TERMINAL_SESSION            BOOLEAN                 NOT NULL,
+    SRC_FILE_ENCRYPTION             smallint             NULL,
+    DEST_FILE_ENCRYPTION            smallint             NULL,
+    WAS_MOBILE_DEVICE               BOOLEAN                 NOT NULL,
+    HAS_SRC_CLASSIFICATION          BOOLEAN                 NOT NULL,
+    HAS_DEST_CLASSIFICATION         BOOLEAN                 NOT NULL,
+    SRC_FILE_ID                     UUID    NULL,
+    DEST_FILE_ID                    UUID    NULL,
+    URL_PATH                        varchar(2000)      NULL,
+    SRC_NETWORK_ADDRESS             varchar(60)        NULL,
+    SRC_DNS_HOSTNAME                varchar(255)       NULL,
+    ADE_OBJECT_TYPE                 varchar(128)       NULL,
+    DR_PRODUCT_TYPE                 smallint             NULL,
+    DR_USER_NAME                    varchar(128)       NULL,
+    DR_SERVER_NAME                  varchar(128)       NULL,
+    WAS_SRC_FILE_CAPTURED           BOOLEAN                 NULL,
+    WAS_DEST_FILE_CAPTURED          BOOLEAN                 NULL,
+    WAS_SCREEN_CAPTURED             smallint             NULL,
+    SRC_DEVICE_DESCRIPTION_ID       UUID    NULL,
+    DEST_DEVICE_DESCRIPTION_ID      UUID    NULL,
+    WAS_PKI_AUTH                    BOOLEAN                 NULL,
+    GID                             varchar(80)        NULL,
+    EMAIL_ADDRESS                   varchar(256)       NULL,
+    WAS_SMIME_ENCRYPTED             BOOLEAN                 NULL,
+    WAS_SMIME_SIGNED                BOOLEAN                 NULL,
+    DEVICE_TYPE                     varchar(255)       NULL,
+    DEVICE_ID                       varchar(255)       NULL,
+    PROCESS_DESCRIPTION_ID          UUID    NULL,
+    IMAGE_LOAD_UTC_DTTM             timestamp           NULL,
+    IMAGE_LOAD_LOCAL_DTTM           timestamp           NULL,
+    IMAGE_MD5                       UUID    NULL,
+    IMAGE_SHA1                      varchar(40)         NULL,
+    IMAGE_NAME                      varchar(256)       NULL,
+    IMAGE_BASE                      varchar(128)       NULL,
+    IMAGE_SHA256                    varchar(64)         NULL,
+    IMAGE_CREATED_DTTM              timestamp           NULL,
+    IMAGE_MODIFIED_DTTM             timestamp           NULL,
+    PROCESS_PID                     int                 NULL,
+    CUSTOMSTRING1                   varchar(1024)      NULL,
+    CUSTOMSTRING2                   varchar(1024)      NULL,
+    CUSTOMSTRING3                   varchar(1024)      NULL,
+    CUSTOMSTRING4                   varchar(1024)      NULL,
+    CUSTOMSTRING5                   varchar(1024)      NULL,
+    CUSTOMSTRING6                   varchar(1024)      NULL,
+    CUSTOMINT1                      int                 NULL,
+    CUSTOMINT2                      int                 NULL,
+    CUSTOMINT3                      int                 NULL,
+    CUSTOMINT4                      int                 NULL,
+    CUSTOMDATE1                     timestamp           NULL,
+    CUSTOMDATE2                     timestamp           NULL,
+    CUSTOMDATE3                     timestamp           NULL,
+    CUSTOMDATE4                     timestamp           NULL,
+    REG_SRC_PATH                    varchar(1024)      NULL,
+    REG_DEST_PATH                   varchar(1024)      NULL,
+    REG_VALUE_TYPE                  smallint             NULL,
+    REG_VALUE                       varchar(2048)      NULL,
+    HOOKED_BEFORE_DG                BOOLEAN                 NULL,
+    HOOKED_BY_DG                    BOOLEAN                 NULL,
+    HOOKED_MODULE_NAME              varchar(260)       NULL,
+    HOOKED_FUNCTION_NAME            varchar(128)       NULL,
+    HOOKED_OWNER_MODULE             varchar(260)       NULL,
+    HOOKED_ADDRESS                  varchar(128)       NULL,
+    WAS_DLL_LOADED_RT               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_AI               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_UI               BOOLEAN                 NULL,
+    WAS_DLL_LOADED_RF               BOOLEAN                 NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_MACHINE_ALERT_POLICY
+ */
+CREATE TABLE EXPORT_MACHINE_ALERT_POLICY(
+    MACHINE_ALERT_POLICY_ID         UUID    NOT NULL,
+    MACHINE_ALERT_ID                UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_ID   UUID    NOT NULL,
+    CREATED_DTTM                    timestamp            NOT NULL
+)
+;
+
+
+
+/*
+ * TABLE: EXPORT_MACHINE_PROCESS
+ */
+CREATE TABLE EXPORT_MACHINE_PROCESS(
+    MACHINE_PROCESS_ID          UUID    NOT NULL,
+    MACHINE_ID                  UUID    NOT NULL,
+    APPLICATION_USER_ID         UUID    NOT NULL,
+    PROCESS_DESCRIPTION_ID      UUID    NOT NULL,
+    APPLICATION_DIRECTORY_NAME  varchar(260)       NULL,
+    APPLICATION_FILE_NAME       varchar(260)       NULL,
+    FILE_EXTENSION              varchar(40)        NULL,
+    PROCESS_NAME                varchar(80)        NOT NULL,
+    USER_SESSION_ID             UUID    NOT NULL,
+    PROCESS_BEGIN_UTC_DTTM      timestamp            NOT NULL,
+    PROCESS_STATE               smallint             NOT NULL,
+    PROCESS_BEGIN_LOCAL_DTTM    timestamp           NOT NULL,
+    PROCESS_END_UTC_DTTM        timestamp           NULL,
+    PROCESS_END_LOCAL_DTTM      timestamp           NULL,
+    ESTIMATED_END_DTTM          timestamp           NULL,
+    MODIFIED_DTTM               timestamp           NOT NULL,
+    CREATED_DTTM                timestamp           NOT NULL,
+    WAS_TERMINAL_SESSION        BOOLEAN                 NOT NULL,
+    PARENT_MACHINE_PROCESS_ID   UUID    NULL,
+    PROCESS_SHA1                varchar(40)         NULL,
+    PROCESS_FLAGS               varchar(256)       NULL,
+    PROCESS_SHA256              varchar(64)         NULL,
+    PROCESS_CREATED_DTTM        timestamp           NULL,
+    PROCESS_MODIFIED_DTTM       timestamp           NULL,
+    PROCESS_PID                 int                 NULL
+)
+;
+
+
+
+/*
+ * TABLE: DEVICE_DESCRIPTION
+ */
+
+CREATE TABLE DEVICE_DESCRIPTION(
+    DEVICE_DESCRIPTION_ID UUID NOT NULL,
+    CREATED_DTTM timestamp  CONSTRAINT DF_DD_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM timestamp  CONSTRAINT DF_DD_MODIFYDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    DEVICE_CLASS varchar(255) NULL,
+    PRODUCT_NAME varchar(255) NULL,
+    PRODUCT_ID varchar(255) NULL,
+    SERIAL_NUMBER varchar(255) NULL,
+    VENDOR varchar(255) NULL,
+    VENDOR_ID varchar(255) NULL,
+    CUSTOM_ID varchar(255) NULL,
+    FRIENDLY_NAME varchar(255) NULL,
+    STORAGE_BUS_TYPE smallint CONSTRAINT DF_DD_SBS DEFAULT 0 NOT NULL,
+    REMOVAL_POLICY smallint CONSTRAINT DF_DD_RP DEFAULT 0 NOT NULL,
+    DRIVE_TYPE smallint CONSTRAINT DF_DD_DT DEFAULT 0 NOT NULL,
+    SUPPORTS_PREDICT_FAILURE BOOLEAN CONSTRAINT DF_DD_SPF DEFAULT FALSE NOT NULL,
+    CONSTRAINT DEVICE_DESCRIPTION_PK PRIMARY KEY  (DEVICE_DESCRIPTION_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+CREATE TABLE SCAN_RESULT(
+    SCAN_RESULT_ID                  UUID    NOT NULL,
+    SCAN_NAME                       varchar(512)       NULL,
+    SCAN_VALUE                      varchar(128)       NOT NULL,
+    VALUE_TYPE                      smallint             NOT NULL,
+    VALUE_STATUS                    smallint             NULL,
+    SCAN_SOURCE                     smallint             NOT NULL,
+    SCAN_STATUS                     smallint             NOT NULL,
+    SCAN_RESULT_XML                 xml                 NULL,
+    MODIFIED_DTTM                   timestamp            CONSTRAINT DF_SR_MODDDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CREATED_DTTM                    timestamp            CONSTRAINT DF_SR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    SUBMISSION_KEY                  varchar(256)       CONSTRAINT DF_SR_SK DEFAULT NULL,
+    CONSTRAINT SCAN_RESULT_PK PRIMARY KEY  (SCAN_RESULT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+-- DGSERVER-1073: to improve perfromance of SP_APPLY_RULE_EXC_SYNCH --
+CREATE  INDEX IX_GROUP_LINKAGE_GRLINKACTIVE_UGRID_AGRID ON GROUP_LINKAGE
+(
+      GROUP_LINKAGE_ACTIVE ASC,
+      ULTIMATE_GROUP_ID ASC,
+      APPLICATION_GROUP_ID ASC
+)
+;
+
+
+-- DGSERVER-1073: to improve perfromance of SP_APPLY_RULE_EXC_SYNCH --
+CREATE  INDEX IX_MACHINE_MACHINE_ID_AGENT_TYPE ON MACHINE
+(
+      MACHINE_ID ASC,
+      AGENT_TYPE ASC
+)
+;
+
+-- DGSERVER-1230: to improve perfromance of FN_GET_LAST_POLICY_MOD_TIME
+CREATE  INDEX IDX_APPLIED_MACHINE_RULE_EXCEPTION_MACHINE_ID_OTHERS
+ON APPLIED_MACHINE_RULE_EXCEPTION (MACHINE_ID, APPLICATION_POLICY_ID,MODIFIED_DTTM)
+;
+
+-- DGSERVER-1220
+CREATE  INDEX IDX_APPLIED_MACHINE_RULE_EXCEPTION_APPLICATION_POLICY_ID_RULE_ID
+ON APPLIED_MACHINE_RULE_EXCEPTION (APPLICATION_POLICY_ID,APPLICATION_RULE_ID, APPLIED_MACHINE_RULE_EXCEPT_ID,MACHINE_ID,APPLICATION_USER_ID,MACHINE_RULE_EXCEPTION_ACTIVE)
+;
+
+-- DGSERVER-1220
+--CREATE TYPE MACHINE_ID_PROCESSED_TABLE_TYPE         AS TABLE
+--   (MACHINE_ID  UUID,
+--    PROCESSED   BIT)
+--;
+
+--CREATE TYPE POLICY_VERSION_ID_WITH_ATTRIBUTES_TABLE_TYPE  AS TABLE
+--(
+--    APPLICATION_POLICY_VERSION_ID UUID PRIMARY KEY,
+--    APPLICATION_POLICY_ID UUID,
+--    POLICY_STATUS         smallint,
+--    IS_DEFAULT            BIT
+--)
+--;
+
+/*
+ * TYPE: CASE_ID_TYPE
+ *
+ * For use with case management to pass alert / event ids to stored procedures
+ */
+--CREATE TYPE CASE_ID_TYPE AS TABLE
+--(
+--    CASE_ID UUID NOT NULL,
+--    PRIMARY KEY (CASE_ID)
+--)
+
+/*
+ * TABLE: APPLICATION_DEPLOYED_POLICYSET
+ */
+CREATE TABLE APPLICATION_DEPLOYED_POLICYSET(
+    APPLICATION_DEPLOYED_POLICYSET_ID    UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_IDS       text       NOT NULL,
+    DATA                                 text       NOT NULL,
+    POST_PROCESS                         BOOLEAN                 NOT NULL,
+    HASHKEY                              int,
+    CREATED_DTTM                         timestamp            CONSTRAINT DF_ADPS_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT APPLICATION_DEPLOYED_POLICYSET_PK PRIMARY KEY  (APPLICATION_DEPLOYED_POLICYSET_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+CREATE  INDEX IDX_APPLICATION_DEPLOYED_POLICYSET_HASHKEY
+ON APPLICATION_DEPLOYED_POLICYSET (HASHKEY, APPLICATION_DEPLOYED_POLICYSET_ID)
+;
+
+/*
+ * TABLE: MACHINE_DEPLOYED_POLICYSET
+ */
+CREATE TABLE MACHINE_DEPLOYED_POLICYSET(
+    MACHINE_ID                       UUID    NOT NULL,
+    APPLICATION_POLICY_ID            UUID    NOT NULL,
+    APPLICATION_POLICY_VERSION_ID    UUID    NOT NULL,
+    POLICY_STATUS                    smallint             NOT NULL,
+    IS_DEFAULT                       BOOLEAN                 NOT NULL,
+    CONSTRAINT MACHINE_DEPLOYED_POLICYSET_PK PRIMARY KEY  (MACHINE_ID, APPLICATION_POLICY_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+
+/*
+ * TABLE: MACHINE_DEPLOYED_POLICYSET_REGISTER
+ */
+CREATE TABLE MACHINE_DEPLOYED_POLICYSET_REGISTER(
+    MACHINE_ID    UUID    NOT NULL,
+    POLICY_COUNT INT    NOT NULL,
+    CREATED_DTTM                     timestamp            CONSTRAINT DF_MDPSR_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    MODIFIED_DTTM                   timestamp         CONSTRAINT DF_MDPSR_MODDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT MACHINE_DEPLOYED_POLICYSET_REGISTER_PK PRIMARY KEY  (MACHINE_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+/*
+ * TABLE: ARTIFACT_ENCRYPTION_PASSWORD
+ */
+
+CREATE TABLE ARTIFACT_ENCRYPTION_PASSWORD(
+    PASSWORD_ID                 UUID NOT NULL,
+    PASSWORD                  varchar(255) NOT NULL,
+    CREATED_DTTM                timestamp CONSTRAINT DF_AEP_CREATEDATE DEFAULT (now() at time zone 'utc') NOT NULL,
+    CONSTRAINT ARTIFACT_ENCRYPTION_PASSWORD_PK PRIMARY KEY
+    (
+        PASSWORD_ID
+    )WITH (FILLFACTOR = 90)
+        )
+;
+
+
+
+/*
+ * TABLE: EDR_SCAN_STATUS
+ */
+
+CREATE TABLE EDR_SCAN_STATUS(
+    EDR_SCAN_STATUS_ID uuid NOT NULL,
+    MACHINE_ID uuid NULL,
+    APPLIED_MACHINE_TASK_ID uuid NOT NULL,
+    PERCENT_COMPLETE int NULL,
+    ITEM_BEING_PROCESSED int NULL,
+    FILE_BEING_SCANNED varchar(500) NOT NULL,
+    CREATED_DTTM timestamp NULL,
+    MODIFIED_DTTM timestamp NULL
+) ;
+
+ ALTER TABLE EDR_SCAN_STATUS ADD CONSTRAINT PK_EDR_SCAN_STATUS PRIMARY KEY
+(
+    EDR_SCAN_STATUS_ID
+) ;
+
+
+
+/*
+ * TABLE: EDR_CHUNK_RETRANSMISSON_FAILURES
+ */
+
+CREATE TABLE EDR_CHUNK_RETRANSMISSON_FAILURES(
+    EDR_CHUNK_RETRANSMISSON_FAILURES_ID uuid NOT NULL,
+    RETURN_CODE varchar(512),
+    TENANT_ID uuid NULL,
+    MACHINE_ID uuid NULL,
+    SCAN_ID uuid NULL,
+    CHUNK_NUMBER int NULL,
+    CHUNK_LENGTH int NULL,
+    CREATED_DTTM timestamp NULL
+) ;
+
+ ALTER TABLE EDR_CHUNK_RETRANSMISSON_FAILURES ADD CONSTRAINT PK_EDR_CHUNK_RETRANSMISSON_FAILURES PRIMARY KEY
+(
+    EDR_CHUNK_RETRANSMISSON_FAILURES_ID
+) ;
+
+
+
+/*
+ * TABLE: COMPONENT_LIST_CONTENT_AGENT
+ */
+
+CREATE TABLE COMPONENT_LIST_CONTENT_AGENT(
+    COMPONENT_LIST_CONTENT_ID uuid NOT NULL,
+    COMPONENT_LIST_ID uuid NOT NULL,
+--  AGENT_CONTENT_STATUS smallint NULL DEFAULT (NULL),
+    CONTENT_VALUE varchar(256) NULL DEFAULT (NULL),
+    CONSTRAINT COMPONENT_LIST_CONTENT_AGENT_PK PRIMARY KEY (COMPONENT_LIST_ID,COMPONENT_LIST_CONTENT_ID)
+    WITH (FILLFACTOR = 90)
+
+)
+;
+
+
+
+CREATE TABLE LOCK_TABLE_REGISTER_MACHINE(
+    REQUEST int NULL
+) ;
+

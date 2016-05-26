@@ -1,0 +1,23 @@
+{
+	"display_name": "load EDR scan on disk executable data into elasticsearch",
+	"description": "desc",
+	"author": "aw",
+	"body_class": "com.aw.common.spark.StreamDef",
+	"body": {
+		"tenant": true,
+		"system": false,
+		"target_driver": "driver30sec",
+		"processor_id": "es_load_edr",
+		"source_topic": [
+			"on_disk_executable",
+			"running_process",
+			"windows_log",
+			"windows_registry",
+			"wmi_data"
+		],
+		"config_data": {
+			"processor_class": "com.aw.compute.streams.processor.GenericESProcessor",
+			"index_name": "edr"
+		}
+	}
+}

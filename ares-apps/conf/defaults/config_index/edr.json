@@ -1,0 +1,436 @@
+{
+    "display_name": "Incident index settings",
+    "description": "The elasticsearch index settings for edr scans",
+    "author": "aw",
+    "body": {
+        "settings": {
+            "number_of_shards": 1,
+            "number_of_replicas": 1,
+            "index": {
+                "analysis": {
+                    "analyzer": {
+                        "keylower": {
+                            "tokenizer": "keyword",
+                            "filter": "lowercase"
+                        }
+                    }
+                }
+            }
+        },
+        "mappings": {
+
+
+            "on_disk_executable": {
+                "properties": {
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "DigitalCertificate": {
+                        "properties": {
+                            "Digest": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "DigestAlgorithm": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "Found": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "Issuer": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "Serial": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "Subject": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "Thumbprint": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "ThumbprintAlgorithm": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "ValidFrom": {
+                                "type": "date",
+                                "format": "epoch_millis"
+                            },
+                            "ValidTo": {
+                                "type": "date",
+                                "format": "epoch_millis"
+                            }
+                        }
+                    },
+                    "EntryPointRVA": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "FileAttributes": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "FilePath": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "FileSize": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "HashCodes": {
+                        "properties": {
+                            "MD5": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "SHA1": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "SHA256": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    },
+                    "Imports": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "IsSelfExtractingArchive": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "Timestamps": {
+                        "properties": {
+                            "CreationTime": {
+                                "type": "date",
+                                "format": "epoch_millis"
+                            },
+                            "LastAccessTime": {
+                                "type": "date",
+                                "format": "epoch_millis"
+                            },
+                            "LastWriteTime": {
+                                "type": "date",
+                                "format": "epoch_millis"
+                            }
+                        }
+                    },
+                    "Type": {
+                        "type": "string"
+                    },
+                    "Version": {
+                        "properties": {
+                            "CompanyName": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "FileVersion": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "InternalName": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "LegalCopyright": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "OriginalFilename": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "ProductName": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "ProductVersion": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    }
+                }
+            },
+
+
+            "running_process": {
+                "properties": {
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_clf": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_opf": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_ppid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_pid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_pm": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                }
+            },
+
+            "windows_registry": {
+                "properties": {
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_regkey": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_regsubkeys": {
+                        "type" : "nested",
+                        "properties": {
+                            "edr_regsubkey": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "edr_regsubval": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    }
+                }
+            },
+
+
+            "wmi_data": {
+                "properties": {
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_wmi_type": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_wmi_entry": {
+                        "type" : "nested",
+                        "properties": {
+                            "edr_wmi_key": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "edr_wmi_val": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    }
+                }
+            },
+
+
+            "edr_network_connections": {
+                "properties": {
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_net_host": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_net_port": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                }
+            },
+
+
+            "windows_log": {
+                "properties": {
+                    "dg_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_time": {
+                        "type": "date",
+                        "format" : "epoch_millis"
+                    },
+                    "dg_utype": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_sid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "dg_mid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_name": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_guid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_eventid": {
+                        "type": "long",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_version": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_level": {
+                        "type": "long",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_task": {
+                        "type": "long",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_opcode": {
+                        "type": "long",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_keywords": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_eventrecordid": {
+                        "type": "long",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_channel": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_computer": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "edr_win_entry": {
+                        "type" : "nested",
+                        "properties": {
+                            "edr_win_key": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "edr_win_val": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+        }
+    }
+}

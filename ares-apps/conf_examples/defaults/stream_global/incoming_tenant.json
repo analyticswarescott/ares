@@ -1,0 +1,16 @@
+{
+  "display_name": "Process Tenant",
+  "description": " desc ",
+  "author": "aw",
+  "body_class" : "com.aw.common.spark.StreamDef",
+  "body": {
+	  "system": true,
+      "enabled" : "true",
+      "target_driver" : "driver30sec",
+      "processor_id": "incoming_tenant",
+      "source_topic": ["Tenant"],
+      "config_data" : {
+        "processor_class": "com.aw.compute.streams.processor.TenantProcessor"
+      }
+  }
+}

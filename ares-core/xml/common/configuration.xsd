@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.digitalguardian.com/xsd/configuration/"
+           xmlns:cfg="http://www.digitalguardian.com/xsd/configuration/">
+
+    <element name="property">
+	   <complexType>
+	       <sequence>
+	           <element ref="cfg:name" minOccurs="1" maxOccurs="1"/>
+	           <element ref="cfg:value" minOccurs="1" maxOccurs="1"/>
+	           <element ref="cfg:description" minOccurs="0" maxOccurs="1"/>
+	       </sequence>
+	   </complexType>  
+    </element>
+    
+    <element name="name" type="string"/>
+    <element name="value" type="string"/>
+    <element name="description" type="string"/>
+    
+    <element name="configuration">
+	    <complexType>
+	        <sequence>
+	            <element ref="cfg:property" minOccurs="1" maxOccurs="unbounded"/>
+	        </sequence>
+	    </complexType>  
+    </element>
+    
+</schema>

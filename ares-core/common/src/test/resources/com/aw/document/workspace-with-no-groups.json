@@ -1,0 +1,11 @@
+
+  {
+    "display_name": "Default Workspace",
+    "name": "workspace-default",
+    "tags": [],
+    "author": "aw",
+    "type": "workspace",
+    "version": 1,
+    "perm_read": "all",
+    "perm_write": "author"
+  }

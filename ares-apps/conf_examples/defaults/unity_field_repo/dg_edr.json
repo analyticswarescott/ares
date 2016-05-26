@@ -1,0 +1,393 @@
+{
+    "version": 1,
+    "author": "aw",
+    "description": "EDR Scan Fields",
+    "version_date": "2015-11-23 07:38:11.028 -0800",
+    "body": {"fields": [
+
+
+
+        {
+            "array": false,
+            "description": "base load address",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "base load address",
+            "name": "edr_bla"
+        },
+        {
+            "array": true,
+            "description": "certificates",
+            "tags": [ "edr scan", "file", "certificate", "object" ],
+            "type": "object",
+            "display_name": "certificates",
+            "name": "edr_certs"
+        },
+        {
+            "array": false,
+            "description": "certificate digest",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "certificate digest",
+            "name": "edr_cert_d"
+        },
+        {
+            "array": false,
+            "description": "certificate digest algorithm",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert digest alg",
+            "name": "edr_cert_da"
+        },
+        {
+            "array": false,
+            "description": "certificate issuer",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert issuer",
+            "name": "edr_cert_i"
+        },
+        {
+            "array": false,
+            "description": "certificate serial",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert serial",
+            "name" : "edr_cert_ser"
+        },
+        {
+            "array": false,
+            "description": "certificate subject",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert subject",
+            "name": "edr_cert_sub"
+        },
+        {
+            "array": false,
+            "description": "certificate thumbprint",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert thumbprint",
+            "name": "edr_cert_th"
+        },
+        {
+            "array": false,
+            "description": "certificate thumbprint algorithm",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "string",
+            "display_name": "cert thumbprint alg",
+            "name": "edr_cert_th_alg"
+        },
+        {
+            "array": false,
+            "description": "certificate valid from",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "timestamp",
+            "display_name": "cert valid from",
+            "name": "edr_cf"
+        },
+        {
+            "array": false,
+            "description": "certificate valid to",
+            "tags": [ "edr scan", "file", "certificate" ],
+            "type": "timestamp",
+            "display_name": "cert valid to",
+            "name": "edr_ct"
+        },
+        {
+            "array": false,
+            "description": "entry point rva",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "entry point rva",
+            "name": "edr_rva"
+        },
+        {
+            "array": false,
+            "description": "file attributes",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "file attributes",
+            "name": "edr_at"
+        },
+        {
+            "array": false,
+            "description": "is self extracting archive",
+            "tags": [ "edr scan", "file" ],
+            "type": "boolean",
+            "display_name": "self extracting?",
+            "name": "edr_se"
+        },
+        {
+            "array": true,
+            "description": "file imports",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "imports",
+            "name": "edr_im"
+        },
+        {
+            "array": true,
+            "description": "file exports",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "exports",
+            "name": "edr_ex"
+        },
+        {
+            "array": false,
+            "description": "file last access time",
+            "tags": [ "edr scan", "file" ],
+            "type": "timestamp",
+            "display_name": "last access time",
+            "name": "edr_file_access"
+        },
+        {
+            "array": false,
+            "description": "file type",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "file type",
+            "name": "edr_ft"
+        },
+        {
+            "array": false,
+            "description": "file company name",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "file company name",
+            "name": "edr_cn"
+        },
+        {
+            "array": false,
+            "description": "file internal name",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "internal name",
+            "name": "edr_in"
+        },
+        {
+            "array": false,
+            "description": "legal copyright",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "copyright",
+            "name": "edr_cr"
+        },
+        {
+            "array": false,
+            "description": "original filename",
+            "tags": [ "edr scan", "file" ],
+            "type": "string",
+            "display_name": "original filename",
+            "name": "edr_of"
+        },
+
+
+        {
+            "array": false,
+            "description": "",
+            "tags": [ "edr scan", "scan" ],
+            "type": "string",
+            "display_name": "edr scan id",
+            "name": "edr_sid"
+        },
+        {
+            "array": false,
+            "description": "",
+            "tags": [ "edr scan", "scan" ],
+            "type": "string",
+            "display_name": "registry key path",
+            "name": "edr_regkey"
+        },
+        {
+            "array": false,
+            "description": "",
+            "tags": [ "edr scan", "scan" ],
+            "type": "object",
+            "display_name": "registry subkey list",
+            "name": "edr_regsubkeys"
+        },
+        {
+            "array": false,
+            "description": "",
+            "tags": [ "edr scan", "scan" ],
+            "type": "string",
+            "display_name": "registry subkey",
+            "name": "edr_regsubkey"
+        },
+
+
+
+
+        {
+            "array": true,
+            "description": "closed files",
+            "tags": [ "edr scan", "file", "process" ],
+            "type": "string",
+            "display_name": "closed files",
+            "name": "edr_clf"
+        },
+        {
+            "array": true,
+            "description": "open files",
+            "tags": [ "edr scan", "file", "process" ],
+            "type": "string",
+            "display_name": "open files",
+            "name": "edr_opf"
+        },
+        {
+            "array": false,
+            "description": "parent process id",
+            "tags": [ "edr scan", "file", "process" ],
+            "type": "long",
+            "display_name": "parent process id",
+            "name": "edr_ppid"
+        },
+        {
+            "array": false,
+            "description": "process id",
+            "tags": [ "edr scan", "file", "process" ],
+            "type": "long",
+            "display_name": "process id",
+            "name": "edr_pid"
+        },
+        {
+            "array": false,
+            "description": "process name",
+            "tags": [ "edr scan", "file", "process" ],
+            "type": "string",
+            "display_name": "process name",
+            "name": "edr_procname"
+        },
+
+
+
+
+        {
+            "array": false,
+            "description": "wmi type name",
+            "tags": [ "edr scan", "wmi" ],
+            "type": "string",
+            "display_name": "wmi type name",
+            "name": "edr_wmi_type"
+        },
+        {
+            "array": true,
+            "description": "wmi entry",
+            "tags": [ "edr scan", "wmi" ],
+            "type": "object",
+            "display_name": "wmi entry",
+            "name": "edr_key_val"
+        },
+        {
+            "array": false,
+            "description": "wmi key",
+            "tags": [ "edr scan", "wmi" ],
+            "type": "string",
+            "display_name": "wmi key",
+            "name": "edr_key"
+        },
+        {
+            "array": false,
+            "description": "wmi value",
+            "tags": [ "edr scan", "wmi" ],
+            "type": "string",
+            "display_name": "wmi value",
+            "name": "edr_val"
+        },
+
+
+
+        {
+            "array": false,
+            "description": "windows log name",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log name",
+            "name": "edr_win_name"
+        },
+        {
+            "array": false,
+            "description": "windows log guid",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log guid",
+            "name": "edr_win_guid"
+        },
+        {
+            "array": false,
+            "description": "windows log eventid",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "long",
+            "display_name": "windows log eventid",
+            "name": "edr_win_eventid"
+        },
+        {
+            "array": false,
+            "description": "windows log version",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log version",
+            "name": "edr_win_version"
+        },
+        {
+            "array": false,
+            "description": "windows log level",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log level",
+            "name": "edr_win_level"
+        },
+        {
+            "array": false,
+            "description": "windows log task",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "long",
+            "display_name": "windows log task",
+            "name": "edr_win_task"
+        },
+        {
+            "array": false,
+            "description": "windows log opcode",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log opcode",
+            "name": "edr_win_opcode"
+        },
+        {
+            "array": false,
+            "description": "windows log keywords",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log keywords",
+            "name": "edr_win_keywords"
+        },
+        {
+            "array": false,
+            "description": "windows log event record id",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log event record id",
+            "name": "edr_win_eventrecordid"
+        },
+        {
+            "array": false,
+            "description": "windows log channel",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log channel",
+            "name": "edr_win_channel"
+        },
+        {
+            "array": false,
+            "description": "windows log computer",
+            "tags": [ "edr scan", "windows log" ],
+            "type": "string",
+            "display_name": "windows log computer",
+            "name": "edr_win_computer"
+        }
+
+    ]}
+}

@@ -1,0 +1,31 @@
+{
+	"test_name": "Small scale test",
+	"tenant_groups": [
+		{
+			"group_name": "small",
+			"num_tenants": 2,
+			"num_machines": 10,
+			"num_days": 30,
+			"avg_bundle_size": 50,
+			"bundles_per_day": 1000,
+			"num_scans": 1,
+			"files_per_scan": 200,
+			"bundle_threads_per_tenant": 1,
+			"edr_threads_per_tenant": 1,
+			"edr_source_path": "../test/test_edr_scan.zip"
+		},
+		{
+			"group_name": "large",
+			"num_tenants": 10,
+			"num_machines": 1000,
+			"num_days": 30,
+			"avg_bundle_size": 100,
+			"bundles_per_day": 2500,
+			"num_scans": 0,
+			"files_per_scan": 1500,
+			"bundle_threads_per_tenant": 3,
+			"edr_threads_per_tenant": 3,
+			"edr_source_path": "../test/test_edr_scan.zip"
+		}
+	]
+}

@@ -1,0 +1,168 @@
+{
+	"type": "platform",
+	"name": "local",
+	"display_name": "local platform",
+	"description": "local platform",
+	"author": "dg",
+	"body_class": "com.dg.platform.DefaultPlatform",
+	"body": {
+		"settings": {
+			"config_db_master": {
+				"master_db_port" : 5432,
+				"target_replication" : 1,
+				"conf_dir" : "/var/lib/pgsql/9.5/data"
+			},
+
+			"config_db_worker": {
+				"worker_db_port": 5432
+			},
+
+			"zookeeper": {
+				"port": 2181,
+				"dg_root_node" : "/dg",
+				"configuration" : {
+					"maxClientCnxns" : 70
+				},
+				"peer_port" : 2888,
+				"leader_elect_port" : 3888,
+				"log4j_overrides" : {
+				}
+			},
+			"elasticsearch" : {
+				"cluster_name" : "dg",
+				"es_transport_port": 9300,
+				"port": 9200,
+				"es_heap_size" : "8g"
+			},
+			"node" : {
+				"port": 9100,
+				"stat_collect_interval" : 1
+			},
+			"hdfs_name" : {
+				"dfs_replication" : 2,
+				"port": 9000,
+				"web_ui_port" : 50070,
+				"hdfs_root_path" : "/",
+				"ha_cluster_name" : "dg"
+			},
+			"hdfs_journal": {
+				"port": 8485
+			},
+			"kafka" : {
+				"default_replication" : 2,
+				"port": 9092,
+				"configuration" : {
+					"num.network.threads" : 8,
+					"num.io.threads" : 8
+				}
+			},
+			"spark_master": {
+				"spark_master_port": "7077",
+				"spark_rest_port": "6066",
+				"spark_master_ui_port": "8888",
+				"log4j_overrides" : {
+					"log4j.logger.com.dg.compute" : "INFO",
+					"log4j.logger.com.dg.compute.streams.processor.framework.ProcessorFunction" : "DEBUG"
+				},
+				"spark_daemon_java_opts": {
+					"spark.deploy.recoveryMode" : "ZOOKEEPER",
+					"spark.deploy.zookeeper.url" : "localhost"
+				}
+			},
+			"spark_worker": {
+				"spark_env": {
+					"spark_worker_cores": 15,
+					"spark_worker_memory": "15g"
+				},
+				"web_ui_port" : 8082,
+				"spark_daemon_java_opts": {
+				}
+			},
+			"rest": {
+				"port": 8080,
+				"local_file_cache_path" : "/data/hdfs_cache",
+				"driver_report_timeout" : 10,
+				"driver_submit_timeout" : 30
+			}
+		},
+		"nodes": {
+
+			"dev-dg8-12.verdasys.com": {
+				"kafka": {
+					"broker_id" : 0
+				},
+				"zookeeper": {
+					"server_id" : 1
+				},
+				"rest": {},
+				"node": {}
+
+			},
+
+			"dev-dg8-13.verdasys.com": {
+				"kafka": {
+					"broker_id" : 1
+				},
+				"hdfs_name": {},
+				"zookeeper": {
+					"server_id" : 2
+				},
+				"rest": {},
+				"node": {}
+			},
+
+			"dev-dg8-14.verdasys.com": {
+				"kafka": {
+					"broker_id" : 2
+				},
+				"hdfs_name": {"standby" : "true"},
+				"zookeeper": {
+					"server_id" : 3
+				},
+				"rest": {},
+				"node": {}
+			},
+			"dev-dg8-08.verdasys.com": {
+				"spark_worker": {},
+				"node": {}
+			},
+			"dev-dg8-07.verdasys.com": {
+				"hdfs_data": {},
+				"hdfs_journal": {},
+				"elasticsearch": {},
+				"node": {}
+			},
+			"dev-dg8-06.verdasys.com": {
+				"hdfs_data": {},
+				"hdfs_journal": {},
+				"elasticsearch": {},
+				"node": {}
+			},
+			"dev-dg8-05.verdasys.com": {
+				"hdfs_data": {},
+				"hdfs_journal": {},
+				"elasticsearch": {},
+				"node": {}
+			},
+			"dev-dg8-09.verdasys.com": {
+				"spark_master": {},
+				"spark_worker": {},
+				"node": {}
+			},
+			"dev-dg8-10.verdasys.com": {
+				"spark_master": {},
+				"spark_worker": {},
+				"node": {}
+			},
+			"dev-dg8-11.verdasys.com": {
+				"spark_worker": {},
+				"node": {}
+			}
+
+		}
+
+	}
+}
+
+
+

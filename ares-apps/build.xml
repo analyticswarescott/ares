@@ -1,0 +1,69 @@
+<!-- ant build for rest -->
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="reporting-service" default="default" basedir=".">
+
+    <property environment="env"/>
+    <property file="build.properties"/>
+    <property name="platform.lib" value="../lib"/>
+    <property name="maven.target" value="target"/>
+    <property name="install" value="${install.dir}"/>
+
+    <path id="maven-ant-tasks.classpath" path="${platform.lib}/maven-ant-tasks-2.1.3.jar"/>
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+             uri="antlib:org.apache.maven.artifact.ant"
+             classpathref="maven-ant-tasks.classpath"/>
+
+    <artifact:dependencies filesetId="dependency.fileset" pathId="dependency.classpath">
+        <pom file="pom.xml"/>
+    </artifact:dependencies>
+
+    <target name="default" depends="init,clean,install"/>
+
+    <target name="package">
+        <antcall target="install" />
+    </target>
+
+    <target name="init">
+        <mkdir dir="${install}"/>
+    </target>
+
+    <target name="install" description="create distribution">
+        <copy todir="${install}/lib">
+            <fileset refid="dependency.fileset"/>
+            <!-- This mapper strips off all leading directory information -->
+            <mapper type="flatten"/>
+        </copy>
+
+        <copy todir="${platform.target.dir}">
+            <fileset dir="lib">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${platform.target.dir}">
+            <fileset dir="${install}/lib">
+                <type type="file"/>
+                <exclude name="*.pom"/>
+                <exclude name="javax.servlet-3*.jar"/>
+                <exclude name="spark-catalyst_2.10-1.4.1.jar"/>
+                <exclude name="spark-launcher_2.10-1.4.1.jar"/>
+                <exclude name="spark-network-common_2.10-1.4.1.jar"/>
+                <exclude name="spark-network-shuffle_2.10-1.4.1.jar"/>
+                <exclude name="spark-sql_2.10-1.4.1.jar"/>
+                <!--<exclude name="spark-streaming-kafka_2.10-1.3.1.jar"/>-->
+                <exclude name="spark-unsafe_2.10-1.4.1.jar"/>
+                <exclude name="javax-websocket-client-impl-9.1.0.M0.jar"/>
+                <exclude name="javax-websocket-server-impl-9.1.0.M0.jar"/>
+            </fileset>
+            <fileset dir="${maven.target}">
+                <type type="file"/>
+                <include name="*.jar"/>
+                <exclude name="*sources*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean" description="clean up">
+        <delete dir="${install}"/>
+    </target>
+
+</project>

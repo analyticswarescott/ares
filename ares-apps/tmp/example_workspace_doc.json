@@ -1,0 +1,57 @@
+{
+  "tenant_id": "1",
+  "author": "7653f681-0662-4857-85da-07f106fbd809",
+  "description": "Default Workspace desc  ",
+  "version_date": "2015-10-21 16:00:26.286",
+  "body": {
+    "filter": {},
+    "elements": [
+      {
+        "layout": {
+          "size": {
+            "x": 2,
+            "y": 1
+          },
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "id": 2
+      },
+      {
+        "layout": {
+          "size": {
+            "x": 4,
+            "y": 3
+          },
+          "position": {
+            "x": 1,
+            "y": 0
+          }
+        },
+        "id": 3
+      }
+    ],
+    "scrollable": true
+  },
+  "type": "workspace",
+  "display_name": "Default Workspace ",
+  "version": 1,
+  "grouping": [
+    ""
+  ],
+  "dependencies_guid": [
+    ""
+  ],
+  "deleted": false,
+  "dependencies_name": [
+    ""
+  ],
+  "name": "workspace-7653f681-0662-4857-85da-07f106fbd809-1",
+  "perm_read": "author",
+  "id": "23f5442e-5081-4298-8b75-fcc11360a627",
+  "is_current": true,
+  "version_author": "7653f681-0662-4857-85da-07f106fbd809",
+  "perm_write": "author"
+}

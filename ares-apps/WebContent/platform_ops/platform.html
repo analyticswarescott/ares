@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Site Monitor [Site Name]</title>
+    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/d3.js"></script>
+  <!--  <script src="http://marvl.infotech.monash.edu/webcola/cola.v3.min.js"></script>-->
+
+
+    <script type="text/javascript" src="js/platform_ops.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+
+    <style>
+
+        .node circle  {
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node rect {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+
+        text { font: 11px sans-serif; }
+
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+
+<div id="tenants" style="float:left; width: 30%;" ></div>
+<div style="float: right; padding-right: 40px;"><h3>DG 8 Reporting Operations Center</h3></div>
+
+
+
+</body>
+
+
+<script type="text/javascript">
+
+    //data holders for now
+
+
+
+
+    // examples of various methods and d3 rendering
+
+    function connectSCP() {
+        wsocketSCP = new WebSocket("ws://52.10.183.53:8080/sc/SCPStatus");    //relative reference?
+        wsocketSCP.onmessage = onSCPMessage;
+    }
+
+
+    function addToAll(e) {
+
+        var ae = {};
+
+        ae.type = e.eventType;
+        var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+        d.setUTCSeconds(e.siteUTC);
+        ae.time = d.toLocaleTimeString();
+        ae.event = JSON.stringify(e);
+
+        all_events.push(ae);
+
+        if (all_events.length == 201) {
+            all_events.shift();
+        }
+
+        renderAllEvents();
+    }
+
+    function onSCPMessage(evt) {
+        // document.getElementById("scpStatus").innerHTML=evt.data;
+       // var newstat = [];
+
+
+      // var e = JSON.parse(evt.data);
+
+        if (evt.data.indexOf("true") > -1) {
+            scp_status.conn_status = "true";
+        }
+        else {
+            scp_status.conn_status = "false";
+        }
+
+        //addToAll(e);
+       // scp_status.pop();
+       // scp_status.push(e);
+
+
+        renderSCPStatus(scp_status);
+    }
+
+    var wsocketTableStatus;
+
+
+    function connectTableStatus() {
+        wsocketTableStatus = new WebSocket("ws://52.10.183.53:8080/sc/TableStatus");
+        wsocketTableStatus.onmessage = onTableStatusMessage;
+    }
+
+
+
+
+
+
+
+</script>
+
+</html>
