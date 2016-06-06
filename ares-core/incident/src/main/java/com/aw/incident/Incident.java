@@ -162,7 +162,7 @@ public interface Incident extends Taggable {
 	/**
 	 * @return Statically set the unity type
 	 */
-	@JsonProperty(CommonField.DG_UTYPE_STRING)
+	@JsonProperty(CommonField.EVENT_TYPE)
 	default public String getUnityType() { return Incident.UNITY_TYPE; }
 
 	/**

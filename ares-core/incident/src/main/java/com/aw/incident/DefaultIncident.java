@@ -187,22 +187,22 @@ public class DefaultIncident extends AbstractTaggable implements Incident, Secur
 	public void setCloseComment(Comment closeComment) { m_closeComment = closeComment; }
 	private Comment m_closeComment;
 
-	@JsonProperty(CommonField.DG_GUID_STRING)
+	@JsonProperty(CommonField.ARES_GUID)
 	public UUID getGuid() { return m_guid; }
 	public void setGuid(UUID guid) { m_guid = guid; }
 	private UUID m_guid;
 
-	@JsonProperty(CommonField.DG_NAME_STRING)
+	@JsonProperty(CommonField.ARES_OBJECT_NAME)
 	public String getName() { return m_name; }
 	public void setName(String name) { m_name = name; }
 	private String m_name;
 
-	@JsonProperty(CommonField.DG_DESCRIPTION_STRING)
+	@JsonProperty(CommonField.ARES_DESCRIPTION)
 	public String getDescription() { return m_description; }
 	public void setDescription(String description) { m_description = description; }
 	private String m_description;
 
-	@JsonProperty(CommonField.DG_TIME_STRING)
+	@JsonProperty(CommonField.ARES_TIME)
 	public Date getCreationTime() { return m_creationTime; }
 	public void setCreationTime(Date creationTime) { m_creationTime = creationTime; }
 	private Date m_creationTime;

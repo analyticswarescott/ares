@@ -9,12 +9,10 @@ import com.aw.common.system.structure.Purpose;
  */
 public enum HadoopPurpose implements Purpose{
 
-	BUNDLE("/bundle", new Hive[]{Hive.TENANT}),
-    EDR("/edr", new Hive[]{Hive.TENANT}),
-    RAW("/raw", new Hive[]{Hive.TENANT}),
+    EVENTS("/events", new Hive[]{Hive.TENANT}),
     CONFIG("/config", new Hive[]{Hive.TENANT, Hive.SYSTEM}),
 	PATCH("/patch", new Hive[]{Hive.SYSTEM}),
-    LOGGING_STUFF("/log", new Hive[]{Hive.SYSTEM}),
+    LOGGING("/log", new Hive[]{Hive.SYSTEM}),
 	INCIDENT("/incident", new Hive[]{Hive.TENANT}),
 	ARCHIVE("/archive", new Hive[]{Hive.TENANT});
 

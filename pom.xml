@@ -20,6 +20,7 @@
         <module>ares-apps</module>
         <module>ares-node</module>
         <module>ares-tools</module>
+		<module>aresx-custom-hg</module>
 	</modules>
 
 	<build>

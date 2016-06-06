@@ -44,10 +44,10 @@ public class AresResource extends RestMgrBase {
 
 	static Logger logger = Logger.getLogger(AresResource.class);
 
-	Provider<PlatformMgr> platformProvider;
-	Provider<LocalRestMember> restMember;
-	Provider<RestCluster> restCluster;
-	TenantMgr tenantMgr;
+	protected  Provider<PlatformMgr> platformProvider;
+	protected  Provider<LocalRestMember> restMember;
+	protected  Provider<RestCluster> restCluster;
+	protected  TenantMgr tenantMgr;
 
 	@Inject
 	public AresResource(Provider<PlatformMgr> platformProvider, Provider<LocalRestMember> restMember, Provider<RestCluster> restCluster, TenantMgr tenantMgr) {
@@ -56,93 +56,6 @@ public class AresResource extends RestMgrBase {
 		this.restCluster = restCluster;
 		this.tenantMgr = tenantMgr;
 	}
-
-    /**
-     * Add a bundle
-     */
-    @POST
-    @Path("/{tenantID}/{machineID}/bundles/{bundleID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("*/*")
-    @ApiOperation(value = "Add Bundle",
-    notes = "Adds a new bundle with the specified parameters")
-    public Response addBundle(
-    		@ApiParam(value = "the tenant ID to which this bundle belongs", required = true) @PathParam("tenantID") String tenantID,
-    		@ApiParam(value = "the machine ID to which this bundle belongs", required = true) @PathParam("machineID") String machineID,
-    		@ApiParam(value = "the bundle ID", required = true) @PathParam("bundleID") String bundleID,
-    		@ApiParam(value = "the bundle to be added", required = true) InputStream bundle
-    		) throws Exception {
-
-    	//add the bundle
-    	//this.platformProvider.get().addFile(HadoopPurpose.BUNDLE, Topic.BUNDLE_REF, new Tenant(tenantID), machineID, bundleID, bundleID, bundle);
-    	return Response.status(HttpStatus.ACCEPTED_202).build();
-
-    }
-
-    /**
-     * Add an EDR scan
-     */
-    @POST
-    @Path("/{tenantID}/{machineID}/edr_scans/{scanID}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("*/*")
-    @ApiOperation(value = "Add EDR Scan without sequence number")
-    public Response addEDRScan(
-    		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
-    		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
-    		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID,
-    		@ApiParam(value = "the scan data", required = true) InputStream scanData
-    		) throws Exception {
-
-		//add the file
-    	//this.platformProvider.get().addFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID, scanData);
-    	return Response.status(HttpStatus.ACCEPTED_202).build();
-
-    }
-
-    /**
-     * Add an EDR scan
-     */
-    @POST
-    @Path("/{tenantID}/{machineID}/edr_scans/{scanID}/{sequenceNumber}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("*/*")
-    @ApiOperation(value = "Add EDR Scan",
-    notes = "Adds an EDR scan in parts")
-    public Response addEDRScan(
-    		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
-    		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
-    		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID,
-    		@ApiParam(value = "the sequence number")@PathParam("sequenceNumber") int sequenceNumber,
-    		@ApiParam(value = "the scan data", required = true) InputStream scanData
-    		) throws Exception {
-
-		//add the partial file
-    	//this.platformProvider.get().addFilePart(HadoopPurpose.EDR, new Tenant(tenantID), machineID, scanID, scanID, scanData, sequenceNumber);
-    	return Response.status(HttpStatus.ACCEPTED_202).build();
-
-    }
-
-    /**
-     * Complete an EDR scan that was sent in parts
-     */
-    @POST
-    @Path("/{tenantID}/{machineID}/edr_scans/{scanID}/complete")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("*/*")
-    @ApiOperation(value = "Complete Scan",
-    notes = "Complete an EDR scan that was sent in parts")
-    public Response completeScan(
-    		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
-    		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
-    		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID
-    		) throws Exception {
-
-		//complete the file, telling the platform about it on the edr scan topic
-    	//this.platformProvider.get().completeFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID);
-    	return Response.status(HttpStatus.ACCEPTED_202).build();
-
-    }
 
 
     /**
@@ -179,5 +92,107 @@ public class AresResource extends RestMgrBase {
         tenantMgr.unProvisionTenant(tenantID);
         return Response.ok().build();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+	//TODO: remove
+
+	/**
+	 * Add a bundle
+	 */
+	@POST
+	@Path("/{tenantID}/{machineID}/bundles/{bundleID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
+	@ApiOperation(value = "Add Bundle",
+		notes = "Adds a new bundle with the specified parameters")
+	public Response addBundle(
+		@ApiParam(value = "the tenant ID to which this bundle belongs", required = true) @PathParam("tenantID") String tenantID,
+		@ApiParam(value = "the machine ID to which this bundle belongs", required = true) @PathParam("machineID") String machineID,
+		@ApiParam(value = "the bundle ID", required = true) @PathParam("bundleID") String bundleID,
+		@ApiParam(value = "the bundle to be added", required = true) InputStream bundle
+	) throws Exception {
+
+		//add the bundle
+		//this.platformProvider.get().addFile(HadoopPurpose.BUNDLE, Topic.BUNDLE_REF, new Tenant(tenantID), machineID, bundleID, bundleID, bundle);
+		return Response.status(HttpStatus.ACCEPTED_202).build();
+
+	}
+
+	/**
+	 * Add an EDR scan
+	 */
+	@POST
+	@Path("/{tenantID}/{machineID}/edr_scans/{scanID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
+	@ApiOperation(value = "Add EDR Scan without sequence number")
+	public Response addEDRScan(
+		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
+		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
+		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID,
+		@ApiParam(value = "the scan data", required = true) InputStream scanData
+	) throws Exception {
+
+		//add the file
+		//this.platformProvider.get().addFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID, scanData);
+		return Response.status(HttpStatus.ACCEPTED_202).build();
+
+	}
+
+	/**
+	 * Add an EDR scan
+	 */
+	@POST
+	@Path("/{tenantID}/{machineID}/edr_scans/{scanID}/{sequenceNumber}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
+	@ApiOperation(value = "Add EDR Scan",
+		notes = "Adds an EDR scan in parts")
+	public Response addEDRScan(
+		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
+		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
+		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID,
+		@ApiParam(value = "the sequence number")@PathParam("sequenceNumber") int sequenceNumber,
+		@ApiParam(value = "the scan data", required = true) InputStream scanData
+	) throws Exception {
+
+		//add the partial file
+		//this.platformProvider.get().addFilePart(HadoopPurpose.EDR, new Tenant(tenantID), machineID, scanID, scanID, scanData, sequenceNumber);
+		return Response.status(HttpStatus.ACCEPTED_202).build();
+
+	}
+
+	/**
+	 * Complete an EDR scan that was sent in parts
+	 */
+	@POST
+	@Path("/{tenantID}/{machineID}/edr_scans/{scanID}/complete")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
+	@ApiOperation(value = "Complete Scan",
+		notes = "Complete an EDR scan that was sent in parts")
+	public Response completeScan(
+		@ApiParam(value = "the tenant ID to which this EDR scan belongs", required = true) @PathParam("tenantID") String tenantID,
+		@ApiParam(value = "the machine ID to which this EDR scan belongs", required = true) @PathParam("machineID") String machineID,
+		@ApiParam(value = "the scan ID", required = true) @PathParam("scanID") String scanID
+	) throws Exception {
+
+		//complete the file, telling the platform about it on the edr scan topic
+		//this.platformProvider.get().completeFile(HadoopPurpose.EDR, Topic.SCAN_REF, new Tenant(tenantID), machineID, scanID, scanID);
+		return Response.status(HttpStatus.ACCEPTED_202).build();
+
+	}
+
+
 
 }

@@ -41,7 +41,7 @@ public interface Alarm {
 	/**
 	 * @return the guid of the alarm
 	 */
-	@JsonProperty(CommonField.DG_GUID_STRING)
+	@JsonProperty(CommonField.ARES_GUID)
 	public UUID getGuid();
 
 }

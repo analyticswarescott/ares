@@ -57,9 +57,9 @@ public class UnityIncidentManagerTest {
 
 	private Field assignedField = new Field(Incident.INCIDENT_ASSIGN, FieldType.STRING);
 	private Field stateField = new Field(Incident.INCIDENT_STATE, FieldType.STRING);
-	private Field guidField = new Field(CommonField.DG_GUID_STRING, FieldType.STRING);
+	private Field guidField = new Field(CommonField.ARES_GUID, FieldType.STRING);
 	private Field modifiedField = new Field(Incident.INCIDENT_MODIFIED_TIME, FieldType.STRING);
-	private Field createdField = new Field(CommonField.DG_TIME_STRING, FieldType.STRING);
+	private Field createdField = new Field(CommonField.ARES_TIME, FieldType.STRING);
 	private Field severityField = new Field(Incident.INCIDENT_SEVERITY, FieldType.STRING);
 	private Field severityScoreField = new Field(Incident.INCIDENT_SEVERITY_SCORE, FieldType.STRING);
 	private Field incidentGuidField = new Field("inc_guid", FieldType.GUID);
@@ -92,9 +92,9 @@ public class UnityIncidentManagerTest {
 		when(incidentDataType.getField(Incident.INCIDENT_SEVERITY)).thenReturn(severityField);
 		when(incidentDataType.getField(Incident.INCIDENT_SEVERITY_SCORE)).thenReturn(severityScoreField);
 		when(incidentDataType.getField(Incident.INCIDENT_MODIFIED_TIME)).thenReturn(modifiedField);
-		when(incidentDataType.getField(CommonField.DG_TIME_STRING)).thenReturn(severityScoreField);
-		when(incidentDataType.getField(CommonField.DG_GUID_STRING)).thenReturn(guidField);
-		when(incidentDataType.getField(CommonField.DG_TIME_STRING)).thenReturn(createdField);
+		when(incidentDataType.getField(CommonField.ARES_TIME)).thenReturn(severityScoreField);
+		when(incidentDataType.getField(CommonField.ARES_GUID)).thenReturn(guidField);
+		when(incidentDataType.getField(CommonField.ARES_TIME)).thenReturn(createdField);
 		when(assignIncidentActionType.getField("inc_guid")).thenReturn(incidentGuidField);
 
 

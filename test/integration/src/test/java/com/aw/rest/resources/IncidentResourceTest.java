@@ -270,7 +270,7 @@ public class IncidentResourceTest extends BaseIntegrationTest {
 		JSONObject object = new JSONObject(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
 		Assert.assertEquals(200, response.getStatusLine().getStatusCode());
 
-		String actionGuid = object.getString(CommonField.DG_GUID_STRING);
+		String actionGuid = object.getString(CommonField.ARES_GUID);
 		String urlPart = Statics.VERSIONED_REST_PREFIX + "/incidents/" + guid + "/attachments/" + actionGuid;
 
 		HttpResponse actionResponse = authGet(testUser, urlPart, HttpResponse.class);
@@ -308,7 +308,7 @@ public class IncidentResourceTest extends BaseIntegrationTest {
 		assertEquals(200, httpResponse.getStatusLine().getStatusCode());
 		String str = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
 		JSONObject obj = new JSONObject(str);
-		return obj.getString(CommonField.DG_GUID_STRING);
+		return obj.getString(CommonField.ARES_GUID);
 	}
 
 	private void testSearch() throws Exception {

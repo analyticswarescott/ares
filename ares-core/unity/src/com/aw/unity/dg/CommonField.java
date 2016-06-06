@@ -260,13 +260,11 @@ public enum CommonField {
 		return valueOf(str.toUpperCase());
 	}
 
-	public static final String DG_GUID_STRING = "dg_guid";
-	public static final String DG_TIME_STRING = "dg_time";
-	public static final String DG_DESCRIPTION_STRING = "dg_description";
-	public static final String DG_NAME_STRING = "dg_name";
-	public static final String DG_UTYPE_STRING = "dg_utype";
-	public static final String DG_TAGS_STRING = "dg_tags";
-	public static final String DG_FILE_NAME_STRING = "dg_file_name";
-	public static final String DG_FILE_PATH_STRING = "dg_file_path";
+	public static final String ARES_GUID = "ares_guid";
+	public static final String ARES_TIME = "ares_time";
+	public static final String ARES_DESCRIPTION = "ares_description";
+	public static final String ARES_OBJECT_NAME = "ares_name";
+	public static final String EVENT_TYPE = "eventType";
+
 
 }

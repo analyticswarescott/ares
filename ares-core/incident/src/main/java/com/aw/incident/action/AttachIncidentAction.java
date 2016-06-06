@@ -46,18 +46,7 @@ public class AttachIncidentAction extends AbstractUpdateIncidentAction {
 		this.fileName = fileName;
 	}
 
-	@JsonProperty(CommonField.DG_FILE_NAME_STRING)
-	public String getFileName() {
-		return fileName;
-	}
 
-	@JsonProperty(CommonField.DG_FILE_PATH_STRING)
-	public String getFilePath() {
-		return hadoopFilePath;
-	}
-	public void setFilePath(String filePath) {
-		hadoopFilePath = filePath;
-	}
 
 	@Override
 	public String getUnityType() {
@@ -75,7 +64,7 @@ public class AttachIncidentAction extends AbstractUpdateIncidentAction {
 
 			String path = Path.SEPARATOR + getIncidentGuid();
 			String uniqueFileName = String.valueOf(Instant.now().toEpochMilli());
-			setFilePath(path + Path.SEPARATOR + uniqueFileName);
+			//setFilePath(path + Path.SEPARATOR + uniqueFileName);
 
 			ctx.getPlatformMgr().getTenantFileWriter().writeStreamToFile(HadoopPurpose.INCIDENT, new Path(path), uniqueFileName, attachment);
 

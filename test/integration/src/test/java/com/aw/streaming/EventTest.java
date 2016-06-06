@@ -5,53 +5,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.hadoop.fs.Path;
-import org.apache.http.HttpResponse;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.aw.TestDependencies;
-import com.aw.common.hadoop.read.FileReader;
-import com.aw.common.hadoop.read.FileWrapper;
-import com.aw.common.hadoop.structure.HadoopPurpose;
 import com.aw.common.messaging.Topic;
-import com.aw.common.processor.FileArchiveProcessor;
-import com.aw.common.rest.security.Impersonation;
-import com.aw.common.rest.security.SecurityUtil;
 import com.aw.common.rest.security.TenantAware;
-import com.aw.common.system.structure.Hive;
-import com.aw.common.task.DefaultTaskContext;
 import com.aw.common.task.PlatformStatusPoller;
 import com.aw.common.task.TaskDef;
 import com.aw.common.task.TaskStatus;
-import com.aw.common.task.TenantArchiveTask;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.HttpMethod;
 import com.aw.common.util.RestClient;
-import com.aw.common.util.SetTimeSource;
-import com.aw.common.util.TimeSource;
 import com.aw.common.util.es.ElasticIndex;
-import com.aw.common.zookeeper.DefaultZkAccessor;
-import com.aw.common.zookeeper.ZkAccessor;
 import com.aw.document.DocumentType;
-import com.aw.document.SequencedDocumentHandler;
 import com.aw.platform.NodeRole;
 import com.aw.platform.monitoring.DefaultPlatformStatus;
 import com.aw.platform.monitoring.StreamStatus;
@@ -67,7 +40,7 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 
 		//test full file
 
-		testGlobalEvents();
+		testEventToRest();
 
 		testStatusPoll();
 		//run an archive now, running as tomorrow
@@ -185,7 +158,7 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 	 * Test processing a full scan zip
 	 */
 
-	public void testGlobalEvents() throws Exception {
+	public void testEventToRest() throws Exception {
 
 		setThreadSystemAccess();
 
@@ -195,10 +168,14 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 
 
 		provisionTenant("1");
-		DataFeedUtils.fireTenantData(TestDependencies.getPlatform().get(), "1",  "test_event1.json", "events");
 
-		//System.out.println(" TEMP wait to check spark logs...comment once test is working");
-		//Thread.sleep(1200000);
+		//fire array of events via REST
+		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
+		client.execute(HttpMethod.POST, "/rest/v1/event/3/event", DataFeedUtils.getInputStream("streaming/test_game_event.json"));
+
+
+		System.out.println(" pause 10 minutes to check system state...comment once test is working");
+		Thread.sleep(600000);
 
 		//make sure we get the counts we expect
 		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("1") , "game_event", 1, 180);

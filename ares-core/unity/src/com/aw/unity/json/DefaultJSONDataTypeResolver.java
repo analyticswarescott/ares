@@ -37,8 +37,6 @@ public class DefaultJSONDataTypeResolver implements JSONDataTypeResolver {
 	/**
 	 * The unity type json key that must be present to resolve to a data type
 	 */
-	public static final String DG_UNITY_TYPE = "dg_utype";
-
 	private static final String MAPPINGS = "mappings";
 	private static final String PATH = "path";
 	private static final String DATA_TYPE = "data_type";

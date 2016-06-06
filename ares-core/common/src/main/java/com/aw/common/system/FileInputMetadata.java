@@ -18,10 +18,10 @@ public class FileInputMetadata {
 	public FileInputMetadata() {
 	}
 
-	public FileInputMetadata(HadoopPurpose purpose, String tenantID, String machineID, String path, String filename, String guid, boolean hasParts) {
+	public FileInputMetadata(HadoopPurpose purpose, String tenantID, String subPath, String path, String filename, String guid, boolean hasParts) {
 		m_purpose = purpose;
 		m_tenantID = tenantID;
-		m_machineID = machineID;
+		m_machineID = subPath;
 		m_filename = filename;
 		m_path = path;
 		m_guid = guid;

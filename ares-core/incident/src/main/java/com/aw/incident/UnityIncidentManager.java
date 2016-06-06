@@ -125,7 +125,7 @@ public class UnityIncidentManager implements IncidentManager, SecurityAware {
 
 	@Override
 	public IncidentAction getIncidentAction(String guid, String actionUnityType) throws Exception {
-		EqConstraint guidConstraint = new EqConstraint(getField(CommonField.DG_GUID_STRING), guid);
+		EqConstraint guidConstraint = new EqConstraint(getField(CommonField.ARES_GUID), guid);
 		DataType actionType = unityProvider.get().getDataType(actionUnityType);
 		Query query = UnityUtil.getDetailQueryFor(actionType, guidConstraint);
 		List<IncidentAction> matchingActions = executeQuery(query, IncidentAction.class);
@@ -155,23 +155,23 @@ public class UnityIncidentManager implements IncidentManager, SecurityAware {
 			case HIGH_SEVERITY_FIRST:
 				attributes = new QueryAttribute[] {
 					new QueryAttribute(getField(Incident.INCIDENT_SEVERITY_SCORE), QueryAttribute.Order.DESC, QueryAttribute.Aggregate.NONE),
-					new QueryAttribute(getField(CommonField.DG_TIME_STRING), QueryAttribute.Order.DESC, QueryAttribute.Aggregate.NONE)
+					new QueryAttribute(getField(CommonField.ARES_TIME), QueryAttribute.Order.DESC, QueryAttribute.Aggregate.NONE)
 				};
 				break;
 			case LOW_SEVERITY_FIRST:
 				attributes = new QueryAttribute[] {
 					new QueryAttribute(getField(Incident.INCIDENT_SEVERITY_SCORE), QueryAttribute.Order.ASC, QueryAttribute.Aggregate.NONE),
-					new QueryAttribute(getField(CommonField.DG_TIME_STRING), QueryAttribute.Order.ASC, QueryAttribute.Aggregate.NONE)
+					new QueryAttribute(getField(CommonField.ARES_TIME), QueryAttribute.Order.ASC, QueryAttribute.Aggregate.NONE)
 				};
 				break;
 			case NEWEST_FIRST:
 				attributes = new QueryAttribute[] {
-					new QueryAttribute(getField(CommonField.DG_TIME_STRING), QueryAttribute.Order.DESC, QueryAttribute.Aggregate.NONE)
+					new QueryAttribute(getField(CommonField.ARES_TIME), QueryAttribute.Order.DESC, QueryAttribute.Aggregate.NONE)
 				};
 				break;
 			case OLDEST_FIRST:
 				attributes = new QueryAttribute[] {
-					new QueryAttribute(getField(CommonField.DG_TIME_STRING), QueryAttribute.Order.ASC, QueryAttribute.Aggregate.NONE)
+					new QueryAttribute(getField(CommonField.ARES_TIME), QueryAttribute.Order.ASC, QueryAttribute.Aggregate.NONE)
 				};
 				break;
 			case LAST_MODIFIED_FIRST:
@@ -257,7 +257,7 @@ public class UnityIncidentManager implements IncidentManager, SecurityAware {
 		Collection<Object> eventGuids = getEventGuids(actions);
 		DataUnityResults results = new DataUnityResults(new ArrayList<>());
 		if (!eventGuids.isEmpty()) {
-			Filter filter = new InConstraint(getField(CommonField.DG_GUID_STRING), eventGuids);
+			Filter filter = new InConstraint(getField(CommonField.ARES_GUID), eventGuids);
 			Query query = new Query();
 			query.setFilter(filter);
 			query.setSize(eventGuids.size());

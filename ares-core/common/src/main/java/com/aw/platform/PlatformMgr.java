@@ -635,12 +635,12 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
      * @param purpose The purpose of the file
      * @param topic The topic if the platform should be told about it
      * @param tenant The tenant to which this file belongs
-     * @param machineID The machine ID to which this file belongs
+     * @param subPath The machine ID to which this file belongs
      * @param filename The filename to use
      * @param guid A guid related to this file
      * @param data The data itself
      */
-    public void addFile(HadoopPurpose purpose, Topic topic, Tenant tenant, String machineID, String filename, String guid, InputStream data) throws Exception {
+    public void addFile(HadoopPurpose purpose, Topic topic, Tenant tenant, String subPath, String filename, String guid, InputStream data) throws Exception {
 
     	try {
 
@@ -648,7 +648,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
     		Impersonation.impersonateTenant(tenant.getTenantID());
 
     		//everything for a machine goes under that parent path
-    		String path = toPath(machineID);
+    		String path = toPath(subPath);
 
             FileWriter w = getTenantFileWriter();
 
@@ -660,7 +660,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 
     		if (topic != null) {
 
-    			sendFileMessage(purpose, topic, tenant, machineID, filename, guid, false);
+    			sendFileMessage(purpose, topic, tenant, subPath, filename, guid, false);
 
     		}
 
@@ -718,15 +718,15 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
      * @param purpose The purpose of the file
      * @param topic The topic if the platform should be told about it
      * @param tenant The tenant to which this file belongs
-     * @param machineID The machine ID to which this file belongs
+     * @param subPath The machine ID to which this file belongs
      * @param filename The filename to use
      * @param guid A guid related to this file
      * @throws Exception If anything goes wrong
      */
-    public void completeFile(HadoopPurpose purpose, Topic topic, Tenant tenant, String machineID, String filename, String guid) throws Exception {
+    public void completeFile(HadoopPurpose purpose, Topic topic, Tenant tenant, String subPath, String filename, String guid) throws Exception {
 
     	//add the file with the sequence number at the end
-    	sendFileMessage(purpose, topic, tenant, machineID, filename, guid, true);
+    	sendFileMessage(purpose, topic, tenant, subPath, filename, guid, true);
 
     }
 

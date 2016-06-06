@@ -30,7 +30,7 @@ public class DownloadIncidentAttachmentAction extends AbstractIncidentAction {
 
 	public DownloadIncidentAttachmentAction(AttachIncidentAction attachmentData) {
 		setIncidentGuid(attachmentData.getIncidentGuid());
-		setActionFileName(attachmentData.getFileName());
+		//setActionFileName(attachmentData.getFileName());
 		setAttachmentActionGuid(attachmentData.getGuid().toString());
 		this.attachmentData = attachmentData;
 	}
@@ -70,13 +70,6 @@ public class DownloadIncidentAttachmentAction extends AbstractIncidentAction {
 		actionGuid = attachmentActionGuid;
 	}
 
-	@JsonProperty(CommonField.DG_FILE_NAME_STRING)
-	public String getActionFileName() {
-		return fileName;
-	}
-	public void setActionFileName(String actionFileName) {
-		fileName = actionFileName;
-	}
 
 	@JsonIgnore
 	public InputStream getDownloadedFile() {
@@ -101,6 +94,7 @@ public class DownloadIncidentAttachmentAction extends AbstractIncidentAction {
 	}
 
 	private String[] getPathSections() {
-		return attachmentData.getFilePath().split(Path.SEPARATOR);
+		return null;
+		//return attachmentData.getFilePath().split(Path.SEPARATOR);
 	}
 }

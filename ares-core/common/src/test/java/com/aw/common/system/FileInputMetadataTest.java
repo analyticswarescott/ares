@@ -1,3 +1,4 @@
+/*
 package com.aw.common.system;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +21,8 @@ public class FileInputMetadataTest {
 
 		String json = JSONUtils.objectToString(metadata);
 		JsonNode fromString = mapper.readTree(json);
-		/**
+		*/
+/**
 {
     "purpose": "edr",
     "filename": "bundle",
@@ -31,7 +33,8 @@ public class FileInputMetadataTest {
     "guid" : "guid",
     "has_parts" : false
 }
-		 */
+		 *//*
+
 		String expected = "{\n" +
 				"    \"purpose\": \"edr\",\n" +
 				"    \"filename\": \"bundle\",\n" +
@@ -56,3 +59,4 @@ public class FileInputMetadataTest {
 	}
 
 }
+*/

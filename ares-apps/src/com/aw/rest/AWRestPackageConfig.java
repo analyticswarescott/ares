@@ -10,9 +10,9 @@ import com.aw.rest.inject.DGBinder;
  * The webapp configuration for a rest cluster member
  */
 @ApplicationPath("rest")
-public class DGResourceConfig extends AbstractResourceConfig {
+public class AWRestPackageConfig extends AbstractResourceConfig {
 
-	public DGResourceConfig() throws Exception {
+	public AWRestPackageConfig() throws Exception {
 		super();
 
 		//resource providers
@@ -23,7 +23,8 @@ public class DGResourceConfig extends AbstractResourceConfig {
 			"com.aw.auth.filter",
 			"com.aw.unity.security",
 			"com.aw.common.rest.resources",
-			"com.aw.unity.rest"
+			"com.aw.unity.rest",
+			"com.hg.custom.rest"
 		);
 
 	}

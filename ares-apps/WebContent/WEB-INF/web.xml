@@ -47,7 +47,7 @@
 
         <init-param>
           <param-name>javax.ws.rs.Application</param-name>
-          <param-value>com.aw.rest.DGResourceConfig</param-value>
+          <param-value>com.aw.rest.AWRestPackageConfig</param-value>
         </init-param>
 
 		<load-on-startup>1</load-on-startup>
