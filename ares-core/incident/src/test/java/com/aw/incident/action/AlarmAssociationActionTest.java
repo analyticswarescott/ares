@@ -48,7 +48,7 @@ public class AlarmAssociationActionTest {
 
 	}
 
-	@Test
+/*	@Test
 	public void testPrepareVariable() throws Exception {
 
 		ActionContext ctx = new DefaultActionContext(mock(UnityInstance.class), new MockProvider<>(PlatformMgr.class));
@@ -69,6 +69,6 @@ public class AlarmAssociationActionTest {
 		AlarmAssociationAction action = new AlarmAssociationAction();
 		action.prepare(ctx);
 
-	}
+	}*/
 
 }

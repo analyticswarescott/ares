@@ -100,8 +100,6 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		DefaultPlatformStatus status = client.executeReturnObject(HttpMethod.GET,
 			VERSIONED_REST_PREFIX + "/platform/status/" + DateTime.now().getMillis(), DefaultPlatformStatus.class, false);
 
-
-
 		//assert there are 2 stat reports for localhost
 		assertEquals(status.getNodeStatuses().get("localhost").size(), 2);
 

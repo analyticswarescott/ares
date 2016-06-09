@@ -53,7 +53,7 @@ public class DataBuilder {
 		JSONObject json = new JSONObject();
 
 		//set the type
-		json.put(CommonField.DG_UTYPE.asField().getName(), this.type.getName());
+		json.put(CommonField.EVENT_TYPE_FIELD, this.type.getName());
 
 		//add the field=value pairs using the field refs for the proper json paths
 		for (JSONFieldRef ref : ((JSONDataType)this.type).getFieldRefs()) {

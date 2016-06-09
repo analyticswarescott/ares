@@ -176,7 +176,7 @@ public class DefaultJSONDataTypeResolver implements JSONDataTypeResolver {
 			}
 
 			//check for common aw unity type property
-			String type = json.optString(CommonField.DG_UTYPE.toString(), null);
+			String type = json.optString(CommonField.EVENT_TYPE_FIELD.toString(), null);
 			if (type != null) {
 				return m_repository.getDataType(type);
 			}

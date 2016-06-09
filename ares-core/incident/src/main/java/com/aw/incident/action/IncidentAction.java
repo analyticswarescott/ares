@@ -33,7 +33,7 @@ public interface IncidentAction extends Action, Taggable {
 	/**
 	 * @return The unity data type this action represents
 	 */
-	@JsonProperty(CommonField.EVENT_TYPE)
+	@JsonProperty(CommonField.EVENT_TYPE_FIELD)
 	public String getUnityType();
 
 	/**

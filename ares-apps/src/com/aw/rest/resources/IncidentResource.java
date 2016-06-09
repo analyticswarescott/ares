@@ -318,13 +318,13 @@ public class IncidentResource {
 		return attachAction;
 	}
 
-	/**
+/*	*//**
 	 * Retrieve a file attachment
 	 * @param incidentGuid The guid of the incident
 	 * @param actionGuid The guid of the action
 	 * @return The attachment
 	 * @throws Exception If anything goes wrong
-     */
+     *//*
 	@GET
 	@Path("{inc_guid}/attachments/{action_guid}")
 	@ApiOperation(value = "Get incident attachment",
@@ -343,7 +343,7 @@ public class IncidentResource {
 			.fileName(action.getFileName()).build();
 		StreamingOutput fileOutput = getStreamingOutput(file);
 		return Response.ok(fileOutput).header("Content-Disposition", contentDisposition).build();
-	}
+	}*/
 
 	private void validateAttachmentAction(AttachIncidentAction action, UUID incidentGuid) {
 		if (action == null || !action.getIncidentGuid().equals(incidentGuid.toString())) {

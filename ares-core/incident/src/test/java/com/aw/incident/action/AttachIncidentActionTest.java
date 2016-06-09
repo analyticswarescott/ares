@@ -47,12 +47,12 @@ public class AttachIncidentActionTest {
 		action = new AttachIncidentAction(inputStream, "cat picture.jpg", UUID.randomUUID());
 	}
 
-	@Test
+/*	@Test
 	public void testExecute() throws Exception {
 		action.execute(actionContext);
 		assertTrue(action.getFilePath().contains(action.getIncidentGuid() + "/"));
 		verify(fileWriter).writeStreamToFile(HadoopPurpose.INCIDENT, new Path(Path.SEPARATOR + action.getIncidentGuid()), action.getFilePath().split("/")[2], inputStream);
-	}
+	}*/
 
 	@SuppressWarnings("all")
 	@Test(expected = ActionExecutionException.class)
@@ -61,12 +61,12 @@ public class AttachIncidentActionTest {
 		action.execute(actionContext);
 	}
 
-	@Test
+/*	@Test
 	public void testGetters() {
 		assertEquals("cat picture.jpg", action.getFileName());
 		assertEquals(AttachIncidentAction.UNITY_TYPE, action.getUnityType());
 		assertEquals(IncidentActionType.INCIDENT_ATTACHMENT, action.getType());
-	}
+	}*/
 
 	@Test
 	public void testDefaultConstructor() {

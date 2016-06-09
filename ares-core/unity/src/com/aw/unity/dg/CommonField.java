@@ -148,7 +148,7 @@ public enum CommonField {
 	/**
 	 * Unity data type
 	 */
-	DG_UTYPE(FieldType.STRING),
+	EVENT_TYPE(FieldType.STRING),
 
 	/**
 	 * A comment string
@@ -264,7 +264,7 @@ public enum CommonField {
 	public static final String ARES_TIME = "ares_time";
 	public static final String ARES_DESCRIPTION = "ares_description";
 	public static final String ARES_OBJECT_NAME = "ares_name";
-	public static final String EVENT_TYPE = "eventType";
+	public static final String EVENT_TYPE_FIELD = "eventType";
 
 
 }

@@ -41,7 +41,7 @@ public class SimpleAlarm implements Alarm {
 		data.getJson().put(CommonField.DG_ALARM_ID.toString(), guid.toString());
 
 		//add tags array
-		data.getJson().put(CommonField.DG_TAGS_STRING, new JSONArray(JSONUtils.objectToString(simpleRule.getTags())));
+		//data.getJson().put(CommonField.DG_TAGS, new JSONArray(JSONUtils.objectToString(simpleRule.getTags())));
 
 		this.data = data;
 
