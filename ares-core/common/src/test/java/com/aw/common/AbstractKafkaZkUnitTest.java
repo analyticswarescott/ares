@@ -103,7 +103,7 @@ public class AbstractKafkaZkUnitTest {
 
 		StreamDef def = new StreamDef();
 		def.setProcessorId("testId");
-		def.setSourceTopic(Arrays.asList(Topic.EVENTS, Topic.ERRORS));
+		def.setSourceTopic(Arrays.asList(Topic.EVENTS_ES, Topic.ERRORS));
 		def.setStreamHandlerClass("testClass");
 		def.setTargetDriver("testTargetDriver");
 		def.setTenant(true);

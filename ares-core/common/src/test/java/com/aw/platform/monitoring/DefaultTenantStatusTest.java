@@ -35,7 +35,7 @@ public class DefaultTenantStatusTest extends AbstractKafkaZkUnitTest {
 			StreamDef stream = doc.getBodyAsObject();
 
 			//only populate bundle
-			if (stream.getSourceTopic().get(0) == Topic.EVENTS) {
+			if (stream.getSourceTopic().get(0) == Topic.EVENTS_ES) {
 
 				//initialize kafka/zk for each stream with some offsets specific to each stream
 				setupKafkaFor(tenant, stream.getSourceTopicNames(tenant), stream.getProcessorName(tenant), 25L);
@@ -54,14 +54,14 @@ public class DefaultTenantStatusTest extends AbstractKafkaZkUnitTest {
 		String strJson = JSONUtils.objectToString(status);
 		status = JSONUtils.objectFromString(strJson, DefaultTenantStatus.class);
 
-		assertEquals(6, status.getStreamStatus().size());
+		assertEquals(7, status.getStreamStatus().size());
 
 		//only bundle topic should have offset, and it should be 25
 		long offset = 0L;
 		for (StreamStatus streamStatus : status.getStreamStatus()) {
 
-			if (streamStatus.getTopicStatus().containsKey(Topic.EVENTS)) {
-				List<TopicPartitionStatus> curStatus = streamStatus.getTopicStatus().get(Topic.EVENTS);
+			if (streamStatus.getTopicStatus().containsKey(Topic.EVENTS_ES)) {
+				List<TopicPartitionStatus> curStatus = streamStatus.getTopicStatus().get(Topic.EVENTS_ES);
 
 				if (curStatus.size() > 0) {
 					offset = curStatus.get(0).getLatestProcessed().getPosition();

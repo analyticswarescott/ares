@@ -14,21 +14,16 @@ import com.aw.alarm.DefaultAlarmManager;
 import com.aw.alarm.action.AlarmAction;
 import com.aw.alarm.action.AlarmActionType;
 import com.aw.common.cluster.ClusterException;
-import com.aw.common.inject.DocumentMgrFactory;
-import com.aw.common.inject.DocumentProvider;
-import com.aw.common.inject.PlatformFactory;
-import com.aw.common.inject.PlatformMgrProvider;
-import com.aw.common.inject.ProviderWrapper;
-import com.aw.common.inject.RestClusterFactory;
-import com.aw.common.inject.RestMemberProvider;
-import com.aw.common.inject.TenantMgrProvider;
-import com.aw.common.inject.TimeSourceProvider;
+import com.aw.common.inject.*;
 import com.aw.common.inject.unity.UnityProvider;
+import com.aw.common.rdbms.DBMgr;
 import com.aw.common.util.TimeSource;
 import com.aw.compute.referencedata.geo.DefaultGeoLocationSource;
 import com.aw.compute.referencedata.geo.GeoLocationSource;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
+import com.aw.document.jdbc.DocumentJDBCProvider;
+import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.incident.action.IncidentAction;
 import com.aw.incident.action.IncidentActionType;
 import com.aw.platform.Platform;
@@ -60,6 +55,7 @@ public class ComputeModule extends AbstractModule {
 	protected Provider<ActionManager> actionManager;
 	protected RootActionFactory actionFactory;
 	protected AlarmManager alarmManager;
+	protected Provider<DBMgr> dbMgr;
 
 	protected static final ActionFactory[] ACTION_FACTORIES = {
 
@@ -71,8 +67,17 @@ public class ComputeModule extends AbstractModule {
 
 	};
 
+
+	protected DocumentJDBCProvider getDBProvider() { return new PostgresJDBCProvider(); }
+
 	@Override
 	protected void configure() {
+
+		//create / wire up our dependencies
+		actionFactory = new DefaultRootActionFactory(ACTION_FACTORIES);
+		platformMgr = new PlatformMgrProvider();
+
+		dbMgr = new DatabaseProvider(platform, getDBProvider());
 
 		//create our factories
 		actionFactory = new DefaultRootActionFactory(ACTION_FACTORIES);
@@ -99,6 +104,7 @@ public class ComputeModule extends AbstractModule {
 		}
 
 		//bind our factories
+		bind(DBMgr.class).toProvider(new ProviderWrapper<DBMgr>(dbMgr));
 		bind(DocumentHandler.class).toProvider(new ProviderWrapper<>(docs));
 		bind(DocumentMgr.class).toProvider(new ProviderWrapper<>(docMgr));
 		bind(UnityInstance.class).toProvider(new ProviderWrapper<>(unity));

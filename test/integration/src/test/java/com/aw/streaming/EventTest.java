@@ -169,7 +169,7 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 
 		//fire array of events via REST
 		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
-		client.execute(HttpMethod.POST, "/rest/v1/event/3/event", DataFeedUtils.getInputStream("streaming/test_game_event.json"));
+		client.execute(HttpMethod.POST, "/rest/v1/event/1/event", DataFeedUtils.getInputStream("streaming/test_game_event.json"));
 
 
 		System.out.println(" pause 10 minutes to check system state...comment once test is working");

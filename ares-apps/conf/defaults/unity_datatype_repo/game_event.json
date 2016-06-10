@@ -9,17 +9,17 @@
 				"mappings": [
 					{
 						"path": [
-							"dg_utype"
+							"eventType"
 						],
-						"value": "game_event",
-						"data_type": "game_event"
+						"value": "GameEvent",
+						"data_type": "GameEvent"
 					}
 				]
 			}],
         "types": [
 
             {
-                "name": "game_event",
+                "name": "GameEvent",
                 "display_name": "game events",
                 "id_field" : "eventId",
                 "description": "game events",

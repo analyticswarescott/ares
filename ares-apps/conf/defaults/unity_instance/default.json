@@ -27,7 +27,7 @@
 				"download_incident_attachment" : "incidents",
 
                 "platform_error": "errors",
-				"game_event" : "events",
+				"GameEvent" : "events",
 
 
                 "topic_status": "status",

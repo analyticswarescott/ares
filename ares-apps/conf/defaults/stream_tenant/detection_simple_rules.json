@@ -14,7 +14,7 @@
 			"topic_status",
 			"action",
 			"incident",
-			"events"
+			"events_es"
 		],
 		"config_data": {
 			"processor_class": "com.aw.compute.detection.SimpleRuleProcessor"

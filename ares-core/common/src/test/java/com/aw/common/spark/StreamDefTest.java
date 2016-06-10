@@ -84,11 +84,11 @@ public class StreamDefTest {
 				"    \"target_driver\" : \"driver30sec\",\n" +
 				"    \"processor_id\": \"load_machine_event_ES\",\n" +
 				"    \"handler_class\": \"com.aw.compute.streams.processor.impl.GenericESProcessor\",\n" +
-				"    \"source_topic\": [\"events\"],\n" +
+				"    \"source_topic\": [\"events_es\"],\n" +
 				"    \"offset_type\": \"smallest.always\",\n" +
 				"    \"destination_topics\": [],\n" +
 				"    \"processor_data\": {\n" +
-				"      \"index_type\": \"gameEvents\",\n" +
+				"      \"index_type\": \"GameEvents\",\n" +
 				"      \"index_name\": \"events\",\n" +
 				"      \"id_attribute\": \"id\"\n" +
 				"}} ";

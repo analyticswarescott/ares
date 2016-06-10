@@ -29,9 +29,14 @@ public enum Topic {
 	INCIDENT(true),
 
 	/**
-	 * events from the agent
+	 * events to ES
 	 */
-	EVENTS(true),
+	EVENTS_ES(true),
+
+	/**
+	 * events to JDBC
+	 */
+	EVENTS_JDBC(true),
 
 	/**
 	 * Any topic that begins with RULE will represent firings of a rule in the detection framework

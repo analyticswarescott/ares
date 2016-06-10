@@ -7,12 +7,12 @@
 		"tenant": true,
 		"system": false,
 		"target_driver": "driver30sec",
-		"processor_id": "events",
+		"processor_id": "events_jdbc",
 		"optimal_events_per_task" : 10000,
-		"source_topic": ["events"],
+		"source_topic": ["events_jdbc"],
 		"config_data": {
-			"processor_class": "com.aw.compute.streams.processor.GenericESProcessor",
-			"index_name": "events"
+			"processor_class": "com.aw.compute.streams.processor.GenericJDBCProcessor",
+			"table_name": "gameevents"
 		}
 	}
 }
