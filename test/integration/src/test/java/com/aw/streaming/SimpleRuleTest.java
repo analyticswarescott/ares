@@ -55,7 +55,7 @@ public class SimpleRuleTest extends StreamingIntegrationTest {
     	DataFeedUtils.fireBundles(TestDependencies.getPlatform().get(), "1", "bundle_sample_rule.json");
 
     	//wait for our incident
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident", 1, 180);
 
     	DataType incidentType = TestDependencies.getUnity().get().getDataType("incident");
     	DataType associateIncidentType = TestDependencies.getUnity().get().getDataType("incident_association");
@@ -71,9 +71,9 @@ public class SimpleRuleTest extends StreamingIntegrationTest {
     	assertEquals("incident name wrong", "sample rule: nvidia stuff detected", incident.getName());
 
     	//wait for the other actions to show up - this tests modifying an incident
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_comment", 1, 180);
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_set_state", 1, 180);
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_association", 2, 300);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_comment", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_set_state", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_association", 2, 300);
 
     	//get the incident, make sure it has the comment
     	VersionedObject<Incident> versionedIncident = UnityUtil.getPojo(TestDependencies.getUnity().get(), incidentType, 60000L, incident.getGuid().toString(), Incident.class);

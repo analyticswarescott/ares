@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aw.TestDependencies;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
 import com.aw.platform.roles.Kafka;
@@ -115,7 +115,7 @@ public class DataFeedUtils {
 
     }
 
-    public static void awaitESResult(ElasticIndex index, Tenant tenant, String type, long count, long timeoutSecs) throws Exception{
+    public static void awaitESResult(ESKnownIndices index, Tenant tenant, String type, long count, long timeoutSecs) throws Exception{
     	String strIndex = index.buildIndexFor(tenant, Instant.now());
         long startTime = System.currentTimeMillis();
         long maxWait = timeoutSecs * 1000L; //after this much time we fail

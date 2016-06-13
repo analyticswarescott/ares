@@ -37,7 +37,13 @@ import com.google.common.base.Preconditions;
  *
  *
  */
-public enum ElasticIndex {
+public enum ESKnownIndices {
+
+
+	/**
+	 * placeholder
+	 */
+	DUMMY,
 
 	/**
 	 * system errors, exceptions etc
@@ -50,9 +56,14 @@ public enum ElasticIndex {
 	INCIDENTS,
 
 	/**
-	 * agent dlp events, both alerts and dv&c data
+	 * events for writing to ES
 	 */
-	EVENTS,
+	EVENTS_ES,
+
+	/**
+	 * events for writing to JDBC
+	 */
+	EVENTS_JDBC,
 
 	/**
 	 * alarms contain all event fields plus alarm fields

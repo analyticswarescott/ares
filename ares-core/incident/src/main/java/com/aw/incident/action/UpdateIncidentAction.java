@@ -4,7 +4,7 @@ import com.aw.action.ActionContext;
 import com.aw.action.ActionType;
 import com.aw.action.exceptions.ActionExecutionException;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.incident.Incident;
 
 /**
@@ -28,7 +28,7 @@ public class UpdateIncidentAction extends CreateIncidentAction {
 		try {
 
 			//update the incident
-			getClient(ctx).update(ElasticIndex.INCIDENTS, Incident.UNITY_TYPE, getIncidentGuid(), JSONUtils.objectToString(getIncident()), getIncident().getCreationTime().toInstant());
+			getClient(ctx).update(ESKnownIndices.INCIDENTS, Incident.UNITY_TYPE, getIncidentGuid(), JSONUtils.objectToString(getIncident()), getIncident().getCreationTime().toInstant());
 
 		} catch (Exception e) {
 			throw new ActionExecutionException("error updating incident", this, e);

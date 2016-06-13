@@ -664,6 +664,8 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 
     		}
 
+
+
     	} catch (Exception e) {
 
     		//log it

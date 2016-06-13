@@ -70,7 +70,7 @@ public interface PlatformError extends Taggable {
 	 */
 	public String getOriginHost();
 
-	@JsonProperty("dg_utype")
+	@JsonProperty("eventType")
 	default public String getUnityType() { return PlatformError.UNITY_TYPE; }
 
 }

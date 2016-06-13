@@ -1,20 +1,22 @@
 package com.aw.rest.resources;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.Instant;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.aw.unity.dg.CommonField;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -58,7 +60,80 @@ public class AresResource extends RestMgrBase {
 	}
 
 
-    /**
+	@PUT
+	@Path("/event/{siteId}/event")
+/*	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)*/
+	public Response putEvent( @PathParam("siteId") String siteId,
+							  @Context HttpHeaders headers,
+							  String jsonStr) throws WebApplicationException {
+		try {
+
+
+			//site is tenant
+			//TODO: handle as array by adding type element to REST signature, for now unpack and add to topic
+
+
+			JSONArray rawJsons = new JSONArray(jsonStr);
+
+			logger.error("§§§§§§§§§§§§§§±±±±±±± processing JSON: " + rawJsons);
+
+
+			String eventType = null;
+			for (int i = 0; i< rawJsons.length(); i++) {
+
+
+				JSONObject o = rawJsons.getJSONObject(i);
+
+
+				eventType = o.getString(CommonField.EVENT_TYPE_FIELD);
+
+				logger.error("§§§§§§§§§§§§§§±±±±±±± processing event of type: " + eventType);
+
+
+				if (i == 0) {//Write to HDFS here to ensure raw storage is OK before processing anything to Kafka
+					//write array to HDFS with a null topic for raw storage with no processing ticket
+
+					String str = rawJsons.toString();
+					InputStream is = new ByteArrayInputStream(str.getBytes());
+
+					platformProvider.get().addFile(HadoopPurpose.EVENTS, null, Tenant.forId(siteId), eventType,
+						"received_" + Instant.now().toEpochMilli(), UUID.randomUUID().toString(),is
+					);
+
+					System.out.println("§§§§§§§§§§§§§§±±±±±±± file added to HDFS ");
+				}
+
+
+
+				//TODO : replace switch with config
+				if (eventType.equals("GameEvent")) {
+					platformProvider.get().sendMessage(Topic.EVENTS_ES, Tenant.forId(siteId), o);
+					platformProvider.get().sendMessage(Topic.EVENTS_JDBC, Tenant.forId(siteId), o);
+
+					System.out.println("§§§§§§§§§§§§§§±±±±±±± Kafka messages sent ");
+				}
+
+			}
+
+
+
+			return Response.status(Response.Status.OK).build();
+
+		} catch (WebApplicationException we) {
+			throw we;
+		} catch (Exception e) {
+			// Cleanup, log, etc
+			logger.error("Error Processing  Event Request:" , e);
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	/**
      * Provision a tenant
      *
      * @param tenantData

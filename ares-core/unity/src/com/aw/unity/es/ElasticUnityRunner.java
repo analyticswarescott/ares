@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -47,7 +48,6 @@ import com.aw.common.exceptions.ConfigurationException;
 import com.aw.common.rest.security.TenantAware;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.VersionedObject;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
 import com.aw.unity.Field;
@@ -440,7 +440,7 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
 
 	String[] getIndices(Tenant tenant, Query query) throws DataSourceException, ConfigurationException {
 
-		Set<ElasticIndex> indices = new HashSet<ElasticIndex>();
+		Set<ESKnownIndices> indices = new HashSet<ESKnownIndices>();
 
 		//use the requested index if applicable, it will be in the context
 		if (query.getContext() != null) {
@@ -455,7 +455,7 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
 		//else use indices based on the data types
 		else {
     		for (DataType dataType : query.getDataTypes()) {
-    			ElasticIndex index = elastic.getIndex(dataType);
+    			ESKnownIndices index = elastic.getIndex(dataType);
 
     			//should not be null
     			if (index != null) {
@@ -472,7 +472,7 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
     	//return list
     	List<String> ret = new ArrayList<String>();
 
-    	for (ElasticIndex index : indices) {
+    	for (ESKnownIndices index : indices) {
 
     		//add index
     		ret.add(index.getAllIndices(tenant));
@@ -677,7 +677,7 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
 			//if we are looking only at default indexes, make sure the type maps to the default index
 			boolean shouldCheck = false;
 			if (defaultIndex) {
-				ElasticIndex index =  elastic.getIndex(type);
+				ESKnownIndices index =  elastic.getIndex(type);
 
 				//if index is null in the mapping, it's a default index type
 				shouldCheck = index == null || index.equals(elastic.getTenantDefaultIndex());
@@ -685,7 +685,7 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
 
 			//if context is set, check those types
 			else if (query.getContext() != null) {
-				ElasticIndex context = getContext(query);
+				ESKnownIndices context = getContext(query);
 				shouldCheck = elastic.getIndex(type) == context;
 			}
 
@@ -723,8 +723,8 @@ public class ElasticUnityRunner extends AbstractUnityRunner implements ActionLis
 
     }
 
-    private ElasticIndex getContext(Query query) {
-    	return ElasticIndex.valueOf(query.getContext().toUpperCase());
+    private ESKnownIndices getContext(Query query) {
+    	return ESKnownIndices.valueOf(query.getContext().toUpperCase());
     }
 
     private List<List<Object>> get2DDetail(SearchResponse sr, Query query) throws Exception {

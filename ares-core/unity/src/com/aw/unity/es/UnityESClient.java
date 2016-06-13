@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.List;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -23,7 +24,6 @@ import com.aw.common.util.JSONHandler;
 import com.aw.common.util.JSONStreamUtils;
 import com.aw.common.util.TimeSource;
 import com.aw.common.util.es.ESClient;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.util.ListMap;
@@ -52,7 +52,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 	 * @param data The data to bulk insert
 	 * @throws Exception
 	 */
-	public void bulkInsert(Tenant tenant, ElasticIndex index, Iterable<Data> data) throws Exception {
+	public void bulkInsert(Tenant tenant, ESKnownIndices index, Iterable<Data> data) throws Exception {
 		bulkInsert(tenant, index, null, data);
 	}
 
@@ -64,7 +64,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 	 * @param data The data to bulk insert
 	 * @throws Exception If anything goes wrong
 	 */
-	public void bulkInsert(Tenant tenant, ElasticIndex index, String typeOverride, Iterable<Data> data) throws Exception {
+	public void bulkInsert(Tenant tenant, ESKnownIndices index, String typeOverride, Iterable<Data> data) throws Exception {
 
 		//keep all output files generated for cleanup
 		ListMap<String, OutputFile> files = null;
@@ -106,7 +106,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 	 * @return
 	 * @throws Exception
 	 */
-	ListMap<String, OutputFile> writeData(Tenant tenant, ElasticIndex index, String typeOverride, Iterable<Data> data) throws Exception {
+	ListMap<String, OutputFile> writeData(Tenant tenant, ESKnownIndices index, String typeOverride, Iterable<Data> data) throws Exception {
 
 		ListMap<String, OutputFile> ret = new ListMap<String, OutputFile>();
 
@@ -143,7 +143,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 
 	}
 
-	private void doInsert(OutputFile outputFile, ElasticIndex index) throws Exception {
+	private void doInsert(OutputFile outputFile, ESKnownIndices index) throws Exception {
 
 		File file = outputFile.getFile();
 		logger.debug(" processing file to ES " + file.getAbsolutePath() + " size is: " + file.length());
@@ -187,7 +187,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 	 * @param data the data being written
 	 * @return the PrintWriter to use for this data
 	 */
-	protected OutputFile getOut(ListMap<String, OutputFile> files, Tenant tenant, ElasticIndex index, Data data) throws Exception {
+	protected OutputFile getOut(ListMap<String, OutputFile> files, Tenant tenant, ESKnownIndices index, Data data) throws Exception {
 
 		String strIndex = index.buildIndexFor(tenant, timeFor(data));
 

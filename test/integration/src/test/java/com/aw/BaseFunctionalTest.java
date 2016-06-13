@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -55,7 +56,6 @@ import com.aw.common.system.EnvironmentSettings.Setting;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.HttpStatusUtils;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.compute.streams.processor.GenericESProcessor;
 import com.aw.document.Document;
 import com.aw.document.DocumentHandler;
@@ -770,7 +770,7 @@ public class BaseFunctionalTest {
 		return status.getStatusCode() + " " + responseStatus.getReasonPhrase();
     }
 
-	protected void createIndex(String tenantID, ElasticIndex index, String mappings) throws Exception {
+	protected void createIndex(String tenantID, ESKnownIndices index, String mappings) throws Exception {
 
 		//don't analyzer image name
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -813,7 +813,7 @@ public class BaseFunctionalTest {
 
         //populate the database
         GenericESProcessor processor = spy(new GenericESProcessor());
-        processor.init(new StreamDef("index_name", ElasticIndex.EVENTS.name().toLowerCase()));
+        processor.init(new StreamDef("index_name", ESKnownIndices.EVENTS_ES.name().toLowerCase()));
 
         //wire test dependencies for this processor
         doReturn(TestDependencies.getPlatform().get()).when(processor).getDependency(Platform.class);
@@ -829,7 +829,7 @@ public class BaseFunctionalTest {
         while (tries < 5) {
 
             //HttpGet get = new HttpGet("http://127.0.0.1:9200/" + tenantID + "_dlp/_search?q=jlehmann");
-            HttpGet get = new HttpGet(elasticSearchService.queryBase() + "/"+ElasticIndex.EVENTS.buildIndexFor(Tenant.forId(tenantID), Instant.now())+"/_stats");
+            HttpGet get = new HttpGet(elasticSearchService.queryBase() + "/"+ ESKnownIndices.EVENTS_ES.buildIndexFor(Tenant.forId(tenantID), Instant.now())+"/_stats");
             HttpResponse response = httpClient.execute(get);
             JSONObject results = new JSONObject(IOUtils.toString(response.getEntity().getContent()));
 

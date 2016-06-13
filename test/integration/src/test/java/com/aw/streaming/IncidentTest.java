@@ -102,7 +102,7 @@ public class IncidentTest extends StreamingIntegrationTest {
     	String strResponse = IOUtils.toString(response.getEntity().getContent());
 
     	//wait for the incident in the system
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident", 1, 180);
 
     	//get the incident from the system and verify some things
     	Query incidentQuery = UnityUtil.getDetailQueryFor(dataType, new FilterGroup());
@@ -159,10 +159,10 @@ public class IncidentTest extends StreamingIntegrationTest {
     	assertEquals("incident should be closed after set state action", State.CLOSED, incident4.getState());
 
     	//wait for incident actions in the db
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_create", 1, 180);
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_assign", 1, 180);
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_set_state", 1, 180);
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_comment", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_create", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_assign", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_set_state", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_comment", 1, 180);
 
     	//update the incident and make sure it was updated
 
@@ -188,7 +188,7 @@ public class IncidentTest extends StreamingIntegrationTest {
     	assertTrue(response.getStatusLine().toString(), HttpStatus.isSuccess(response.getStatusLine().getStatusCode()));
 
     	//wait for action in the db
-    	DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_association", 1, 180);
+    	DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_association", 1, 180);
 
     	//get the action
     	DataType actionType = TestDependencies.getUnity().get().getMetadata().getDataType("incident_association");
@@ -217,14 +217,14 @@ public class IncidentTest extends StreamingIntegrationTest {
 		setThreadSystemAccess();
 
 		UnityESClient client = new UnityESClient(TestDependencies.getPlatform().get());
-		while (!client.indexExists(ElasticIndex.ERRORS, Instant.now())) {
+		while (!client.indexExists(ESKnownIndices.ERRORS, Instant.now())) {
 			//wait a second for the index
 			Thread.sleep(1000L);
 		}
 
 		//now wait for it
-		DataFeedUtils.awaitESResult(ElasticIndex.ERRORS, Tenant.forId("0"), "platform_error", -1, 180);
-		DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("0"), "incident", 1, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.ERRORS, Tenant.forId("0"), "platform_error", -1, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("0"), "incident", 1, 180);
 
 		Query query = UnityUtil.getDetailQueryFor(TestDependencies.getUnity().get().getDataType(Incident.UNITY_TYPE), new FilterGroup());
 		PojoUnityResults<Incident> results = UnityUtil.executeBlocking(TestDependencies.getUnity().get(), query, 60000L, Incident.class);

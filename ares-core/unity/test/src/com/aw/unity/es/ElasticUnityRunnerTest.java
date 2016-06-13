@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
 import com.aw.unity.Field;
@@ -101,7 +101,7 @@ public class ElasticUnityRunnerTest extends UnityUnitTest {
 
 		//set up a mock data source
 		ElasticUnityDataSource dataSource = spy(new ElasticUnityDataSource());
-		dataSource.setDefaultIndex(ElasticIndex.EVENTS);
+		dataSource.setDefaultIndex(ESKnownIndices.EVENTS_ES);
 		doReturn("1").when(dataSource).getTenantID();
 		doReturn(null).when(dataSource).getIndex(any(DataType.class));
 		doReturn(instance).when(dataSource).getUnity();
@@ -938,7 +938,7 @@ public class ElasticUnityRunnerTest extends UnityUnitTest {
 		doReturn(LocalDateTime.of(2016, 12, 1, 0, 0).toInstant(ZoneOffset.UTC)).when(elastic).getLatest(any(), any());
 		runner.setElastic(elastic);
 		Field mockField = new Field("dg_time", FieldType.TIMESTAMP);
-		doReturn(ElasticIndex.EVENTS).when(elastic).getDefaultIndex();
+		doReturn(ESKnownIndices.EVENTS_ES).when(elastic).getDefaultIndex();
 		doReturn(Collections.singleton(new BetweenConstraint(mockField,
 						LocalDateTime.of(2015, 10, 15, 0, 0).toInstant(ZoneOffset.UTC),
 						LocalDateTime.of(2016, 03, 15, 0, 0).toInstant(ZoneOffset.UTC)
@@ -947,7 +947,7 @@ public class ElasticUnityRunnerTest extends UnityUnitTest {
 		String[] indices = runner.getIndices(tenant, query);
 
 		assertEquals(1, indices.length);
-		assertEquals("events_1_*", indices[0]);
+		assertEquals("events_es_1_*", indices[0]);
 
 	}
 
@@ -969,7 +969,7 @@ public class ElasticUnityRunnerTest extends UnityUnitTest {
 		doReturn(LocalDateTime.of(2016, 12, 1, 0, 0).toInstant(ZoneOffset.UTC)).when(elastic).getLatest(any(), any());
 		runner.setElastic(elastic);
 		Field mockField = new Field("dg_time", FieldType.TIMESTAMP);
-		doReturn(ElasticIndex.EVENTS).when(elastic).getDefaultIndex();
+		doReturn(ESKnownIndices.EVENTS_ES).when(elastic).getDefaultIndex();
 		doReturn(Collections.singleton(new BetweenConstraint(mockField,
 						LocalDateTime.of(2015, 10, 15, 0, 0).toInstant(ZoneOffset.UTC),
 						LocalDateTime.of(2016, 03, 15, 0, 0).toInstant(ZoneOffset.UTC)
@@ -978,7 +978,7 @@ public class ElasticUnityRunnerTest extends UnityUnitTest {
 		String[] indices = runner.getIndices(tenant, query);
 
 		assertEquals(1, indices.length);
-		assertEquals("events_1_*", indices[0]);
+		assertEquals("events_es_1_*", indices[0]);
 
 
 	}

@@ -1,32 +1,21 @@
 package com.aw.unity.jdbc;
 
-import com.aw.common.exceptions.ProcessingException;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.*;
-import com.aw.common.util.es.ESClient;
-import com.aw.common.util.es.ElasticIndex;
-import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
 import com.aw.unity.Field;
-import com.aw.util.ListMap;
-import com.aw.util.Statics;
-import com.google.inject.Provider;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * A general use elasticsearch client. Uses the platform to determine how to connect. This client is NOT thread safe.
@@ -63,7 +52,12 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 		int j = 0;
 		for (Field f : dataType.getFields()) {
-			sql = sql + f.getName();
+			if (j == 0) {
+				sql = sql + f.getName();
+			}
+			else {
+				sql = sql + "," + f.getName();
+			}
 			ordinals.put(f, j);
 			j++;
 		}
@@ -96,9 +90,7 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 		//simple type based insert generation
 
-		Connection conn = null;
-
-		try {
+		//Connection conn = null;
 
 			conn = dbMgr.getConnection(tenant);
 			PreparedStatement ps = getInsertForDataType(conn, dataType);
@@ -109,10 +101,8 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 				logger.warn(" About to execute SQL: " + ps.toString());
 				ps.executeUpdate();
 			}
-		}
-		finally {
-			conn.close();
-		}
+
+
 
 	}
 

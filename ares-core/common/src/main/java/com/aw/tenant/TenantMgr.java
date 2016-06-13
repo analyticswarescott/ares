@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.platform.restcluster.RestCluster;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -23,7 +24,6 @@ import com.aw.common.spark.DriverStatus;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.tenant.TenantProvisioningException;
 import com.aw.common.util.es.ESClient;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.document.Document;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
@@ -243,25 +243,26 @@ public class TenantMgr {
 
     	//TODO: automatically do this using the topic enum
 
-    	if (!client.indexExists(ElasticIndex.ERRORS, Instant.now())) {
 
-    		logger.info("provisioning elasticsearch system index: " + ElasticIndex.ERRORS);
-    		client.applyIndexMappings(ElasticIndex.ERRORS, docs.get(), platform.get(), Instant.now());
+    	if (!client.indexExists(ESKnownIndices.ERRORS, Instant.now())) {
+
+    		logger.info("provisioning elasticsearch system index: " + ESKnownIndices.ERRORS);
+    		client.applyIndexMappings(ESKnownIndices.ERRORS, docs.get(), platform.get(), Instant.now());
 
     	}
 
     	//create the incident index
-    	if (!client.indexExists(ElasticIndex.INCIDENTS, Instant.now())) {
+    	if (!client.indexExists(ESKnownIndices.INCIDENTS, Instant.now())) {
 
-    		logger.info("provisioning elasticsearch system index: " + ElasticIndex.INCIDENTS);
-    		client.applyIndexMappings(ElasticIndex.INCIDENTS, docs.get(), platform.get(), Instant.now());
+    		logger.info("provisioning elasticsearch system index: " + ESKnownIndices.INCIDENTS);
+    		client.applyIndexMappings(ESKnownIndices.INCIDENTS, docs.get(), platform.get(), Instant.now());
 
     	}
 
-    	if (!client.indexExists(ElasticIndex.STATUS, Instant.now())) {
+    	if (!client.indexExists(ESKnownIndices.STATUS, Instant.now())) {
 
-    		logger.info("provisioning elasticsearch system index: " + ElasticIndex.STATUS);
-    		client.applyIndexMappings(ElasticIndex.STATUS, docs.get(), platform.get(), Instant.now());
+    		logger.info("provisioning elasticsearch system index: " + ESKnownIndices.STATUS);
+    		client.applyIndexMappings(ESKnownIndices.STATUS, docs.get(), platform.get(), Instant.now());
 
 		}
 

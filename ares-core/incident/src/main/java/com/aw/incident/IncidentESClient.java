@@ -1,5 +1,6 @@
 package com.aw.incident;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -12,7 +13,6 @@ import com.aw.common.tenant.Tenant;
 import com.aw.common.util.HttpStatusUtils;
 import com.aw.common.util.JSONUtils;
 import com.aw.common.util.VersionedObject;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.platform.Platform;
 import com.aw.unity.DataType;
 import com.aw.unity.UnityInstance;
@@ -50,7 +50,7 @@ public class IncidentESClient extends UnityESClient implements TenantAware {
 	public VersionedObject<Incident> getIncident(DataType type, String guid, int maxRetries, long delay) throws Exception {
 
 		//search indexes that apply
-		HttpResponse response = get("/_cat/indices/" + ElasticIndex.INCIDENTS.toPrefix(Tenant.forId(getTenantID())) + "*");
+		HttpResponse response = get("/_cat/indices/" + ESKnownIndices.INCIDENTS.toPrefix(Tenant.forId(getTenantID())) + "*");
 
 		JSONArray array = new JSONArray(IOUtils.toString(response.getEntity().getContent()));
 

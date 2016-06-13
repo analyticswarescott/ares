@@ -18,7 +18,7 @@ import com.aw.common.task.TaskStatus.State;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.SetTimeSource;
 import com.aw.common.util.es.ESClient;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
 import com.aw.document.DocumentType;
@@ -50,7 +50,7 @@ public class TenantPruneTaskTest {
 
 		ESClient mockClient = mock(ESClient.class);
 
-		for (ElasticIndex index : ElasticIndex.values()) {
+		for (ESKnownIndices index : ESKnownIndices.values()) {
 			doReturn(index.getIndices(tenant, LocalDateTime.of(2015, 1, 1, 0, 0).toInstant(ZoneOffset.UTC), LocalDateTime.of(2016, 1, 1, 0, 0).toInstant(ZoneOffset.UTC)))
 				.when(mockClient).getAllIndices(tenant, index);
 		}
@@ -60,7 +60,7 @@ public class TenantPruneTaskTest {
 		task.execute();
 
 		//make sure pruning was done properly - should prune up to the beginning of december
-		for (ElasticIndex index : ElasticIndex.values()) {
+		for (ESKnownIndices index : ESKnownIndices.values()) {
 			verify(mockClient).deleteIndex(index, index + "_1_2015_01");
 			verify(mockClient).deleteIndex(index, index + "_1_2015_15");
 			verify(mockClient).deleteIndex(index, index + "_1_2015_48");

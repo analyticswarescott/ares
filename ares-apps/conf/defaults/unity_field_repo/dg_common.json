@@ -186,7 +186,7 @@
             "tags": [ "common" ],
             "type": "string",
             "display_name": "event type name",
-            "name": "dg_utype"
+            "name": "eventType"
         },
         {
             "array": false,

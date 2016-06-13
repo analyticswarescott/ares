@@ -22,7 +22,7 @@ public class OSPerfStats
 {
 
 	public static final String UNITY_TYPE = "perf_stat";
-	@JsonProperty("dg_utype")
+	@JsonProperty("eventType")
 	public String getUnityType() { return OSPerfStats.UNITY_TYPE; }
 
 	@JsonProperty("dg_guid")

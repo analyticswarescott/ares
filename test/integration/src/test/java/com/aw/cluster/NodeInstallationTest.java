@@ -194,10 +194,10 @@ public class NodeInstallationTest extends StreamingIntegrationTest {
 		//Thread.sleep(15000);
 
 
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("1"), "user_cd_burn", 44, 60);
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("1"), "user_net_transfer_download", 23, 60);
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("2"), "user_cd_burn", 44, 60);
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("2"), "user_net_transfer_download", 23, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS, Tenant.forId("1"), "user_cd_burn", 44, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS, Tenant.forId("1"), "user_net_transfer_download", 23, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS, Tenant.forId("2"), "user_cd_burn", 44, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS, Tenant.forId("2"), "user_net_transfer_download", 23, 60);
 
 
     }

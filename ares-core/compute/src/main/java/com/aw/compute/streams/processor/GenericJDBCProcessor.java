@@ -1,25 +1,16 @@
 package com.aw.compute.streams.processor;
 
-import com.aw.common.inject.ProviderWrapper;
 import com.aw.common.processor.AbstractIterableProcessor;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.spark.StreamDef;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.HttpStatusUtils;
-import com.aw.common.util.ResourceManager;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.compute.streams.processor.framework.IterableTupleProcessor;
-import com.aw.document.DocumentMgr;
-import com.aw.platform.Platform;
-import com.aw.platform.PlatformMgr;
 import com.aw.unity.Data;
 import com.aw.unity.UnityInstance;
-import com.aw.unity.es.UnityESClient;
 import com.aw.unity.jdbc.UnityJDBCClient;
-import org.codehaus.jettison.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

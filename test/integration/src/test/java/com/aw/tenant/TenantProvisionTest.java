@@ -50,7 +50,7 @@ public class TenantProvisionTest extends BaseIntegrationTest {
 
 			//ensure we can write to path-ed resources
 			zk.put(ZkPurpose.OFFSETS, "before", "test");
-			w.writeStringToFile(HadoopPurpose.RAW, new Path("/test"), "test", "test");
+			w.writeStringToFile(HadoopPurpose.EVENTS, new Path("/test"), "test", "test");
 
 			unProvisionTenant("5");
 
@@ -65,7 +65,7 @@ public class TenantProvisionTest extends BaseIntegrationTest {
 				}
 			}
 			try {
-				w.writeStringToFile(HadoopPurpose.RAW, new Path("/test"), "test", "test");
+				w.writeStringToFile(HadoopPurpose.EVENTS, new Path("/test"), "test", "test");
 				Assert.fail("should have received exception");
 			}
 			catch (Exception ex) {

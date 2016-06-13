@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.Before;
@@ -27,7 +28,6 @@ import com.aw.common.inject.TestProvider;
 import com.aw.common.rest.security.SecurityUtil;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformMgr;
@@ -66,9 +66,9 @@ public class ElasticUnityDataSourceTest {
 			"        \"host\": \"localhost\",\n" +
 			"        \"port\": 9200,\n" +
 			"	    \"index_map\" : {\n" +
-			"	    	\"data_type_x\" : \"events\"\n" +
+			"	    	\"data_type_x\" : \"events_es\"\n" +
 			"	    },\n" +
-			"	    \"default_index\" : \"events\"\n" +
+			"	    \"default_index\" : \"events_es\"\n" +
 			"	}\n";
 
 	ElasticUnityDataSource dataSource;
@@ -201,7 +201,7 @@ public class ElasticUnityDataSourceTest {
 			"status_1_2016_01"
 		}).when(dataSource).getIndicesFromClient();
 
-		Instant earliest = 	dataSource.getEarliest(tenant, ElasticIndex.STATUS);
+		Instant earliest = 	dataSource.getEarliest(tenant, ESKnownIndices.STATUS);
 
 		assertEquals(LocalDate.of(2015, 12, 1).atStartOfDay().atOffset(ZoneOffset.UTC).toInstant(), earliest);
 
@@ -217,7 +217,7 @@ public class ElasticUnityDataSourceTest {
 			"status_1_2016_01"
 		}).when(dataSource).getIndicesFromClient();
 
-		Instant earliest = 	dataSource.getLatest(tenant, ElasticIndex.STATUS);
+		Instant earliest = 	dataSource.getLatest(tenant, ESKnownIndices.STATUS);
 
 		assertEquals(LocalDate.of(2016, 03, 1).atStartOfDay().atOffset(ZoneOffset.UTC).toInstant(), earliest);
 
@@ -237,7 +237,7 @@ public class ElasticUnityDataSourceTest {
 	public void getEarliest_null() throws Exception {
 
 		//handle null tenant with data source exception
-		dataSource.getEarliest(null, ElasticIndex.STATUS);
+		dataSource.getEarliest(null, ESKnownIndices.STATUS);
 
 	}
 
@@ -245,7 +245,7 @@ public class ElasticUnityDataSourceTest {
 	public void getLatest_null() throws Exception {
 
 		//handle null tenant with data source exception
-		dataSource.getLatest(null, ElasticIndex.STATUS);
+		dataSource.getLatest(null, ESKnownIndices.STATUS);
 
 	}
 
@@ -254,7 +254,7 @@ public class ElasticUnityDataSourceTest {
 
 		UnityInstance instance = new TestUnityInstance();
 		ElasticUnityDataSource dataSource = newTestDataSource();
-		assertEquals(ElasticIndex.EVENTS, dataSource.getIndex(instance.getMetadata().getDataTypeRepository().getDataTypes()[0]));
+		assertEquals(ESKnownIndices.EVENTS_ES, dataSource.getIndex(instance.getMetadata().getDataTypeRepository().getDataTypes()[0]));
 
 	}
 
@@ -284,8 +284,8 @@ public class ElasticUnityDataSourceTest {
 	public void getDefaultIndex() throws Exception {
 
 		ElasticUnityDataSource dataSource = new ElasticUnityDataSource();
-		dataSource.setDefaultIndex(ElasticIndex.EVENTS);
-		assertSame(ElasticIndex.EVENTS, dataSource.getDefaultIndex());
+		dataSource.setDefaultIndex(ESKnownIndices.EVENTS_ES);
+		assertSame(ESKnownIndices.EVENTS_ES, dataSource.getDefaultIndex());
 
 	}
 

@@ -27,7 +27,7 @@
 				"download_incident_attachment" : "incidents",
 
                 "platform_error": "errors",
-				"GameEvent" : "events",
+				"GameEvent" : "events_es",
 
 
                 "topic_status": "status",
@@ -35,7 +35,7 @@
 
 		    },
 
-		    "default_index" : "events"
+		    "default_index" : "events_es"
 		}
 
     ]

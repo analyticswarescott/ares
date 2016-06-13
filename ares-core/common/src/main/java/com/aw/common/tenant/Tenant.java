@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import com.aw.common.exceptions.ConfigurationException;
 import com.aw.common.rest.security.TenantAware;
 import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.platform.PlatformSettings;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -158,7 +158,7 @@ public class Tenant implements TenantAware, Serializable {
 	 * @param index
 	 * @return
 	 */
-	public Duration getRetention(ElasticIndex index) {
+	public Duration getRetention(ESKnownIndices index) {
 
 		//TODO: implement tenant settings - for now set retention to 30 days
 		return Duration.ofDays(30);

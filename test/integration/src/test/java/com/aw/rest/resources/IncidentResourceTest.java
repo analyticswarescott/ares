@@ -24,7 +24,7 @@ import com.aw.TestDependencies;
 import com.aw.common.auth.DefaultUser;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.incident.CreationType;
 import com.aw.incident.DefaultIncident;
 import com.aw.incident.Incident;
@@ -110,7 +110,7 @@ public class IncidentResourceTest extends BaseIntegrationTest {
 		}
 
 		//wait for the incidents in the system
-		DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident", 16, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident", 16, 180);
 
 		final List<Incident> incidents = new ArrayList<>(incidentResource.getIncidents(IncidentSort.HIGH_SEVERITY_FIRST, false));
 		// all incidents except the closed ones
@@ -265,7 +265,7 @@ public class IncidentResourceTest extends BaseIntegrationTest {
 
 		HttpResponse response = reportingService().client().execute(post);
 
-		DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "incident_attachment", 1, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "incident_attachment", 1, 60);
 
 		JSONObject object = new JSONObject(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
 		Assert.assertEquals(200, response.getStatusLine().getStatusCode());
@@ -281,7 +281,7 @@ public class IncidentResourceTest extends BaseIntegrationTest {
 	}
 
 	private void readTimeline(String guid) throws Exception {
-		DataFeedUtils.awaitESResult(ElasticIndex.INCIDENTS, Tenant.forId("1"), "download_incident_attachment", 1, 60);
+		DataFeedUtils.awaitESResult(ESKnownIndices.INCIDENTS, Tenant.forId("1"), "download_incident_attachment", 1, 60);
 		List<Object> timelineOccurrences = incidentResource.getIncidentTimeline(guid);
 		Assert.assertEquals(13, timelineOccurrences.size());
 		Assert.assertTrue(timelineOccurrences.get(12) instanceof CreateIncidentAction);

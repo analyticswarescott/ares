@@ -5,6 +5,7 @@ import javax.inject.Provider;
 import com.aw.action.ActionManager;
 import com.aw.action.RootActionFactory;
 import com.aw.common.inject.DocumentProvider;
+import com.aw.common.rdbms.DBMgr;
 import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.task.LocalTaskContainer;
 import com.aw.common.task.TaskService;
@@ -84,6 +85,8 @@ public class TestDependencies extends DGBinder {
     	TestDependencies.getDocMgr().get().reset();
     	((DocumentProvider)getDocs()).reset();
 	}
+
+	public static Provider<DBMgr> getDBMgr() { return get().dbMgr; }
 
 	public static Provider<DocumentHandler> getDocs() { return get().docs;  }
 	public static Provider<DocumentMgr> getDocMgr() { return get().docMgr;  }

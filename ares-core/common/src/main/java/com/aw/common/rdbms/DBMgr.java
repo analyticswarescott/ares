@@ -77,7 +77,7 @@ public class DBMgr {
 
 		Tenant tenant = new Tenant(tenantID);
 
-		provider.dropDB( platform.get(),  tenant);
+		provider.dropDB(platform.get(), tenant);
 
 	}
 
@@ -175,6 +175,17 @@ public class DBMgr {
 		Preconditions.checkNotNull(tenant, "tenant cannot be null when getting database connection");
 
 		ConnectionPool pool = pools.get(tenant.getTenantID());
+
+		if (pool == null) {
+			try {
+
+				initDB(tenant);
+				pool = pools.get(tenant.getTenantID());
+			} catch (Exception e) {
+				throw new RuntimeException("error initializing DB when pool is null for tenant " + tenant.getTenantID(), e);
+			}
+		}
+
         Connection conn = pool.getConnection();
 
         //set the schema if applicable
@@ -280,6 +291,19 @@ public class DBMgr {
 			st.close();
 			conn.close();
 
+		}
+	}
+
+	public long executeScalarCountSelect(Tenant tenant, String sql) throws Exception {
+
+		try (Connection conn = getConnection(tenant)) {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			rs.next();
+			return rs.getLong(1);
+
+		} catch (Exception ex) {
+			throw ex;
 		}
 	}
 

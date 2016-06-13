@@ -2,6 +2,8 @@ package com.aw.rest.inject;
 
 import javax.inject.Provider;
 
+import com.aw.common.inject.*;
+import com.aw.common.rdbms.DBMgr;
 import com.aw.user.DgmcDbUserManager;
 import com.aw.user.UserManager;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -17,13 +19,6 @@ import com.aw.alarm.AlarmManager;
 import com.aw.alarm.DefaultAlarmManager;
 import com.aw.alarm.action.AlarmAction;
 import com.aw.alarm.action.AlarmActionType;
-import com.aw.common.inject.DocumentMgrFactory;
-import com.aw.common.inject.DocumentProvider;
-import com.aw.common.inject.PlatformMgrProvider;
-import com.aw.common.inject.RestClusterFactory;
-import com.aw.common.inject.RestMemberProvider;
-import com.aw.common.inject.TenantMgrProvider;
-import com.aw.common.inject.TimeSourceProvider;
 import com.aw.common.inject.task.TaskContainerProvider;
 import com.aw.common.inject.task.TaskServiceProvider;
 import com.aw.common.inject.unity.UnityProvider;
@@ -68,6 +63,8 @@ public class DGBinder extends AbstractBinder {
 	protected RootActionFactory actionFactory;
 	protected AlarmManager alarmManager;
 
+	protected Provider<DBMgr> dbMgr;
+
 	protected static final ActionFactory[] ACTION_FACTORIES = {
 
 		//incident actions
@@ -86,6 +83,9 @@ public class DGBinder extends AbstractBinder {
 		//create / wire up our dependencies
 		actionFactory = new DefaultRootActionFactory(ACTION_FACTORIES);
 		platformMgr = new PlatformMgrProvider();
+
+		dbMgr = new DatabaseProvider(platformMgr.get(), getDBProvider());
+
 		restCluster = new RestClusterFactory(platformMgr.get());
 		docMgr = new DocumentMgrFactory(restCluster, platformMgr.get(), jdbc);
 		docs = new DocumentProvider(docMgr);
@@ -111,6 +111,7 @@ public class DGBinder extends AbstractBinder {
 		bind(jdbc).to(DocumentJDBCProvider.class);
 		bind(actionFactory).to(RootActionFactory.class);
 
+		bindFactory(new ResourceFactoryWrapper<DBMgr>(dbMgr)).to(DBMgr.class);
 		//bind tenant scoped dependencies
 		bindFactory(new ResourceFactoryWrapper<DocumentHandler>(docs)).to(DocumentHandler.class);
 		bindFactory(new ResourceFactoryWrapper<DocumentMgr>(docMgr)).to(DocumentMgr.class);

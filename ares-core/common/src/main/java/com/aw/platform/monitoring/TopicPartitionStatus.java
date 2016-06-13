@@ -64,7 +64,7 @@ public interface TopicPartitionStatus extends Status {
 	/**
 	 * @return unity type for topic status
 	 */
-	@JsonProperty("dg_utype")
+	@JsonProperty("eventType")
 	default public String getUnityType() { return UNITY_TYPE; }
 
 }

@@ -52,7 +52,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @param json
 	 * @throws Exception
 	 */
-	public boolean updateFull(String tenant, ElasticIndex index, Instant time, String type, String id, long previousVersion, String json) throws Exception {
+	public boolean updateFull(String tenant, ESKnownIndices index, Instant time, String type, String id, long previousVersion, String json) throws Exception {
 
 		//just put the document in again, replacing the old document and incrementing the version
 		HttpResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(Tenant.forId(tenant), index, time) + "/" + type + "/" + id + "?version=" + previousVersion , json);
@@ -72,7 +72,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @param time the time the event (data) occurred
 	 * @throws Exception if anything goes wrong
 	 */
-	public void update(ElasticIndex index, String type, String docId, String data, Instant time) throws Exception {
+	public void update(ESKnownIndices index, String type, String docId, String data, Instant time) throws Exception {
 
 		//get the index name
 		String indexName = index.buildIndexFor(Tenant.forId(getTenantID()), time);
@@ -111,7 +111,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 
 	}
 
-	private String indexForTenant(Tenant tenant, ElasticIndex index, Instant time) throws ConfigurationException {
+	private String indexForTenant(Tenant tenant, ESKnownIndices index, Instant time) throws ConfigurationException {
 		return index.buildIndexFor(tenant, time);
 	}
 
@@ -129,7 +129,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @param indexName
 	 * @throws Exception
 	 */
-	public void deleteIndex(ElasticIndex index, String indexName) throws Exception{
+	public void deleteIndex(ESKnownIndices index, String indexName) throws Exception{
 
 		//if system tenant or the tenant owns the index, we can delete it
 		if (getTenantID().equals(Tenant.SYSTEM_TENANT_ID) || indexName.startsWith(index.toPrefix(Tenant.forId(getTenantID())))) {
@@ -159,7 +159,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 
 		for (Document indexDoc : indices) {
 
-			ElasticIndex index = ElasticIndex.valueOf(indexDoc.getName().toUpperCase());
+			ESKnownIndices index = ESKnownIndices.valueOf(indexDoc.getName().toUpperCase());
 
 			logger.warn("deleting tenant index " + index);
 
@@ -183,7 +183,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> getAllIndices(Tenant tenant, ElasticIndex index) throws Exception {
+	public List<String> getAllIndices(Tenant tenant, ESKnownIndices index) throws Exception {
 
 		HttpResponse response = execute(HttpMethod.GET, "/_cat/indices");
 
@@ -207,7 +207,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @return Whether the given index name exists for the current tenant
 	 * @throws Exception If any errors occur
 	 */
-	public boolean indexExists(ElasticIndex index, Instant time) throws Exception {
+	public boolean indexExists(ESKnownIndices index, Instant time) throws Exception {
 
 		HttpResponse response = execute(HttpMethod.HEAD, "/" + indexForTenant(Tenant.forId(getTenantID()), index, time));
 
@@ -224,7 +224,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 * @return Whether the index was created
 	 * @throws Exception
 	 */
-	public boolean applyIndexMappings(ElasticIndex index, DocumentHandler docs, Platform platform, Instant time) throws Exception {
+	public boolean applyIndexMappings(ESKnownIndices index, DocumentHandler docs, Platform platform, Instant time) throws Exception {
 		return applyIndexMappings(docs.getDocument(DocumentType.CONFIG_INDEX, index.name().toLowerCase()), platform, time);
 	}
 
@@ -251,7 +251,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	private boolean applyIndexMappings(Document indexDoc, Platform platform, Instant time) throws Exception {
 
 		//get the index enum value
-		ElasticIndex index = ElasticIndex.valueOf(indexDoc.getName().toUpperCase());
+		ESKnownIndices index = ESKnownIndices.valueOf(indexDoc.getName().toUpperCase());
 
 		//build the tenant's index name
 		String indexName = indexForTenant(Tenant.forId(getTenantID()), index, time);

@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -23,7 +25,7 @@ import com.aw.common.task.TaskStatus;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.HttpMethod;
 import com.aw.common.util.RestClient;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.document.DocumentType;
 import com.aw.platform.NodeRole;
 import com.aw.platform.monitoring.DefaultPlatformStatus;
@@ -169,14 +171,20 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 
 		//fire array of events via REST
 		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
-		client.execute(HttpMethod.POST, "/rest/v1/event/1/event", DataFeedUtils.getInputStream("streaming/test_game_event.json"));
+		HttpResponse resp = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
 
+		System.out.println(" event rest call status: " + resp.getStatusLine().getStatusCode());
+		System.out.println(EntityUtils.toString(resp.getEntity()));
 
-		System.out.println(" pause 10 minutes to check system state...comment once test is working");
-		Thread.sleep(600000);
+/*		System.out.println(" pause 10 minutes to check system state...comment once test is working");
+		Thread.sleep(600000);*/
 
 		//make sure we get the counts we expect
-		DataFeedUtils.awaitESResult(ElasticIndex.EVENTS, Tenant.forId("1") , "game_event", 1, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS_ES, Tenant.forId("1") , "GameEvent", 1, 180);
+
+		//count JDBC rows for now -- TODO: assert contents of at least 1 row to check transformations
+		assertEquals(" expect 1 game event row", 1,
+			TestDependencies.getDBMgr().get().executeScalarCountSelect(Tenant.forId("1"),"select count(*) from gameevent"));
 
 	}
 
@@ -195,8 +203,8 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		TaskStatus taskStatus = status.get(taskDef);
 		assertEquals(PlatformStatusPoller.TYPE, taskStatus.getTaskDef().getTaskTypeName());
 
-		DataFeedUtils.awaitESResult(ElasticIndex.STATUS, Tenant.forId("0"), "topic_status", DataFeedUtils.AT_LEAST_1, 180);
-		DataFeedUtils.awaitESResult(ElasticIndex.STATUS, Tenant.forId("0"), "perf_stat", DataFeedUtils.AT_LEAST_1, 30);
+		DataFeedUtils.awaitESResult(ESKnownIndices.STATUS, Tenant.forId("0"), "topic_status", DataFeedUtils.AT_LEAST_1, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.STATUS, Tenant.forId("0"), "perf_stat", DataFeedUtils.AT_LEAST_1, 30);
 
 		/*//verify zookeeper for tenant 1 TODO: assert full tree once task GUIDs can be resolved
 		ZkAccessor zk = new DefaultZkAccessor(TestDependencies.getPlatform().get(), Hive.SYSTEM);

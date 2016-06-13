@@ -23,7 +23,7 @@ import com.aw.common.exceptions.ConfigurationException;
 import com.aw.common.exceptions.InitializationException;
 import com.aw.common.rest.security.TenantAware;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformNode;
@@ -117,7 +117,7 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
       * @param index
       * @return
       */
-     Instant getEarliest(Tenant tenant, ElasticIndex index) throws DataSourceException {
+     Instant getEarliest(Tenant tenant, ESKnownIndices index) throws DataSourceException {
 
     	 //make sure we've refreshed our time slices recently
     	 checkTimeSlices(tenant);
@@ -145,7 +145,7 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
       * @param index
       * @return
       */
-     Instant getLatest(Tenant tenant, ElasticIndex index) throws DataSourceException {
+     Instant getLatest(Tenant tenant, ESKnownIndices index) throws DataSourceException {
 
     	 //make sure we've refreshed our time slices recently
     	 checkTimeSlices(tenant);
@@ -178,16 +178,16 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
 
         	 String[] indices = getIndicesFromClient();
 
-        	 ListMap<ElasticIndex, String> newTimeSlices = new ListMap<ElasticIndex, String>();
+        	 ListMap<ESKnownIndices, String> newTimeSlices = new ListMap<ESKnownIndices, String>();
 
         	 for (String strIndex : indices) {
 
-        		 ElasticIndex index = null;
+        		 ESKnownIndices index = null;
 
         		 try {
 
             		 //determine the index
-            		 index = ElasticIndex.valueOf(strIndex.substring(0, strIndex.indexOf('_')).toUpperCase());
+            		 index = ESKnownIndices.valueOf(strIndex.substring(0, strIndex.indexOf('_')).toUpperCase());
 
         		 } catch (Exception e) {
         			 logger.warn("unrecognized index prefix for index: " + strIndex + " : " + e.getMessage());
@@ -231,8 +231,8 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
       * @param dataType The data type whose index is needed
       * @return The elasticsearch index for this data type
       */
-     public ElasticIndex getIndex(DataType dataType) {
-    	 ElasticIndex index = m_indexMap.get(dataType.getName());
+     public ESKnownIndices getIndex(DataType dataType) {
+    	 ESKnownIndices index = m_indexMap.get(dataType.getName());
 
     	 //use the default index if we can't find a specific one
     	 if (index == null) {
@@ -269,11 +269,11 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
      /**
       * @return The default index for this tenant
       */
-     public ElasticIndex getTenantDefaultIndex() { return m_defaultIndex; }
+     public ESKnownIndices getTenantDefaultIndex() { return m_defaultIndex; }
 
-     public ElasticIndex getDefaultIndex() { return m_defaultIndex; }
-     public void setDefaultIndex(ElasticIndex defaultIndex) { m_defaultIndex = defaultIndex; }
-     private ElasticIndex m_defaultIndex;
+     public ESKnownIndices getDefaultIndex() { return m_defaultIndex; }
+     public void setDefaultIndex(ESKnownIndices defaultIndex) { m_defaultIndex = defaultIndex; }
+     private ESKnownIndices m_defaultIndex;
 
      public Client getClient() { return client; }
      void setClient(TransportClient client) { this.client = client; }
@@ -282,11 +282,11 @@ public class ElasticUnityDataSource extends UnityDataSourceBase implements Tenan
      /**
       * @return A map of data types to non-default indexes
       */
-     public Map<String, ElasticIndex> getIndexMap() { return m_indexMap; }
-     public void setIndexMap(Map<String, ElasticIndex> indexMap) { m_indexMap = indexMap; }
-     private Map<String, ElasticIndex> m_indexMap = new HashMap<String, ElasticIndex>();
+     public Map<String, ESKnownIndices> getIndexMap() { return m_indexMap; }
+     public void setIndexMap(Map<String, ESKnownIndices> indexMap) { m_indexMap = indexMap; }
+     private Map<String, ESKnownIndices> m_indexMap = new HashMap<String, ESKnownIndices>();
 
-     private ListMap<ElasticIndex, String> timeSlices = new ListMap<ElasticIndex, String>();
+     private ListMap<ESKnownIndices, String> timeSlices = new ListMap<ESKnownIndices, String>();
 
      Instant nextCheck = Instant.MIN;
 

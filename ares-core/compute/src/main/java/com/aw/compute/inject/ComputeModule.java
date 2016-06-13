@@ -77,12 +77,15 @@ public class ComputeModule extends AbstractModule {
 		actionFactory = new DefaultRootActionFactory(ACTION_FACTORIES);
 		platformMgr = new PlatformMgrProvider();
 
-		dbMgr = new DatabaseProvider(platform, getDBProvider());
+
 
 		//create our factories
 		actionFactory = new DefaultRootActionFactory(ACTION_FACTORIES);
 		platformMgr = new PlatformMgrProvider();
 		platform = new PlatformFactory(platformMgr);
+
+		dbMgr = new DatabaseProvider(platform, getDBProvider());
+
 		restCluster = new RestClusterFactory(platform);
 		docMgr = new DocumentMgrFactory(restCluster, platformMgr.get(), null); //no jdbc config db in spark (only rest)
 		docs = new DocumentProvider(docMgr);
@@ -103,7 +106,9 @@ public class ComputeModule extends AbstractModule {
 			throw new RuntimeException(e);
 		}
 
-		//bind our factories
+
+
+
 		bind(DBMgr.class).toProvider(new ProviderWrapper<DBMgr>(dbMgr));
 		bind(DocumentHandler.class).toProvider(new ProviderWrapper<>(docs));
 		bind(DocumentMgr.class).toProvider(new ProviderWrapper<>(docMgr));

@@ -30,6 +30,8 @@ public abstract class AbstractJDBCProvider implements JDBCProvider {
 		flyway.setDataSource(dataSource);
 
 		//get the migrations for this db type
+		//TODO: split out custom migrations
+
 		flyway.setLocations(getMigrationPackage());
 
 		// Clean up schema first, if needed

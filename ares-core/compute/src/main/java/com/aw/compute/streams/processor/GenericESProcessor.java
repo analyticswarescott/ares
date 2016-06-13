@@ -6,7 +6,7 @@ import java.util.List;
 import com.aw.common.processor.AbstractIterableProcessor;
 import com.aw.common.spark.StreamDef;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
@@ -30,7 +30,7 @@ public class GenericESProcessor extends AbstractIterableProcessor implements Dep
 	public static final String INDEX_NAME = "index_name";
 	public static final String INDEX_TYPE = "index_type";
 
-	private ElasticIndex index;
+	private ESKnownIndices index;
     private String index_type;
 
     @Override
@@ -90,7 +90,7 @@ public class GenericESProcessor extends AbstractIterableProcessor implements Dep
     @Override
     public void init(StreamDef streamDef) throws ProcessorInitializationException{
         try {
-            index = ElasticIndex.valueOf(streamDef.getConfigData().get(INDEX_NAME).toUpperCase());
+            index = ESKnownIndices.valueOf(streamDef.getConfigData().get(INDEX_NAME).toUpperCase());
             index_type = streamDef.getConfigData().get(INDEX_TYPE);
         }
         catch (Exception ex) {

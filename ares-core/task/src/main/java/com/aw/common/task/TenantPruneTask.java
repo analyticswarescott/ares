@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Provider;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.log4j.Logger;
 
 import com.aw.common.system.EnvironmentSettings;
@@ -16,7 +17,6 @@ import com.aw.common.task.exceptions.TaskInitializationException;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.TimeSource;
 import com.aw.common.util.es.ESClient;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.document.DocumentType;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
@@ -99,7 +99,7 @@ public class TenantPruneTask extends AbstractTask {
 	protected void pruneElasticsearch(Tenant tenant) throws Exception {
 
 		ESClient client = newESClient(platform.get());
-		for (ElasticIndex index : ElasticIndex.values()) {
+		for (ESKnownIndices index : ESKnownIndices.values()) {
 
 			List<String> indices = client.getAllIndices(tenant, index);
 			prune(tenant, index, indices, client);
@@ -118,7 +118,7 @@ public class TenantPruneTask extends AbstractTask {
 	 * @param index
 	 * @param indices
 	 */
-	private void prune(Tenant tenant, ElasticIndex index, List<String> indices, ESClient client) throws Exception {
+	private void prune(Tenant tenant, ESKnownIndices index, List<String> indices, ESClient client) throws Exception {
 
 		Duration retention = tenant.getRetention(index);
 		Instant cutoff = time.now().minus(retention);

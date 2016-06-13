@@ -62,8 +62,8 @@ public class DefaultPlatformErrorTest {
 		assertEquals("test_tag1", result.getJSONArray("dg_tags").get(0));
 		assertEquals("test_tag2", result.getJSONArray("dg_tags").get(1));
 
-		assertTrue(result.has("dg_utype"));
-		assertTrue(result.getString("dg_utype").equals(PlatformError.UNITY_TYPE));
+		assertTrue(result.has("eventType"));
+		assertTrue(result.getString("eventType").equals(PlatformError.UNITY_TYPE));
 
 		PlatformError error2 = JSONUtils.objectFromString(jsonString, PlatformError.class);
 		assertEquals(error.getTimestamp(), error2.getTimestamp());
@@ -131,8 +131,8 @@ public class DefaultPlatformErrorTest {
 		assertEquals("test_tag1", result.getJSONArray("dg_tags").get(0));
 		assertEquals("test_tag2", result.getJSONArray("dg_tags").get(1));
 
-		assertTrue(result.has("dg_utype"));
-		assertTrue(result.getString("dg_utype").equals(PlatformError.UNITY_TYPE));
+		assertTrue(result.has("eventType"));
+		assertTrue(result.getString("eventType").equals(PlatformError.UNITY_TYPE));
 
 		assertEquals("test_tenant", result.getString("dg_tenant"));
 

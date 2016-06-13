@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.aw.common.util.es.ESKnownIndices;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.codehaus.jettison.json.JSONArray;
@@ -20,7 +21,6 @@ import org.junit.Test;
 
 import com.aw.BaseIntegrationTest;
 import com.aw.common.util.JSONUtils;
-import com.aw.common.util.es.ElasticIndex;
 import com.aw.tools.generators.ESGenerator;
 
 public class UnityResourceTest extends BaseIntegrationTest {
@@ -1115,7 +1115,7 @@ public class UnityResourceTest extends BaseIntegrationTest {
 		elasticSearchService.deleteIndex("*");
 
 		//create the index
-		createIndex(TENANT_ID, ElasticIndex.EVENTS, MAPPING);
+		createIndex(TENANT_ID, ESKnownIndices.EVENTS_ES, MAPPING);
 
 		//insert the data we'll test with
 		final List<String> testData = Arrays.asList(
@@ -1144,7 +1144,7 @@ public class UnityResourceTest extends BaseIntegrationTest {
 		elasticSearchService.deleteIndex("*");
 
 		//create the index
-		createIndex(TENANT_ID, ElasticIndex.EVENTS, MAPPING);
+		createIndex(TENANT_ID, ESKnownIndices.EVENTS_ES, MAPPING);
 
 		//insert a bunch of bad file copies
 		final List<String> testData = Arrays.asList(
@@ -1187,7 +1187,7 @@ public class UnityResourceTest extends BaseIntegrationTest {
 		elasticSearchService.deleteIndex("*");
 
 		//create the index
-		createIndex(TENANT_ID, ElasticIndex.EVENTS, MAPPING);
+		createIndex(TENANT_ID, ESKnownIndices.EVENTS_ES, MAPPING);
 
 		//insert a bunch of bad file copies
 		final List<String> testData = Arrays.asList(

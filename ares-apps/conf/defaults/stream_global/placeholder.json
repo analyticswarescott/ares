@@ -5,7 +5,7 @@
 	"body_class": "com.aw.common.spark.StreamDef",
 	"body": {
 		"tenant": true,
-		"system": false,
+		"system": true,
 		"target_driver": "driver30sec",
 		"processor_id": "placeholder",
 		"optimal_events_per_task" : 10000,

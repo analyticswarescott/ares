@@ -8,7 +8,7 @@ import com.aw.action.exceptions.ActionExecutionException;
 import com.aw.action.exceptions.ActionPreparationException;
 import com.aw.common.rest.security.TenantAware;
 import com.aw.common.util.KeyValuePair;
-import com.aw.common.util.es.ElasticIndex;
+import com.aw.common.util.es.ESKnownIndices;
 import com.aw.incident.Incident;
 import com.aw.unity.dg.CommonField;
 import com.aw.util.Statics;
@@ -77,7 +77,7 @@ public abstract class AbstractUpdateIncidentAction extends AbstractIncidentActio
 		Incident incident = getClient(ctx).getIncident(ctx.getUnity(), incidentGuid, 3, 1000L).get();
 
 		//update the incident here - an exception will occur if there is an error
-		getClient(ctx).update(ElasticIndex.INCIDENTS, Incident.UNITY_TYPE, incidentGuid, json.toString(), incident.getCreationTime().toInstant());
+		getClient(ctx).update(ESKnownIndices.INCIDENTS, Incident.UNITY_TYPE, incidentGuid, json.toString(), incident.getCreationTime().toInstant());
 
 	}
 
