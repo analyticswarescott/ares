@@ -7,6 +7,7 @@ import com.aw.common.tenant.Tenant;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
+import com.aw.compute.streams.processor.framework.AbstractIterableDataProcessor;
 import com.aw.compute.streams.processor.framework.IterableTupleProcessor;
 import com.aw.unity.Data;
 import com.aw.unity.UnityInstance;
@@ -22,7 +23,7 @@ import java.util.List;
  *
  * <li>
  */
-public class GenericJDBCProcessor extends AbstractIterableProcessor implements Dependent, IterableTupleProcessor {
+public class GenericJDBCProcessor extends AbstractIterableDataProcessor implements Dependent, IterableTupleProcessor {
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,28 +55,7 @@ public class GenericJDBCProcessor extends AbstractIterableProcessor implements D
 
     }
 
-    /**
-     * Convert incoming json to platform data using unity
-     *
-     * @param messages
-     * @return
-     * @throws Exception
-     */
-    private List<Data> toData(Iterable<String> messages) throws Exception {
 
-    	List<Data> ret = new ArrayList<Data>();
-
-    	//get the unity data for this json so we can get the ID
-    	for (String json : messages) {
-
-    		Data cur = getDependency(UnityInstance.class).newData(json);
-    		ret.add(cur);
-
-    	}
-
-    	return ret;
-
-    }
 
     @Override
     public void init(StreamDef streamDef) throws ProcessorInitializationException{

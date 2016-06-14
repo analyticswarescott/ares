@@ -29,6 +29,22 @@
 			"display_name": "alarm Code ",
 			"name": "alarmCode"
 		}
+	,
+		{
+			"array": false,
+			"description": "alarmCodeDesc",
+			"tags": [ "error" ],
+			"type": "string",
+			"display_name": "alarm Code Description ",
+			"name": "alarmCodeDesc",
+			"reference" : {
+				"reference_type" : "alarmcodedescriptions",
+				"reference_key" : "alarmcode",
+				"reference_value" : "alarmcodedesc",
+				"local_key" : "alarmCode",
+				"required" : "false"
+			}
+		}
 
     ]}
 }

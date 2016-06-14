@@ -16,4 +16,6 @@ public abstract class AbstractIterableProcessor implements IterableProcessor, Se
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
+
 }

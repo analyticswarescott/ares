@@ -190,6 +190,11 @@ public class Field extends AbstractTaggable implements Comparable<Field>, Serial
 	public void setArray(boolean array) { m_array = array; }
 	private boolean m_array;
 
+
+	public Reference getReference() {return reference;}
+	public void setReference(Reference reference) {this.reference = reference;}
+	private Reference reference;
+
 	/**
 	 * @return The unity instance this field belongs to
 	 */

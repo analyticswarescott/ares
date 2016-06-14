@@ -27,7 +27,8 @@
 
                     { "name": "eventId" },
                     { "name": "alarmActive" },
-                    { "name": "alarmCode" }
+                    { "name": "alarmCode" },
+					{ "name" : "alarmCodeDesc"}
 
                 ],
                 "tags" : [

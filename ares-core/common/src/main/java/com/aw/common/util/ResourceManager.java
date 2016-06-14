@@ -32,25 +32,6 @@ public class ResourceManager implements Serializable {
         }
     }
 
-	public static class DBMgrSingleton {
-		public static void stop() {
-			instance = null;
-		}
-		static private transient DBMgr instance = null;
-
-		public static DBMgr getInstance(Platform platform) throws Exception {
-			if (instance == null) {
-				DBMgr db = new DBMgr(new com.google.inject.Provider<Platform>() {
-					@Override
-					public Platform get() {
-						return platform;
-					}
-				}, new PostgresJDBCProvider());
-				instance = db;
-			}
-			return instance;
-		}
-	}
 
 
 

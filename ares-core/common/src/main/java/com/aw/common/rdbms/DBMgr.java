@@ -82,6 +82,10 @@ public class DBMgr {
 	}
 
 	public void initDB(Tenant tenant) throws Exception {
+		initDB(tenant, true);
+	}
+
+	public void initDB(Tenant tenant, boolean attemptInit) throws Exception {
 
 		//get the jdbc url
         String url = provider.getJDBCURL(platform.get(), tenant);
@@ -93,6 +97,7 @@ public class DBMgr {
 
         	//create the database
         	provider.createDB(platform.get(), tenant);
+			attemptInit = true; //we needed to create, so we need to init
 
         }
 
@@ -100,7 +105,9 @@ public class DBMgr {
 		setupPool(tenant.getTenantID(), url, className);
 
 		//initialize the schema
-		provider.initDB(platform.get(), datasources.get(tenant.getTenantID()), tenant, EnvironmentSettings.isClearDocsOnStartup());
+		if (attemptInit) {
+			provider.initDB(platform.get(), datasources.get(tenant.getTenantID()), tenant, EnvironmentSettings.isClearDocsOnStartup());
+		}
 
 	}
 
@@ -178,8 +185,8 @@ public class DBMgr {
 
 		if (pool == null) {
 			try {
-
-				initDB(tenant);
+				//init pool but do not attemptInit by default
+				initDB(tenant, false);
 				pool = pools.get(tenant.getTenantID());
 			} catch (Exception e) {
 				throw new RuntimeException("error initializing DB when pool is null for tenant " + tenant.getTenantID(), e);

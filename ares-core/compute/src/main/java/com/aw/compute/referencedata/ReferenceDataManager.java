@@ -18,6 +18,9 @@ public class ReferenceDataManager {
 		 */
 		SIMPLE_RULES(SimpleRulesData.class),
 
+
+		GENERIC_LOOKUP(GenericLookupDataMgr.class),
+
 		/**
 		 * Reference data that will look up operation type descriptions
 		 */
