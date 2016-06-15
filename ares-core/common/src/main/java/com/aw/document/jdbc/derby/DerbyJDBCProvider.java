@@ -89,7 +89,7 @@ public class DerbyJDBCProvider extends AbstractDocumentJDBCProvider implements S
 	}
 
 	@Override
-	protected String getMigrationPackage() {
+	protected String getMigrationPackages() {
 		return "com.aw.common.rdbms.migrations.derby";
 	}
 

@@ -67,7 +67,7 @@ public interface HDFSFileProcessor extends StringTupleProcessor, Dependent {
 
 			//provide as much information as possible
 			if (metadata != null) {
-				throw new StreamProcessingException("while processing " + metadata.getPurpose() + " file, machineID=" + metadata.getMachineID() + " name=" + metadata.getFilename(), e);
+				throw new StreamProcessingException("while processing " + metadata.getPurpose() + " file,  name=" + metadata.getFilename(), e);
 			}
 
 			//if input is null, we couldn't parse the file metadata

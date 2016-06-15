@@ -14,6 +14,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.aw.common.system.FileInputMetadata;
 import com.aw.unity.dg.CommonField;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -34,10 +35,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /**
- * Provides api for external DG components to communicate with the platform.
- *
- *
- *
+ * for event submission and creation of tenant hives
  */
 @Api
 @Singleton
@@ -69,53 +67,23 @@ public class AresResource extends RestMgrBase {
 							  String jsonStr) throws WebApplicationException {
 		try {
 
-
 			//site is tenant
-			//TODO: handle as array by adding type element to REST signature, for now unpack and add to topic
-
 
 			JSONArray rawJsons = new JSONArray(jsonStr);
+			JSONObject o = rawJsons.getJSONObject(0);
+			String eventType = o.getString(CommonField.EVENT_TYPE_FIELD);
+				String str = rawJsons.toString();
+				InputStream is = new ByteArrayInputStream(str.getBytes());
 
-			logger.error("§§§§§§§§§§§§§§±±±±±±± processing JSON: " + rawJsons);
+				String fileID =  UUID.randomUUID().toString(); //to differentiate in case 2 files processed at same milli
+				String fileName = "received_" + Instant.now().toEpochMilli()+ "_" + fileID;
 
+				platformProvider.get().addFile(HadoopPurpose.EVENTS, Topic.EVENT_GROUP, Tenant.forId(siteId), eventType, fileName
+					, fileID
+					, is
+				);
 
-			String eventType = null;
-			for (int i = 0; i< rawJsons.length(); i++) {
-
-
-				JSONObject o = rawJsons.getJSONObject(i);
-
-
-				eventType = o.getString(CommonField.EVENT_TYPE_FIELD);
-
-				logger.error("§§§§§§§§§§§§§§±±±±±±± processing event of type: " + eventType);
-
-
-				if (i == 0) {//Write to HDFS here to ensure raw storage is OK before processing anything to Kafka
-					//write array to HDFS with a null topic for raw storage with no processing ticket
-
-					String str = rawJsons.toString();
-					InputStream is = new ByteArrayInputStream(str.getBytes());
-
-					platformProvider.get().addFile(HadoopPurpose.EVENTS, null, Tenant.forId(siteId), eventType,
-						"received_" + Instant.now().toEpochMilli(), UUID.randomUUID().toString(),is
-					);
-
-					System.out.println("§§§§§§§§§§§§§§±±±±±±± file added to HDFS ");
-				}
-
-
-
-				//TODO : replace switch with config
-				if (eventType.equals("GameEvent")) {
-					platformProvider.get().sendMessage(Topic.EVENTS_ES, Tenant.forId(siteId), o);
-					platformProvider.get().sendMessage(Topic.EVENTS_JDBC, Tenant.forId(siteId), o);
-
-					System.out.println("§§§§§§§§§§§§§§±±±±±±± Kafka messages sent ");
-				}
-
-			}
-
+			System.out.println("REST:  §§§§§§§§§§§§§§±±±±±±± file  " + fileName + " added to HDFS and ticketed for processing ");
 
 
 			return Response.status(Response.Status.OK).build();

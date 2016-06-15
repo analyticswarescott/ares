@@ -21,7 +21,6 @@ public class FileInputMetadata {
 	public FileInputMetadata(HadoopPurpose purpose, String tenantID, String subPath, String path, String filename, String guid, boolean hasParts) {
 		m_purpose = purpose;
 		m_tenantID = tenantID;
-		m_machineID = subPath;
 		m_filename = filename;
 		m_path = path;
 		m_guid = guid;
@@ -42,10 +41,6 @@ public class FileInputMetadata {
 	public String getFilename() { return m_filename; }
 	public void setFilename(String filename) { m_filename = filename; }
 	private String m_filename;
-
-	public String getMachineID() { return m_machineID; }
-	public void setMachineID(String machineID) { m_machineID = machineID; }
-	private String m_machineID;
 
 	public String getTenantID() { return m_tenantID; }
 	public void setTenantID(String tenantID) { m_tenantID = tenantID; }

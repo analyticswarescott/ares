@@ -126,7 +126,7 @@ public class PostgresJDBCProvider extends AbstractDocumentJDBCProvider {
 	}
 
 	@Override
-	protected String getMigrationPackage() {
+	protected String getMigrationPackages() {
 		return "com.aw.common.rdbms.migrations.postgres";
 	}
 

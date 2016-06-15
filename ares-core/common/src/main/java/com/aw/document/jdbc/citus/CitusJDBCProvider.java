@@ -362,7 +362,7 @@ public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBC
 	}
 
 	@Override
-	protected String getMigrationPackage() {
+	protected String getMigrationPackages() {
 		return "com.dawcommon.rdbms.migrations.postgres";
 	}
 

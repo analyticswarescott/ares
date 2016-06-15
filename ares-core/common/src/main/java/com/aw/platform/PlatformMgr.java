@@ -732,15 +732,17 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 
     }
 
-    private void sendFileMessage(HadoopPurpose purpose, Topic topic, Tenant tenant, String machineID, String filename, String guid, boolean hasParts) throws Exception {
+    private void sendFileMessage(HadoopPurpose purpose, Topic topic, Tenant tenant, String subPath, String filename, String guid, boolean hasParts) throws Exception {
 
     	//everything for a machine goes under that parent path
-		String path = toPath(machineID);
+		String path = toPath(subPath);
 
-		FileInputMetadata metadata = new FileInputMetadata(purpose, tenant.getTenantID(), machineID, path, filename, guid, hasParts);
+		FileInputMetadata metadata = new FileInputMetadata(purpose, tenant.getTenantID(),subPath, path, filename, guid, hasParts);
 
 		//send the message
 		messenger.send(new StringMessage(tenant, topic, metadata.toString())); //send the message to kafka
+
+		logger.error(" DEBUG: File message placed on topic " + topic.getTopicName() );
 
     }
 

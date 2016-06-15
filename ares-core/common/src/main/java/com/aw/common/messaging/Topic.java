@@ -29,6 +29,11 @@ public enum Topic {
 	INCIDENT(true),
 
 	/**
+	 * Event arrays to be processed out of HDFS
+	 */
+	EVENT_GROUP(true),
+
+	/**
 	 * events to ES
 	 */
 	EVENTS_ES(true),

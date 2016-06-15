@@ -32,7 +32,7 @@ public abstract class AbstractJDBCProvider implements JDBCProvider {
 		//get the migrations for this db type
 		//TODO: split out custom migrations
 
-		flyway.setLocations(getMigrationPackage());
+		flyway.setLocations(getMigrationPackages());
 
 		// Clean up schema first, if needed
 		if (clean) {
@@ -49,7 +49,7 @@ public abstract class AbstractJDBCProvider implements JDBCProvider {
 	/**
 	 * @return the java package that defines flyway migrations for this database
 	 */
-	protected abstract String getMigrationPackage();
+	protected abstract String getMigrationPackages();
 
 	/**
 	 * default empty username
