@@ -70,6 +70,8 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		}
 		sql = sql + ")";
 
+		sql = sql + " ON CONFLICT (" + dataType.getIDField().getName() +  ") DO NOTHING ";
+
 		logger.warn(" GENERATED SQL is " + sql);
 
 		return conn.prepareStatement(sql);

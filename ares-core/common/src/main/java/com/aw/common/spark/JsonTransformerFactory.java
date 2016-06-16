@@ -1,4 +1,4 @@
-package com.aw.compute.streams.processor.framework;
+package com.aw.common.spark;
 
 /**
  * get a transformer based on an event typr

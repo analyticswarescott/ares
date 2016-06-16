@@ -38,6 +38,7 @@ public interface HDFSFileProcessor extends StringTupleProcessor, Dependent {
 		FileWrapper file = null;
 		try {
 
+			logger.error(" DEBUG: processing string " + string);
 			//parse the file info
 	 		metadata = JSONUtils.objectFromString(string, FileInputMetadata.class);
 

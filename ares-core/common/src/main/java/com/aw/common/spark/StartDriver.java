@@ -102,9 +102,17 @@ public class StartDriver {
         String jarsRaw = getStreamClasspath().replace(':', ',') + ',';
 
         String computeJar = locateComputeJar();
+		System.out.println("COMPUTE JAR LOCATION: " + computeJar);
+
+
+
 
         String jars = jarsRaw.replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome());
+
+
         jars = jars + "," + computeJar;
+
+		jars = jars + ",/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
 
         command.add(jars);
 
@@ -124,7 +132,13 @@ public class StartDriver {
 
         command.add("--driver-class-path");
         //command.add(jars.replace(",",":"));
-        command.add(getStreamClasspath().replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome()));
+
+		String dcp = getStreamClasspath().replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome());
+		dcp = dcp + ":" + "/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
+
+		dcp = dcp + ":" + computeJar;
+
+        command.add(dcp);
 
 
         //Add any defined options to the conf

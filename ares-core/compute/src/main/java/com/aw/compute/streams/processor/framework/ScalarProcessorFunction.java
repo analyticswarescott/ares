@@ -47,7 +47,7 @@ public class ScalarProcessorFunction extends TupleProcessorFunction implements S
 	public Void call(JavaRDD<Tuple2<String, String>> tuple2JavaRDD) throws Exception {
 
 		try {
-
+			//System.out.println(" ScalarProcessorFunction called");
 			if (tuple2JavaRDD.isEmpty()) {
 				logger.trace("ignoring empty RDD in processor " + getCheckpointId());
 				return null;
@@ -99,6 +99,7 @@ public class ScalarProcessorFunction extends TupleProcessorFunction implements S
 		public void call(Tuple2<String, String> t) throws Exception {
 			try {
 
+				//logger.error(" DEBUG: processing tuple " + t.toString());
 				//TODO: deal with tenantID in the spawned workers if needed
 				//make sure we are the right tenant
 				SecurityUtil.setThreadSystemAccess();

@@ -7,12 +7,12 @@
 		"tenant": true,
 		"system": false,
 		"target_driver": "driver30sec",
-		"processor_id": "events_es",
+		"processor_id": "events_group",
 		"optimal_events_per_task" : 10000,
-		"source_topic": ["events_es"],
+		"source_topic": ["event_group"],
 		"config_data": {
 			"processor_class": "com.aw.compute.streams.processor.HDFSEventProcessor",
-			"json_transformer_factory": "com.hg.stream.transformer.JsonTransformerFactoryHG"
+			"json_transformer_factory": "com.hg.custom.stream.transformer.JsonTransformerFactoryHG"
 		}
 	}
 }

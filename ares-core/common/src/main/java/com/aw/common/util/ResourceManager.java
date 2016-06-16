@@ -4,6 +4,7 @@ package com.aw.common.util;
 import java.io.Serializable;
 
 import com.aw.common.rdbms.DBMgr;
+import com.aw.common.spark.JsonTransformerFactory;
 import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformUtils;
@@ -32,6 +33,21 @@ public class ResourceManager implements Serializable {
         }
     }
 
+
+	public static class JsonTransformerFactorySingleton {
+		public static void stop() {
+			instance = null;
+		}
+		static private transient JsonTransformerFactory instance = null;
+
+		public static JsonTransformerFactory getInstance(String classname) throws Exception {
+			if (instance == null) {
+				Class c = Class.forName(classname);
+				instance = (JsonTransformerFactory) c.newInstance();
+			}
+			return instance;
+		}
+	}
 
 
 

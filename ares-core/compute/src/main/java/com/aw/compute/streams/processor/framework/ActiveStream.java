@@ -83,7 +83,7 @@ public class ActiveStream
 				sb.append(s);
 				sb.append("\t");
 			}
-			logger.debug(" creating stream " + streamDef.getProcessorName(tenant) + "  to listen to topics: " + sb.toString());
+			logger.error(" DEBUG creating stream " + streamDef.getProcessorName(tenant) + "  to listen to topics: " + sb.toString());
 
 			MessageHandlerTuple2 messageHandler = new MessageHandlerTuple2();
 
@@ -123,6 +123,8 @@ public class ActiveStream
 
 		//see if there is a specific stream handler defined
 		if (streamDef.getStreamHandlerClass() != null) {
+			System.out.println(" StreamHandlerClass is " + streamDef.getStreamHandlerClass());
+
 			pf = Utils.newInstance(streamDef.getStreamHandlerClass(), AbstractStreamHandler.class);
 		} else {
 

@@ -173,11 +173,26 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
 		HttpResponse resp = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
 
-		System.out.println(" event rest call status: " + resp.getStatusLine().getStatusCode());
+		System.out.println(" event rest call 1 status: " + resp.getStatusLine().getStatusCode());
 		System.out.println(EntityUtils.toString(resp.getEntity()));
 
-/*		System.out.println(" pause 10 minutes to check system state...comment once test is working");
-		Thread.sleep(600000);*/
+		//test UPSERT-tolerance
+		HttpResponse resp2 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
+
+		System.out.println(" event rest call 2 status: " + resp2.getStatusLine().getStatusCode());
+		System.out.println(EntityUtils.toString(resp2.getEntity()));
+
+
+		//send event 2 with a different ID
+		HttpResponse resp3 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event2.json"));
+
+		System.out.println(" event rest call 3 status: " + resp3.getStatusLine().getStatusCode());
+		System.out.println(EntityUtils.toString(resp3.getEntity()));
+
+
+
+		System.out.println(" pause 4 minutes to check system state...comment once test is working");
+		Thread.sleep(240000);
 
 		//make sure we get the counts we expect
 		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS_ES, Tenant.forId("1") , "GameEvent", 1, 180);

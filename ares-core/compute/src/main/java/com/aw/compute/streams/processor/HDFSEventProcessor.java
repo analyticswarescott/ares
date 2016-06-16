@@ -1,17 +1,13 @@
 package com.aw.compute.streams.processor;
 
-import com.aw.common.exceptions.InitializationException;
 import com.aw.common.messaging.Topic;
-import com.aw.common.rest.security.TenantAware;
 import com.aw.common.spark.StreamDef;
 import com.aw.common.system.FileInputMetadata;
 import com.aw.common.util.JSONUtils;
 import com.aw.common.util.ResourceManager;
 import com.aw.compute.inject.Dependent;
-import com.aw.compute.streams.exceptions.StreamProcessingException;
-import com.aw.compute.streams.processor.framework.JsonTransformer;
-import com.aw.compute.streams.processor.framework.JsonTransformerFactory;
-import com.aw.compute.streams.processor.framework.StringTupleProcessor;
+import com.aw.common.spark.JsonTransformer;
+import com.aw.common.spark.JsonTransformerFactory;
 import com.aw.platform.Platform;
 import com.aw.unity.dg.CommonField;
 import com.aw.util.Statics;
@@ -22,31 +18,41 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by scott on 15/06/16.
  */
-public class HDFSEventProcessor  implements StringTupleProcessor, HDFSFileProcessor, Dependent, TenantAware {
+public class HDFSEventProcessor  implements  HDFSFileProcessor, Dependent {
 
-	protected JsonTransformerFactory json_transformer_factory;
+	protected String json_transformer_factory_class;
+
+
 
 	@Override
 	public void processFile(FileInputMetadata metadata, InputStream in) throws Exception {
+
+		System.out.println(" HDFSEventProcessor : processing file " + metadata.getFilename());
 
 
 		String eventGroupString = IOUtils.toString(in, Statics.CHARSET);
 		JSONArray rawJsons = new JSONArray(eventGroupString);
 
+
+		//System.out.println(" HDFSEventProcessor : raw JSON: " + rawJsons.toString());
 		Platform platform = getDependency(Platform.class);
+
+		//TODO: this should be DI
+		JsonTransformerFactory jtf = ResourceManager.JsonTransformerFactorySingleton
+			.getInstance(json_transformer_factory_class);
+
 
 		JsonTransformer xform = null;
 		for (int i = 0; i< rawJsons.length(); i++) {
 			JSONObject json = rawJsons.getJSONObject(i);
 
 			if (i == 0) {
-				xform = json_transformer_factory.getTransformer(json.getString(CommonField.EVENT_TYPE_FIELD));
+				xform = jtf.getTransformer(json.getString(CommonField.EVENT_TYPE_FIELD));
 			}
 
 			List<JSONObject> processedJSON = xform.transform(json);
@@ -56,11 +62,17 @@ public class HDFSEventProcessor  implements StringTupleProcessor, HDFSFileProces
 
 				Producer<String, String> producer = ResourceManager.KafkaProducerSingleton.getInstance(platform);
 
-				KeyedMessage<String, String> msg = new KeyedMessage<>(Topic.toTopicString(getTenantID(), Topic.EVENTS_JDBC), getTenantID()
+				System.out.println(" HDFSEventProcessor : sending to JDBC");
+				KeyedMessage<String, String> msg = new KeyedMessage<>(Topic.toTopicString(metadata.getTenantID()
+					, Topic.EVENTS_JDBC), metadata.getTenantID()
 					, JSONUtils.objectToString(j));
 					producer.send(msg);
 
-				msg = new KeyedMessage<>(Topic.toTopicString(getTenantID(), Topic.EVENTS_ES), getTenantID(), JSONUtils.objectToString(j));
+				System.out.println(" HDFSEventProcessor : sent to JDBC");
+
+				msg = new KeyedMessage<>(Topic.toTopicString(metadata.getTenantID(),
+					Topic.EVENTS_ES), metadata.getTenantID(),
+					JSONUtils.objectToString(j));
 				producer.send(msg);
 
 			}
@@ -76,7 +88,9 @@ public class HDFSEventProcessor  implements StringTupleProcessor, HDFSFileProces
 	@Override
 	public void init(StreamDef data)  {
 		try {
-			json_transformer_factory = (JsonTransformerFactory) Class.forName(data.getConfigData().get("json_transformer_factory").toString()).newInstance();
+
+			//init the transformer factory
+		json_transformer_factory_class = data.getConfigData().get("json_transformer_factory");
 
 		} catch (Exception ex) {
 			throw new RuntimeException(" error initializing transformer factory" , ex);

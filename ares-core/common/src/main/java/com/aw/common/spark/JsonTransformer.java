@@ -1,4 +1,4 @@
-package com.aw.compute.streams.processor.framework;
+package com.aw.common.spark;
 
 import org.codehaus.jettison.json.JSONObject;
 
