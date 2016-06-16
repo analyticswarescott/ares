@@ -8,13 +8,16 @@ import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
 import com.aw.unity.Field;
+import com.aw.unity.FieldType;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 /**
@@ -82,7 +85,30 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		for (Field f: data.getType().getFields()) {
 			int ordinal = ordinals.get(f);
 
-			ps.setString(ordinal + 1, data.getValue(f).toString());
+
+			String val = data.getValue(f).toString();
+
+			//System.out.println("Field " + f.getName() + " Type is: " + f.getType());
+
+			//add field by data type
+			if (f.getType() == FieldType.STRING) {
+				ps.setString(ordinal + 1, val);
+			}
+			else if (f.getType() == FieldType.INT) {
+				ps.setInt(ordinal + 1, Integer.parseInt(val));
+			}
+			else if (f.getType() == FieldType.LONG) {
+				ps.setLong(ordinal + 1, Long.parseLong(val));
+			}
+			else if (f.getType() == FieldType.DOUBLE) {
+				ps.setDouble(ordinal + 1, Double.parseDouble(val));
+			}
+			else if (f.getType() == FieldType.TIMESTAMP) {
+				ps.setTimestamp(ordinal + 1, Timestamp.from(Instant.parse(val)));
+			}
+			else {
+				throw new RuntimeException(" unsupported data type :" + f.getType().toString());
+			}
 		}
 
 
@@ -100,8 +126,10 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 			for (Data d : data) {
 				processRow(ps, d);
 
-				logger.warn(" About to execute SQL: " + ps.toString());
-				ps.executeUpdate();
+				logger.error(" DEBUG: About to execute SQL: " + ps.toString());
+				int i = ps.executeUpdate();
+
+				logger.error(" DEBUG: SQL result was " + i);
 			}
 
 

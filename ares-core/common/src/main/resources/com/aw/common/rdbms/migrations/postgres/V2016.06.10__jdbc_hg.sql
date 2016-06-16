@@ -1,9 +1,13 @@
 
 CREATE TABLE GAMEEVENT (
 	eventid varchar(200),
-	alarmActive varchar(200),
-	alarmCode varchar(200),
+	alarmActive int,
+	alarmCode int,
 	alarmCodeDesc varchar(200),
+	someDouble DECIMAL,
+	someBigInt DECIMAL,
+	someTimestamp TIMESTAMP,
+	defaulted_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (eventid)
 
 );

@@ -191,15 +191,18 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 
 
 
-		System.out.println(" pause 4 minutes to check system state...comment once test is working");
-		Thread.sleep(240000);
+	//	System.out.println(" pause 4 minutes to check system state...comment once test is working");
+	//	Thread.sleep(240000);
 
 		//make sure we get the counts we expect
-		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS_ES, Tenant.forId("1") , "GameEvent", 1, 180);
+		DataFeedUtils.awaitESResult(ESKnownIndices.EVENTS_ES, Tenant.forId("1") , "GameEvent", 2, 180);
 
 		//count JDBC rows for now -- TODO: assert contents of at least 1 row to check transformations
-		assertEquals(" expect 1 game event row", 1,
-			TestDependencies.getDBMgr().get().executeScalarCountSelect(Tenant.forId("1"),"select count(*) from gameevent"));
+
+		//can be timing if ES is too fast
+		Thread.sleep(500);
+		assertEquals(" expect 2 game event rows ", 2,
+			TestDependencies.getDBMgr().get().executeScalarCountSelect(Tenant.forId("1"),"select count(*) as cnt from gameevent"));
 
 	}
 
