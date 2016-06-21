@@ -50,30 +50,28 @@ public class RestRoleServer extends RestServer {
 		PropertyConfigurator.configure(EnvironmentSettings.getLog4JConfigFile());
 		logger.warn(" properties file for log4j: " + EnvironmentSettings.getLog4JConfigFile());
 
-		logger.error(" DEBUG ±±±±±±±±± log4j up main[]");
+
 
 		Platform platform = PlatformMgr.getCachedPlatform();
 
-		logger.error(" DEBUG ±±±±±±±±± got platform" + platform.toString());
 
         RestRoleServer launcher;
         if (args.length == 0) {
-			logger.error(" DEBUG ±±±±±±±±± launching no port");
+
             launcher = new RestRoleServer(platform);
         }
         else {
-			logger.error(" DEBUG ±±±±±±±±± launching on port: " + Integer.parseInt(args[1]));
+
             launcher = new RestRoleServer(args[0], Integer.parseInt(args[1]));
 		}
-
-		logger.error(" DEBUG ±±±±±±±±± about to init");
+		
         launcher.init(platform).start();
     }
 
     protected void postStart() {
 		//set up logging
 		PropertyConfigurator.configure(EnvironmentSettings.getLog4JConfigFile());
-		logger.error(" DEBUG ±±±±±±±±± log4j up post start");
+
 	}
 
 }
