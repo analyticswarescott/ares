@@ -15,7 +15,7 @@
 
         <plugins>
 
-	         <plugin>
+<!--	         <plugin>
 	            <artifactId>maven-dependency-plugin</artifactId>
 	            <executions>
 	              <execution>
@@ -29,7 +29,7 @@
 	                </configuration>
 	              </execution>
 	            </executions>
-	          </plugin>
+	          </plugin>-->
 
 			 <!-- generate the classpath -->
              <plugin>
@@ -51,6 +51,18 @@
                         <excludeArtifactIds>javax.servlet</excludeArtifactIds>
                    </configuration>
                  </execution>
+
+				   <execution>
+					   <phase>package</phase>
+					   <goals>
+						   <goal>copy-dependencies</goal>
+					   </goals>
+					   <configuration>
+						   <silent>true</silent>
+						   <outputDirectory>target/lib</outputDirectory>
+					   </configuration>
+				   </execution>
+
                </executions>
              </plugin>
         </plugins>

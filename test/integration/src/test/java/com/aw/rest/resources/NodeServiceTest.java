@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Provider;
 
+import com.aw.test.nodeservice.TestRoleManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.junit.Test;
@@ -134,66 +135,5 @@ public class NodeServiceTest extends BaseIntegrationTest {
 
 	}
 
-	public static class TestRoleManager extends AbstractRoleManager {
 
-		public TestRoleManager(PlatformMgr platformMgr, NodeRole role, Provider<DocumentHandler> docs) {
-			super(platformMgr, docs);
-			this.role = role;
-		}
-
-		@Override
-		public String getHome() {
-			return null;
-		}
-
-		@Override
-		public NodeRole getRole() {
-			return role;
-		}
-
-		@Override
-		public void configure() throws Exception {
-			configure.add(role, 1);
-		}
-
-		@Override
-		public List<RoleOSCommand> getStartCommands() throws Exception {
-			return null;
-		}
-
-		@Override
-		public List<RoleOSCommand> getStopCommands() throws Exception {
-			return null;
-		}
-
-		@Override
-		public NodeRoleStatus getStatus() {
-			getStatus.add(role, 1);
-			return new NodeRoleStatus();
-		}
-
-		@Override
-		public void start() throws Exception {
-			start.add(getRole(), 1);
-			super.start();
-		}
-
-
-		@Override
-		protected void doStart() throws Exception {
-		}
-
-		@Override
-		protected void doStop() throws Exception {
-			m_stop.add(role, 1);
-		}
-
-		private static ListMap<NodeRole, Object> configure = new ListMap<>();
-		private static ListMap<NodeRole, Object> getStatus = new ListMap<>();
-		private static ListMap<NodeRole, Object> start = new ListMap<>();
-		private static ListMap<NodeRole, Object> m_stop = new ListMap<>();
-
-		private NodeRole role;
-
-	}
 }

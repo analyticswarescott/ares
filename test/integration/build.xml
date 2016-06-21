@@ -59,10 +59,10 @@
 
 		<untar src="spark.tar.gz" dest="." compression="gzip"/>
 
-		<move file="./spark-1.6.0-bin-hadoop2.6" tofile="./spark_test"/>
+		<move file="./spark-1.6.0-bin-hadoop2.6" tofile="../base/spark_test"/>
 
 		<chmod perm="+x" type="file">
-		  <fileset dir="./spark_test">
+		  <fileset dir="../base/spark_test">
 		    <include name="**/*"/>
 		  </fileset>
 		</chmod>

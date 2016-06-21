@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.aw.common.TestPlatform;
 import com.aw.common.inject.TestProvider;
+import com.aw.common.system.EnvironmentSettings;
 import com.aw.document.DocumentHandler;
 import com.aw.document.LocalDocumentHandler;
 import com.aw.document.DocumentType;

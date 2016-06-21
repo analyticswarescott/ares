@@ -90,13 +90,6 @@ public class PlatformMgrTest {
 
 	}
 
-	private static void setConfDir() {
-		if(  System.getenv("CONF_DIRECTORY") == null ) {
-			File dgCoreDir = new File( new File(new File("").getAbsolutePath()).getParentFile().getParentFile(), Statics.CONFIG_DIR_NAME );
-			File confDir = new File( dgCoreDir, "conf");
-			System.setProperty("CONF_DIRECTORY", confDir.getAbsolutePath());
-		}
-	}
 
 	@Test
 	public void isPlatformComplete() throws Exception {

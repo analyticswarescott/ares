@@ -21,6 +21,8 @@
         <module>ares-node</module>
         <module>ares-tools</module>
 		<module>aresx-custom-hg</module>
+		<module>ares-actor</module>
+		<module>test/testbase</module>
 	</modules>
 
 	<build>

@@ -16,7 +16,7 @@
     <modules>
         <module>xml</module>
         <module>common</module>
-        <module>unity</module>
+        <module>data</module>
         <module>actuate</module>
         <module>incident</module>
         <module>alert</module>

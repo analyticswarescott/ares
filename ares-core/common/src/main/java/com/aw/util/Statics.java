@@ -10,8 +10,11 @@ import com.aw.common.auth.User;
 public class Statics {
 
 
-	public static final String RELATIVE_DOCS_PATH = "../../ares-apps/conf/defaults";
-	public static final String CONFIG_DIR_NAME = "ares-apps";
+	public static final String RELATIVE_DOCS_PATH = "../../conf/defaults";
+	//public static final String CONFIG_DIR_NAME = "ares-apps";
+
+	//public static final String RELATIVE_DOCS_PATH = "../../conf/defaults";
+	//public static final String CONFIG_DIR_NAME = "ares-apps";
 
 	/**
 	 * java time utc zone id

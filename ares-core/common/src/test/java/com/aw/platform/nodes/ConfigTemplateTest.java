@@ -12,7 +12,7 @@ import com.aw.document.TestDocumentHandler;
 
 public class ConfigTemplateTest {
 
-	@Test
+/*	@Test
 	public void testFromDocument() throws Exception {
 
 		System.setProperty(EnvironmentSettings.Setting.CONF_DIRECTORY.name(), Statics.RELATIVE_DOCS_PATH);
@@ -21,6 +21,6 @@ public class ConfigTemplateTest {
 		ConfigTemplate template = doc.getBodyAsObject(ConfigTemplate.class);
 		assertEquals("config_db/postgresql.conf", template.getFilePath());
 
-	}
+	}*/
 
 }

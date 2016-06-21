@@ -248,13 +248,13 @@ public class NodeManagerTest {
         assertTrue( memory > 0);
     }
 
-    @Test
+/*    @Test
     public void getPlatformFromDisk() throws Exception {
         setConfDir();
 
         Platform platformFromDisk = PlatformMgr.getCachedPlatform();
         assertNotNull(platformFromDisk);
-    }
+    }*/
 
     private RoleManager createMockRoleManager() {
         return new MockRoleManager(platformMgr.get(), docs) {
@@ -302,6 +302,7 @@ public class NodeManagerTest {
     }
 
     //for now just defined in one place
+/*
     public static void setConfDir() {
         if(  System.getenv("CONF_DIRECTORY") == null ) {
             File dgCoreDir = new File( new File(new File("").getAbsolutePath()).getParentFile().getParentFile(), Statics.CONFIG_DIR_NAME );
@@ -310,5 +311,6 @@ public class NodeManagerTest {
             System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), confDir.getAbsolutePath() + File.separator + "defaults" + File.separator + "platform" + File.separator + "local.json");
         }
     }
+*/
 
 }

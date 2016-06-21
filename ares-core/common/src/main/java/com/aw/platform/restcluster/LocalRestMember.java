@@ -98,6 +98,9 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 	 */
 	public void initialize() throws ClusterException {
 
+
+		logger.error(" DEBUG ±±±±±±±±± local member init ");
+
 		if (isJoined()) {
 			logger.warn("rest cluster member asked to start but is already active");
 			return;

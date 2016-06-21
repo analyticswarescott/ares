@@ -83,6 +83,10 @@ public abstract class RestServer implements Runnable {
         //set up the webapp root
         WebAppContext root = new WebAppContext();
         root.setContextPath("/");
+
+		System.out.println(" web app dir at: " + webappDirLocation);
+
+
         root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
         root.setResourceBase(webappDirLocation);
         root.setParentLoaderPriority(true);
