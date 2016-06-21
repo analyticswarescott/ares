@@ -56,7 +56,7 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
             configs.put(key + "=",  key + "=" + overrides.get(key).toString());
         }
         String newConf = m_roleConfig.applyConfig(log4J, configs, RoleConfig.HASHTAG);
-		m_roleConfig.saveConfig(EnvironmentSettings.getDgSparkHome()
+		m_roleConfig.saveConfig(EnvironmentSettings.getAresSparkHome()
 			+ File.separatorChar + "conf" + File.separatorChar + LOG_4J, newConf);
     }
 
@@ -66,7 +66,7 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
     public List<RoleOSCommand> getStartCommands() {
         ArrayList<RoleOSCommand> ret = new ArrayList<RoleOSCommand>();
         String script = "./start-master.sh";
-        String dir = EnvironmentSettings.getDgSparkHome() + File.separatorChar + "sbin";
+        String dir = EnvironmentSettings.getAresSparkHome() + File.separatorChar + "sbin";
         List<String> args = new ArrayList<String>();
 
         args.add("--host");
@@ -92,7 +92,7 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
         ArrayList<RoleOSCommand> ret = new ArrayList<RoleOSCommand>();
 
         String script = "./stop-master.sh";
-        String dir = EnvironmentSettings.getDgSparkHome() + File.separatorChar + "sbin";
+        String dir = EnvironmentSettings.getAresSparkHome() + File.separatorChar + "sbin";
         List<String> args = new ArrayList<String>();
 
         RoleOSCommand command = new RoleOSCommand(dir, script, args);

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.aw.unity.es.ElasticUnityDataSourceTest
 -------------------------------------------------------------------------------
-Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.058 sec - in com.aw.unity.es.ElasticUnityDataSourceTest
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.177 sec - in com.aw.unity.es.ElasticUnityDataSourceTest

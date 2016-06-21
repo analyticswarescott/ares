@@ -262,6 +262,8 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 
 		//apply the index
 		HttpResponse response = execute(HttpMethod.POST, "/" + indexName, adjustedMappings);
+
+
 		EntityUtils.consume(response.getEntity()); //consume response TODO: do something with the response
 		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
 

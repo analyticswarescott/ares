@@ -48,12 +48,20 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 	public static final String SHOW_CHILD_LOGS = "showChildLogs";
 
 	//location for cached platform for integration tests
-	private static final File RELATIVE_PATH_TO_PLATFORM = new File("./conf/platform.json");
+	//private static final File RELATIVE_PATH_TO_PLATFORM = new File("./conf/platform.json");
 
 	 @Rule public TestName name = new TestName();
 
+
+	@Override
+	public void setExtraSysProps() {
+
+	}
+
     @Before
     public final void beforeIntegration() throws Exception {
+
+		setExtraSysProps();
 
         //so I can see what the heck is being tested
     	System.out.println("\n\n=== " + getClass().getSimpleName() + "#" + name.getMethodName() + " ===\n\n");
@@ -68,8 +76,8 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 
 
 
-		String rpp = RELATIVE_PATH_TO_PLATFORM.getAbsolutePath();
-		System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), rpp);
+		//String rpp = RELATIVE_PATH_TO_PLATFORM.getAbsolutePath();
+		System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), getConfDirectory() + "/platform.json");
 		//System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), getConfDirectory());
 
 
@@ -268,7 +276,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 		shutdownErrors |= shutdown(() -> {
 			//delete the spark work directory
 			if (usesSpark()) {
-				File f = new File(EnvironmentSettings.getDgSparkHome() + File.separatorChar + "work");
+				File f = new File(EnvironmentSettings.getAresSparkHome() + File.separatorChar + "work");
 				FileUtils.deleteDirectory(f);
 				if (f.exists()) {
 					logger.warn(" error removing Spark work directory during platform teardown");
@@ -412,7 +420,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
         Document doc = getDefaultPlatformDocAsNewName(Platform.LOCAL);
 
         //save it to the platform_path location
-        FileUtils.write(RELATIVE_PATH_TO_PLATFORM, doc.toJSON());
+        FileUtils.write(new File(getConfDirectory() + "/platform.json"), doc.toJSON());
 
         if (TestDependencies.getPlatformMgr() != null) {
         	TestDependencies.getPlatformMgr().get().setPlatform(null);

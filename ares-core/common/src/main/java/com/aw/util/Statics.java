@@ -1,5 +1,6 @@
 package com.aw.util;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
 import java.util.regex.Pattern;
@@ -8,6 +9,20 @@ import com.aw.common.auth.DefaultUser;
 import com.aw.common.auth.User;
 
 public class Statics {
+
+	public static String getRDP() {
+
+		File here = new File (".");
+		System.out.println(" TEST DOC HANDLER INVOKED FROM PATH "  + here.getAbsolutePath());
+
+		File f = new File(RELATIVE_DOCS_PATH);
+		if  (f.exists()) {
+			return RELATIVE_DOCS_PATH;
+		}
+		else {
+			return "./conf/defaults";
+		}
+	}
 
 
 	public static final String RELATIVE_DOCS_PATH = "../../conf/defaults";

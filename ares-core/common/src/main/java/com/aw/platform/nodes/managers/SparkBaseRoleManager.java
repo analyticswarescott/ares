@@ -82,7 +82,7 @@ public abstract class SparkBaseRoleManager extends AbstractRoleManager {
 		}
 
 		String newConf = m_roleConfig.applyConfig(env, configs, RoleConfig.HASHTAG);
-		m_roleConfig.saveConfig(EnvironmentSettings.getDgSparkHome()
+		m_roleConfig.saveConfig(EnvironmentSettings.getAresSparkHome()
 			+ File.separatorChar + "conf" + File.separatorChar + SPARK_ENV, newConf);
 
     }

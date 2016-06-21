@@ -13,9 +13,9 @@ import com.aw.util.Statics;
  */
 public class NodeServiceWrapper extends RestServiceWrapper {
 
-	public NodeServiceWrapper(int port) {
+	/*public NodeServiceWrapper(int port) {
 		super("./node_service", port, TestNodeBinder.class.getName());
-	}
+	}*/
 
 	public NodeServiceWrapper(String path, int port) {
 		super(path, port, TestNodeBinder.class.getName());

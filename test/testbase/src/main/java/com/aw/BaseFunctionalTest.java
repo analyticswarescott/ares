@@ -92,14 +92,20 @@ public class BaseFunctionalTest {
     // public
 
 
+	public void setExtraSysProps() {
+
+	}
+
 	@Before
 	public final void beforeFunctional() throws Exception {
 
-		String confDirectoryPath = getConfDirectory();
+		setExtraSysProps();
+
+	/*	String confDirectoryPath = getConfDirectory();
 		File confDirectory = new File(confDirectoryPath);
 		if ( !confDirectory.exists() || !confDirectory.isDirectory() ) {
 			throw new RuntimeException("Missing or invalid CONF_DIRECTORY environment variable. Please supply this to proceed.");
-		}
+		}*/
 
 		// Set defaults for the integration tests
 		final Map<String, String> env = new HashMap<>();
@@ -115,9 +121,15 @@ public class BaseFunctionalTest {
 		File f = new File(".");
 		String path = f.getAbsolutePath();
 
-		File ffc = new File(path).getParentFile().getParentFile().getParentFile();
+
+
+/*		File ffc = new File(path).getParentFile();
+
+		System.out.println(" BASE CONF PATH is " + ffc.getAbsolutePath());
+
+
 		String confPath = ffc.getAbsolutePath() + File.separatorChar + "conf";
-		env.put( "CONF_DIRECTORY", confPath);
+		env.put( "CONF_DIRECTORY", confPath);*/
 
 		//TODO: move this to wrapper
 		env.put( "DG_SPARK_HOME", path + File.separatorChar + "spark_test");
@@ -480,9 +492,9 @@ public class BaseFunctionalTest {
     protected void startNodeService() throws Exception {
 
     	setThreadSystemAccess();
+		String esPath = System.getProperty("es.path.home");
 
-    	//start the node service -- TODO: create node testing base class
-        nodeService = new NodeServiceWrapper(9100);
+        nodeService = new NodeServiceWrapper(esPath + "/../node_service",  9100);
         nodeService.start();
 
     }
@@ -869,8 +881,11 @@ public class BaseFunctionalTest {
 
     protected String getConfDirectory() {
         // not set; assume its root
-        File rooDir = getRootDir();
-        return rooDir.getAbsolutePath() + File.separatorChar + "conf";
+
+		return EnvironmentSettings.getConfDirectory();
+
+       // File rooDir = getRootDir();
+        //return rooDir.getAbsolutePath() + File.separatorChar + "conf";
     }
 
 	protected String getDataDirectory() {

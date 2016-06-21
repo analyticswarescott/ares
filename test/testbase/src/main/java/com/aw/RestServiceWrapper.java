@@ -73,7 +73,8 @@ public abstract class RestServiceWrapper {
 			}
         }
 
-		if (path == null) {
+		if (path == null) {//assume testing setup
+
 			throw new RuntimeException(" webapp project ending in -apps not found as required");
 		}
 

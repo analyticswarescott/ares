@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.aw.unity.es.ElasticUnityRunnerTest" time="0.736" tests="20" errors="0" skipped="0" failures="0">
+<testsuite name="com.aw.unity.es.ElasticUnityRunnerTest" time="0.889" tests="20" errors="0" skipped="0" failures="0">
   <properties>
     <property name="idea.version" value="14.1.4"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -13,7 +13,7 @@
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="idea.launcher.port" value="7551"/>
+    <property name="idea.launcher.port" value="7558"/>
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
@@ -64,24 +64,24 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase name="lteTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.07"/>
-  <testcase name="getIndices_DAYS" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.036"/>
-  <testcase name="buildSearchRequest_day" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.041"/>
-  <testcase name="startsWith" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.019"/>
-  <testcase name="missingValues" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.016"/>
-  <testcase name="exists" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.017"/>
-  <testcase name="missingField" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.018"/>
-  <testcase name="toFilterBuilder" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.019"/>
-  <testcase name="buildSearchRequest_hour" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.03"/>
-  <testcase name="contains" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.014"/>
-  <testcase name="between" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.013"/>
-  <testcase name="getIndices_WEEKS" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.015"/>
-  <testcase name="in" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.013"/>
-  <testcase name="gte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.013"/>
-  <testcase name="lte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.011"/>
-  <testcase name="matches" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.018"/>
-  <testcase name="betweenTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.013"/>
-  <testcase name="missingOp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.012"/>
-  <testcase name="buildSearchRequest_minute_lte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.338"/>
-  <testcase name="gteTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.01"/>
+  <testcase name="lteTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.079"/>
+  <testcase name="getIndices_DAYS" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.042"/>
+  <testcase name="buildSearchRequest_day" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.057"/>
+  <testcase name="startsWith" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.022"/>
+  <testcase name="missingValues" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.022"/>
+  <testcase name="exists" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.019"/>
+  <testcase name="missingField" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.023"/>
+  <testcase name="toFilterBuilder" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.026"/>
+  <testcase name="buildSearchRequest_hour" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.036"/>
+  <testcase name="contains" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.018"/>
+  <testcase name="between" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.015"/>
+  <testcase name="getIndices_WEEKS" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.016"/>
+  <testcase name="in" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.019"/>
+  <testcase name="gte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.015"/>
+  <testcase name="lte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.014"/>
+  <testcase name="matches" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.024"/>
+  <testcase name="betweenTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.014"/>
+  <testcase name="missingOp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.014"/>
+  <testcase name="buildSearchRequest_minute_lte" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.399"/>
+  <testcase name="gteTimestamp" classname="com.aw.unity.es.ElasticUnityRunnerTest" time="0.015"/>
 </testsuite>

@@ -34,6 +34,8 @@ public class StartDriver {
             parentDir = EnvironmentSettings.getSparkLibHome();
         }
 
+		System.out.println("stream lib directory computed as: " + parentDir);
+
         //search for compute jar
         File[] computeJars = new File(parentDir).listFiles(new FilenameFilter() {
 			@Override
@@ -75,7 +77,7 @@ public class StartDriver {
         DriverDef driverDef = driverDefDoc.getBodyAsObject();
 
         List<String> command = new ArrayList<String>();
-        String script = EnvironmentSettings.getDgSparkHome() + "/bin/spark-submit";
+        String script = EnvironmentSettings.getAresSparkHome() + "/bin/spark-submit";
         if (EnvironmentSettings.isWindows()) {
             script += ".cmd";
         }
@@ -114,6 +116,9 @@ public class StartDriver {
 
 		jars = jars + ",/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
 
+
+		System.out.println(jars + "\n\n\n\n");
+
         command.add(jars);
 
 
@@ -133,10 +138,15 @@ public class StartDriver {
         command.add("--driver-class-path");
         //command.add(jars.replace(",",":"));
 
+		System.out.println("DG_HOME" + EnvironmentSettings.getDgHome());
+		System.out.println("SPARK_LIB_HOME" + EnvironmentSettings.getSparkLibHome());
+
 		String dcp = getStreamClasspath().replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome());
 		dcp = dcp + ":" + "/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
 
 		dcp = dcp + ":" + computeJar;
+
+		System.out.println(dcp + "\n\n\n\n");
 
         command.add(dcp);
 
@@ -219,7 +229,7 @@ public class StartDriver {
 
 
         List<String> command = new ArrayList<String>();
-        String script = EnvironmentSettings.getDgSparkHome() + "/bin/spark-class";
+        String script = EnvironmentSettings.getAresSparkHome() + "/bin/spark-class";
         if (EnvironmentSettings.isWindows()) {
             script += ".cmd";
         }

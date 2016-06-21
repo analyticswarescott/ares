@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.aw.unity.es.ElasticUnityDataSourceTest" time="2.056" tests="12" errors="0" skipped="0" failures="0">
+<testsuite name="com.aw.unity.es.ElasticUnityDataSourceTest" time="2.175" tests="12" errors="0" skipped="0" failures="0">
   <properties>
     <property name="idea.version" value="14.1.4"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -13,7 +13,7 @@
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="idea.launcher.port" value="7551"/>
+    <property name="idea.launcher.port" value="7558"/>
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
@@ -64,16 +64,16 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase name="getEarliest_MONTHS" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.342"/>
-  <testcase name="searchForDatatypes" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="1.543"/>
-  <testcase name="searchForDatatypes_null" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.001"/>
+  <testcase name="getEarliest_MONTHS" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.31"/>
+  <testcase name="searchForDatatypes" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="1.644"/>
+  <testcase name="searchForDatatypes_null" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0"/>
   <testcase name="getLatest_null" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.002"/>
-  <testcase name="getLatest_MONTHS" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.001"/>
-  <testcase name="jsonMapper" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.061"/>
-  <testcase name="getClient" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.02"/>
-  <testcase name="initialize" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.032"/>
+  <testcase name="getLatest_MONTHS" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.002"/>
+  <testcase name="jsonMapper" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.092"/>
+  <testcase name="getClient" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.024"/>
+  <testcase name="initialize" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.039"/>
   <testcase name="getDefaultIndex" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0"/>
-  <testcase name="searchForDatatypes_1" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.027"/>
-  <testcase name="getIndex" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.026"/>
+  <testcase name="searchForDatatypes_1" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.032"/>
+  <testcase name="getIndex" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.029"/>
   <testcase name="getEarliest_null" classname="com.aw.unity.es.ElasticUnityDataSourceTest" time="0.001"/>
 </testsuite>

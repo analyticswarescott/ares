@@ -29,6 +29,9 @@ public class DocUtils {
         //test if we have data somehow - for now get 3P count as a way to tell if we've been bootstrapped
         int docCount = handler.getDocumentsOfType(DocumentType.CONFIG_3P).size();
 
+
+		System.out.println("initForTenant:  CONF_DIRECTORY is " + EnvironmentSettings.getConfDirectory());
+
         //bootstrap if the tenant is new
         if (docCount == 0) {
 			try {
@@ -64,6 +67,9 @@ public class DocUtils {
 			}
 
 			File root = new File(rootDir);
+
+			System.out.println(" DEBUG doc root is " + root.getAbsolutePath());
+
 			String[] directories = root.list(new FilenameFilter() {
 				@Override
 				public boolean accept(File current, String name) {

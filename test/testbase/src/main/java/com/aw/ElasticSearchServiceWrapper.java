@@ -96,7 +96,11 @@ public class ElasticSearchServiceWrapper {
     }
 
     private String getClasspath() {
-    	File[] files = new File("./elastic_test/lib").listFiles();
+
+		String esPath = System.getProperty("es.path.home");
+
+
+    	File[] files = new File(esPath + "/lib").listFiles();
     	StringBuilder paths = new StringBuilder();
     	for (File f : files) {
     		if (paths.length() > 0) {

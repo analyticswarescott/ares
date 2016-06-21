@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.aw.unity.json.JSONDataTypeTest
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 sec - in com.aw.unity.json.JSONDataTypeTest
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 sec - in com.aw.unity.json.JSONDataTypeTest

@@ -17,14 +17,35 @@ public class EnvironmentSettings {
     }
 
     private static String determineSparkLibHome() {
+
+		File f = new File(getDgHome()+ File.separatorChar + "lib"  + File.separatorChar + "stream");
+		if (!f.exists()) {
+			System.out.println(" !!! DG_HOME is " + getDgHome());
+			System.out.println(" SPARK_LIB_HOME sys property is " + System.getProperty("SPARK_LIB_HOME"));
+			System.setProperty("SPARK_LIB_HOME", "/Users/scott/dev/src/ares/cluster/ares-core/compute/target/lib");
+
+			return System.getProperty("SPARK_LIB_HOME");
+		}
+
         return getDgHome() + File.separatorChar + "lib"  + File.separatorChar + "stream";
     }
 
     private static String determineConfDirectory() {
-       String s= new File("").getAbsolutePath() + File.separatorChar + "conf";
-        //logger.warn(" CONF_DIRECTORY being set as " + s);
+/*       String s= new File("").getAbsolutePath() + File.separatorChar + "conf";
 
-        return s;
+		File test = new File (s);
+
+		if (!test.exists()) {
+			//System.out.println(" CONF! :  " +  getDgHome() + "/conf");*/
+
+			return getDgHome() + "/conf";
+
+	/*	}
+		else {
+			return test.getAbsolutePath();
+		}*/
+
+
     }
 
     public enum Setting {
@@ -47,9 +68,13 @@ public class EnvironmentSettings {
 		MULTI_NODE(false, false, "false"),
 
         ARES_REPORTING(false, false, null),
+
+		//ARES_HOME(false, true, getPWD()),
+		ARES_HOME(false, true, null),
+
         CONF_DIRECTORY(false, true, determineConfDirectory()),
 
-        ARES_HOME(false, true, getPWD()),
+
         ARES_DATA(false, true, getDgHome() + "/data"),
 
         SPARK_LIB_HOME(false, true, determineSparkLibHome()),
@@ -205,7 +230,7 @@ public class EnvironmentSettings {
         return fetch(Setting.LOG4J_CONFIG_FILE);
     }
 
-    public static String getDgSparkHome() {
+    public static String getAresSparkHome() {
         return fetch(Setting.ARES_SPARK_HOME);
     }
 

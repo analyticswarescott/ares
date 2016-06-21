@@ -206,7 +206,7 @@ public class NodeRoleTest {
 		{
 			RoleOSCommand osCommand = startCommands.get(0);
 			String cmd = osCommand.toString();
-			String expected = EnvironmentSettings.getDgSparkHome() + "/sbin/./start-master.sh --host localhost --port 1234 --webui-port 4321";
+			String expected = EnvironmentSettings.getAresSparkHome() + "/sbin/./start-master.sh --host localhost --port 1234 --webui-port 4321";
 
 			assertEquals(expected, cmd);
 		}
@@ -216,7 +216,7 @@ public class NodeRoleTest {
 		{
 			RoleOSCommand osCommand = stopCommands.get(0);
 			String cmd = osCommand.toString();
-			String expected = EnvironmentSettings.getDgSparkHome() + "/sbin/./stop-master.sh";
+			String expected = EnvironmentSettings.getAresSparkHome() + "/sbin/./stop-master.sh";
 
 			assertEquals(expected, cmd);
 		}

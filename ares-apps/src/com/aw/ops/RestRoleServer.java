@@ -64,7 +64,7 @@ public class RestRoleServer extends RestServer {
 
             launcher = new RestRoleServer(args[0], Integer.parseInt(args[1]));
 		}
-		
+
         launcher.init(platform).start();
     }
 

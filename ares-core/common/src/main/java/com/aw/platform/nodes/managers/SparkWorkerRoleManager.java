@@ -110,7 +110,7 @@ public class SparkWorkerRoleManager extends SparkBaseRoleManager {
         ArrayList<RoleOSCommand> ret = new ArrayList<RoleOSCommand>();
 
         String script = "./stop-slave.sh";
-        String dir = EnvironmentSettings.getDgSparkHome() + File.separatorChar + "sbin";
+        String dir = EnvironmentSettings.getAresSparkHome() + File.separatorChar + "sbin";
         List<String> args = new ArrayList<String>();
 
         RoleOSCommand command = new RoleOSCommand(dir, script, args);

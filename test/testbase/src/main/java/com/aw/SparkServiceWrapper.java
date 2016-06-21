@@ -79,7 +79,9 @@ public class SparkServiceWrapper {
 	   //use local host name
 	   String hostname = PlatformMgr.getCachedPlatform().getNode(NodeRole.SPARK_MASTER).getHost();
 
-	   ProcessBuilder master = new ProcessBuilder("./spark_test/bin/" + getCommand(),
+	   String esPath = System.getProperty("es.path.home");
+
+	   ProcessBuilder master = new ProcessBuilder(esPath + "/../spark_test/bin/" + getCommand(),
 			                                     "org.apache.spark.deploy.master.Master",
 			                                     "--ip", PlatformMgr.getCachedPlatform().getNode(NodeRole.SPARK_MASTER).getHost(),
 			                                     "--port", String.valueOf(SPARK_PORT),
@@ -122,8 +124,10 @@ public class SparkServiceWrapper {
 	   //use local host name
 	   String hostname = PlatformMgr.getCachedPlatform().getNode(NodeRole.SPARK_MASTER).getHost();
 
+	   String esPath = System.getProperty("es.path.home");
+
 	   //start the worker
-	   ProcessBuilder worker = new ProcessBuilder("./spark_test/bin/" + getCommand(),
+	   ProcessBuilder worker = new ProcessBuilder(esPath + "/../spark_test/bin/" + getCommand(),
 			                                      "org.apache.spark.deploy.worker.Worker",
 			   									   "--webui-port", String.valueOf(UI_PORT_SLAVE),
 			   PlatformMgr.getCachedPlatform().getNode(NodeRole.SPARK_MASTER).getHost() + ":" + SPARK_PORT);
