@@ -20,7 +20,7 @@ import com.aw.platform.PlatformMgr;
 import com.aw.platform.restcluster.LocalRestMember;
 import com.aw.platform.restcluster.RestCluster;
 import com.aw.platform.restcluster.RestMember;
-import com.aw.rest.inject.BaseDependencyBinder;
+import com.aw.rest.inject.DGBinder;
 import com.aw.rest.inject.ResourceFactoryWrapper;
 import com.aw.tenant.TenantMgr;
 import com.aw.unity.UnityInstance;
@@ -34,7 +34,7 @@ import com.aw.user.UserManager;
  * @author jlehmann
  *
  */
-public class TestDependencies extends BaseDependencyBinder {
+public class TestDependencies extends DGBinder {
 
 	//test property to use the config db we use in production
 	public static final String USE_DERBY = "useDerby";

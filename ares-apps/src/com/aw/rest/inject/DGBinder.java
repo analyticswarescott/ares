@@ -4,6 +4,8 @@ import javax.inject.Provider;
 
 import com.aw.common.inject.*;
 import com.aw.common.rdbms.DBMgr;
+import com.aw.common.system.EnvironmentSettings;
+import com.aw.document.jdbc.mysql.MySQLJDBCProvider;
 import com.aw.user.DgmcDbUserManager;
 import com.aw.user.UserManager;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -100,7 +102,19 @@ public class DGBinder extends AbstractBinder {
 
 	}
 
-	protected DocumentJDBCProvider getDBProvider() { return new PostgresJDBCProvider(); }
+	protected DocumentJDBCProvider getDBProvider()  {
+		if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.POSTGRES)) {
+			return new PostgresJDBCProvider();
+		}
+		else if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.MYSQL)) {
+			return new MySQLJDBCProvider();
+		}
+		else {
+			throw new RuntimeException(" unsupported DB vendor " + EnvironmentSettings.getDBVendor());
+		}
+
+
+	}
 
 	@Override
 	protected void configure() {
