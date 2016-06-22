@@ -113,7 +113,7 @@ public class LocalFileClient {
 	}
 
 	public static void initBuildStamp(String version) throws Exception{
-		File out = new File(EnvironmentSettings.getDgHome()
+		File out = new File(EnvironmentSettings.getAppLayerHome()
 			+ File.separatorChar + "buildstamp");
 
 /*		if (out.exists()) {

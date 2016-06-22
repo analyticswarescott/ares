@@ -265,7 +265,7 @@ public abstract class HDFSBaseRoleManager extends AbstractRoleManager {
 
 	@Override
 	public String getHome() {
-		return EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "hadoop";
+		return EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "hadoop";
 	}
 
 	private void configureSlaves() throws Exception {

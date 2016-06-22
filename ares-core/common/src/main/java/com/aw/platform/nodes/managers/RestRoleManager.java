@@ -34,7 +34,7 @@ public class RestRoleManager extends AbstractRoleManager {
 
     static public final Logger logger = LoggerFactory.getLogger(RestRoleManager.class);
 
-    static final String HOME = EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "rest";
+    static final String HOME = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "rest";
 
     @Inject @com.google.inject.Inject
     public RestRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -67,7 +67,7 @@ public class RestRoleManager extends AbstractRoleManager {
         Platform p = platformMgr.getPlatform();
 
         String port = Integer.toString(p.getNode(NodeRole.REST).getSettingInt(Rest.PORT));
-        String baseDir = EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + NodeRole.REST;
+        String baseDir = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + NodeRole.REST;
 
         args.add("start");
 

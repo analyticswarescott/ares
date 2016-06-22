@@ -35,7 +35,7 @@ public class KafkaRoleManager extends AbstractRoleManager {
 	public static final String SERVER_PROPERTIES_TEMPLATE = "kafka_server";
 	public static final String LOG4J_PROPERTIES_TEMPLATE = "kafka_log4j";
 
-    static final String HOME = EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "kafka";
+    static final String HOME = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "kafka";
 
     @Inject @com.google.inject.Inject
     public KafkaRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -46,7 +46,7 @@ public class KafkaRoleManager extends AbstractRoleManager {
 	public Map<String, String> getEnv() {
 		//set log dir env variable for kafka commands
 		Map ret = new HashMap<String, String>();
-		ret.put("LOG_DIR", EnvironmentSettings.getDgHome() + "/log/kafka");
+		ret.put("LOG_DIR", EnvironmentSettings.getAppLayerHome() + "/log/kafka");
 		return ret;
 	}
 

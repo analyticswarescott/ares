@@ -73,6 +73,7 @@ import com.aw.utils.tests.KafkaZookeeperServiceWrapper;
 import com.google.common.base.Preconditions;
 
 import io.netty.handler.codec.http.HttpMethod;
+import org.junit.BeforeClass;
 import org.mockito.Mockito;
 
 @SuppressWarnings("all")
@@ -96,10 +97,12 @@ public class BaseFunctionalTest {
 
 	}
 
+
 	@Before
 	public final void beforeFunctional() throws Exception {
 
 		setExtraSysProps();
+
 
 	/*	String confDirectoryPath = getConfDirectory();
 		File confDirectory = new File(confDirectoryPath);
@@ -130,13 +133,6 @@ public class BaseFunctionalTest {
 
 		String confPath = ffc.getAbsolutePath() + File.separatorChar + "conf";
 		env.put( "CONF_DIRECTORY", confPath);*/
-
-		//TODO: move this to wrapper
-		env.put( "DG_SPARK_HOME", path + File.separatorChar + "spark_test");
-
-		File ff = new File(path).getParentFile().getParentFile().getParentFile();
-		String libPath = ff.getAbsolutePath() + File.separatorChar + "ares-core" + File.separatorChar + "compute" + File.separatorChar + "target" + File.separatorChar + "lib";
-		env.put("SPARK_LIB_HOME", libPath);
 
 		setEnv(env);
 

@@ -6,7 +6,6 @@ import com.aw.action.ActionManager;
 import com.aw.action.RootActionFactory;
 import com.aw.common.inject.DocumentProvider;
 import com.aw.common.rdbms.DBMgr;
-import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.task.LocalTaskContainer;
 import com.aw.common.task.TaskService;
 import com.aw.common.util.TimeSource;
@@ -21,13 +20,12 @@ import com.aw.platform.PlatformMgr;
 import com.aw.platform.restcluster.LocalRestMember;
 import com.aw.platform.restcluster.RestCluster;
 import com.aw.platform.restcluster.RestMember;
-import com.aw.rest.inject.DGBinder;
+import com.aw.rest.inject.BaseDependencyBinder;
 import com.aw.rest.inject.ResourceFactoryWrapper;
 import com.aw.tenant.TenantMgr;
 import com.aw.unity.UnityInstance;
 import com.aw.user.DgmcDbUserManager;
 import com.aw.user.UserManager;
-import com.sun.tools.javac.comp.Env;
 
 /**
  * A test binder that gives the integration framework direct access to all factories - this should never be used
@@ -36,7 +34,7 @@ import com.sun.tools.javac.comp.Env;
  * @author jlehmann
  *
  */
-public class TestDependencies extends DGBinder {
+public class TestDependencies extends BaseDependencyBinder {
 
 	//test property to use the config db we use in production
 	public static final String USE_DERBY = "useDerby";

@@ -43,7 +43,7 @@ public abstract class ConfigDbBaseRoleManager extends AbstractRoleManager {
 
 	@Override
 	public String getHome() {
-		return EnvironmentSettings.getDgHome();
+		return EnvironmentSettings.getAppLayerHome();
 	}
 
 	@Override

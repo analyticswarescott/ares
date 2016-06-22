@@ -19,12 +19,10 @@ import com.aw.document.Document;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformUtils;
 
-/**
- * Created by scott on 13/11/15.
- */
-public class StartDriver {
 
-    public static final Logger logger = LoggerFactory.getLogger(StartDriver.class);
+public class SparkDriverSubmit {
+
+    public static final Logger logger = LoggerFactory.getLogger(SparkDriverSubmit.class);
 
     private static String locateComputeJar() {
 
@@ -62,7 +60,7 @@ public class StartDriver {
             cpFile =  System.getProperty("stream_lib_override").toString() + File.separatorChar + "stream.classpath";
         }
         else {
-            File f2 = new File(EnvironmentSettings.getDgHome() + File.separatorChar + "conf"
+            File f2 = new File(EnvironmentSettings.getAppLayerHome() + File.separatorChar + "conf"
                     + File.separatorChar + "stream" +  File.separatorChar + "stream.classpath");
             cpFile = f2.getAbsolutePath();
         }
@@ -106,10 +104,13 @@ public class StartDriver {
         String computeJar = locateComputeJar();
 		System.out.println("COMPUTE JAR LOCATION: " + computeJar);
 
+		String sparkLibHome = EnvironmentSettings.getSparkLibHome();
+
+		System.out.println("SPARK_LIB_HOME: " +  sparkLibHome);
 
 
+        String jars = jarsRaw.replace("$SPARK_LIB_HOME", sparkLibHome);
 
-        String jars = jarsRaw.replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome());
 
 
         jars = jars + "," + computeJar;
@@ -138,10 +139,8 @@ public class StartDriver {
         command.add("--driver-class-path");
         //command.add(jars.replace(",",":"));
 
-		System.out.println("DG_HOME" + EnvironmentSettings.getDgHome());
-		System.out.println("SPARK_LIB_HOME" + EnvironmentSettings.getSparkLibHome());
 
-		String dcp = getStreamClasspath().replace("$SPARK_LIB_HOME", EnvironmentSettings.getSparkLibHome());
+		String dcp = getStreamClasspath().replace("$SPARK_LIB_HOME", sparkLibHome);
 		dcp = dcp + ":" + "/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
 
 		dcp = dcp + ":" + computeJar;

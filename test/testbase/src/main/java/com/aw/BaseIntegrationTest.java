@@ -29,6 +29,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -53,6 +54,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 	 @Rule public TestName name = new TestName();
 
 
+
 	@Override
 	public void setExtraSysProps() {
 
@@ -61,7 +63,34 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
     @Before
     public final void beforeIntegration() throws Exception {
 
-		setExtraSysProps();
+
+		if (EnvironmentSettings.getAresBaseHome() == null) {
+			System.out.println(" WTF no base home dir yet?");
+			Thread.sleep(1000);
+		}
+		else {
+			System.out.println("=======BASE HOME is " + EnvironmentSettings.getAresBaseHome());
+		}
+
+		if (EnvironmentSettings.getAppLayerHome() == null) {
+			System.out.println(" WTF no app home dir yet?");
+			Thread.sleep(1000);
+		}else {
+			System.out.println("=======APP LAYER HOME is " + EnvironmentSettings.getAppLayerHome());
+		}
+
+		if (getConfDirectory().equals("null/conf")) {
+			System.out.println(" WTF no config dir yet?");
+			Thread.sleep(1000);
+		}
+		else {
+			System.out.println("=======CONF DIR is " + getConfDirectory());
+		}
+
+		String confDir = getConfDirectory();
+
+		System.out.println("CONF DIR set for beforeIntegration to : "  + confDir);
+
 
         //so I can see what the heck is being tested
     	System.out.println("\n\n=== " + getClass().getSimpleName() + "#" + name.getMethodName() + " ===\n\n");
@@ -77,7 +106,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 
 
 		//String rpp = RELATIVE_PATH_TO_PLATFORM.getAbsolutePath();
-		System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), getConfDirectory() + "/platform.json");
+		System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(),confDir + "/platform.json");
 		//System.setProperty(EnvironmentSettings.Setting.PLATFORM_PATH.name(), getConfDirectory());
 
 
@@ -88,7 +117,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 		}
 
 		//call the setup script's method to create a cached platform
-		File platformCacheSource = new File(getConfDirectory() + File.separatorChar + "defaults/platform/local.json");
+		File platformCacheSource = new File(confDir + File.separatorChar + "defaults/platform/local.json");
 
 		//File platformCacheSource =
 
@@ -105,7 +134,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
         //clean db directory - TODO: clean this up when we clean up integration test constructors!!
 
 		//clean config
-		File f = new File(EnvironmentSettings.getDgData()+ File.separatorChar + "config");
+		File f = new File(confDir + "/data" + File.separatorChar + "config");
 		FileUtils.deleteDirectory(f);
 		if (f.exists()) {
 			logger.warn(" error removing data/config directory during platform startup");

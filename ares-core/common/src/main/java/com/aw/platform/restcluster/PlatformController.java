@@ -17,7 +17,7 @@ import com.aw.common.spark.DriverRegistrationResponse;
 import com.aw.common.spark.DriverState;
 import com.aw.common.spark.DriverStatus;
 import com.aw.common.spark.PreReqUtil;
-import com.aw.common.spark.StartDriver;
+import com.aw.common.spark.SparkDriverSubmit;
 import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.system.TmpVersion;
 import com.aw.common.tenant.Tenant;
@@ -724,7 +724,7 @@ public class PlatformController implements TenantAware {
             else if (ds.get_state() == DriverState.PROVISIONED || ds.get_state() == DriverState.ERROR) {
                 try {
                     logger.info("submitting spark driver " + ds.getDriverName());
-                    String driverID = StartDriver.submit(platformMgr.getPlatform(), ds.getDriverDef(), ds.getDriverName());
+                    String driverID = SparkDriverSubmit.submit(platformMgr.getPlatform(), ds.getDriverDef(), ds.getDriverName());
                     ds.set_driverID(driverID);
                     logger.info("driver submitted");
                     ds.set_state(DriverState.RUNNING);

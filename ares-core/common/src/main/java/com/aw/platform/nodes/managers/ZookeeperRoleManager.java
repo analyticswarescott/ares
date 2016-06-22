@@ -34,7 +34,7 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
 	public static final String LOG4J_TEMPLATE_DOC = "zookeeper_log4j";
 
 
-    static final String HOME = EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "zookeeper";
+    static final String HOME = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "zookeeper";
 
     @Inject @com.google.inject.Inject
     public ZookeeperRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -52,7 +52,7 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
 	public Map<String, String> getEnv() {
 		//set log dir env variable for kafka commands
 		Map ret = new HashMap<String, String>();
-		ret.put("ZOO_LOG_DIR", EnvironmentSettings.getDgHome() + "/log/zookeeper");
+		ret.put("ZOO_LOG_DIR", EnvironmentSettings.getAppLayerHome() + "/log/zookeeper");
 		return ret;
 	}
 
@@ -107,7 +107,7 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
             newConf = m_roleConfig.appendZKConfig(newConf, configAdds, RoleConfig.HASHTAG);
 
             //add myid file with server ID to activate cluster mode
-			m_roleConfig.saveConfig(EnvironmentSettings.getDgHome()
+			m_roleConfig.saveConfig(EnvironmentSettings.getAppLayerHome()
                     + File.separatorChar + "data" + File.separatorChar + "zookeeper" + File.separatorChar + "myid"
                     , m_node.getSetting(Zookeeper.SERVER_ID));
         //}

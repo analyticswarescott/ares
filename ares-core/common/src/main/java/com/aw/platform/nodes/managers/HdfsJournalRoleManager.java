@@ -39,7 +39,7 @@ public class HdfsJournalRoleManager extends HDFSBaseRoleManager {
 
 		for (Property p : propertyList) {
 			if (p.getName().equals("dfs.journalnode.edits.dir")) {
-				p.setValue(EnvironmentSettings.getDgHome() + "/data/hadoop/journal");
+				p.setValue(EnvironmentSettings.getAppLayerHome() + "/data/hadoop/journal");
 			}
 		}
 

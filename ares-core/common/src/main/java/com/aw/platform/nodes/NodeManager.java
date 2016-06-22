@@ -213,7 +213,7 @@ public class NodeManager {
 
 	private String getVersion() throws Exception {
 
-		File f = new File(EnvironmentSettings.getDgHome() + File.separatorChar + "buildstamp");
+		File f = new File(EnvironmentSettings.getAppLayerHome() + File.separatorChar + "buildstamp");
 		if (f.exists()) {
 			String version = FileUtils.readFileToString(f);
 			logger.info(" node code version is " + version);
@@ -567,7 +567,7 @@ public class NodeManager {
     }
 
 	private String getHome() {
-		return EnvironmentSettings.getDgHome() + "/roles/node_service";
+		return EnvironmentSettings.getAppLayerHome() + "/roles/node_service";
 	}
 
 	public void patchNode(PlatformUpgrade platformUpgrade) throws Exception{
@@ -587,7 +587,7 @@ public class NodeManager {
 			//get the patch file and place it locally
 
 			FileWrapper wrapper = platformUpgrade.getPatchFile(platformMgr.get());
-			wrapper.writeLocally(EnvironmentSettings.getDgHome() + File.separatorChar + "patch.tar.gz");
+			wrapper.writeLocally(EnvironmentSettings.getAppLayerHome() + File.separatorChar + "patch.tar.gz");
 			logger.warn(" patch file written locally...going offline to patch ");
 
 			stopAll(); //stop all services running on this
@@ -597,7 +597,7 @@ public class NodeManager {
 
 			//spawn a command to kill us,  patch this node, and re-start us
 			String cmd = "./patch.sh";
-			String dir = EnvironmentSettings.getDgHome();
+			String dir = EnvironmentSettings.getAppLayerHome();
 			List<String> args = new ArrayList<String>();
 			args.add(platformUpgrade.getVersionId());
 

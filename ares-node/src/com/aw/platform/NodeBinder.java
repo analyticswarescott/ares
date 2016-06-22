@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import com.aw.platform.monitoring.os.SysStatReader;
 import com.aw.platform.nodes.NodeManager;
-import com.aw.rest.inject.DGBinder;
+import com.aw.rest.inject.BaseDependencyBinder;
 
 /**
  * Bindings for node service
@@ -13,7 +13,7 @@ import com.aw.rest.inject.DGBinder;
  *
  *
  */
-public class NodeBinder extends DGBinder {
+public class NodeBinder extends BaseDependencyBinder {
 
 	static final Logger LOGGER = Logger.getLogger(NodeBinder.class);
 

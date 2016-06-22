@@ -55,7 +55,7 @@ public class RoleManagerCommandTest {
 
 */
 /**
-	 * 
+	 *
 	 *//*
 
 
@@ -73,11 +73,11 @@ public class RoleManagerCommandTest {
 			if (startCommands != null) {
 				int i = 0;
 				for (RoleOSCommand c : startCommands) {
-					//actualStarts.put(rm.getRole().toString() + i, c.toString().substring(EnvironmentSettings.getDgHome().length()));
-					System.out.println(rm.getRole().toString()  + i +  " : " + c.toString().substring(EnvironmentSettings.getDgHome().length()));
+					//actualStarts.put(rm.getRole().toString() + i, c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
+					System.out.println(rm.getRole().toString()  + i +  " : " + c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
 					assertTrue(expectedStarts.containsKey(rm.getRole().toString() + i));
 					assertEquals("expect proper command for role ", expectedStarts.get(rm.getRole().toString() + i),
-							c.toString().substring(EnvironmentSettings.getDgHome().length()));
+							c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
 
 					i++;
 				}
@@ -90,7 +90,7 @@ public class RoleManagerCommandTest {
 
 		}
 
-		
+
 	}
 
 	@Test
@@ -108,11 +108,11 @@ public class RoleManagerCommandTest {
 			if (stopCommands != null) {
 				int i = 0;
 				for (RoleOSCommand c : stopCommands) {
-					//actualStarts.put(rm.getRole().toString() + i, c.toString().substring(EnvironmentSettings.getDgHome().length()));
-					System.out.println(rm.getRole().toString() + i + " : " + c.toString().substring(EnvironmentSettings.getDgHome().length()));
+					//actualStarts.put(rm.getRole().toString() + i, c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
+					System.out.println(rm.getRole().toString() + i + " : " + c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
 					assertTrue(expectedStops.containsKey(rm.getRole().toString() + i));
 					assertEquals("expect proper command for role ", expectedStops.get(rm.getRole().toString() + i),
-							c.toString().substring(EnvironmentSettings.getDgHome().length()));
+							c.toString().substring(EnvironmentSettings.getAppLayerHome().length()));
 
 					i++;
 				}
@@ -130,7 +130,7 @@ public class RoleManagerCommandTest {
 
 
 	}
-	
+
 }
 
 */

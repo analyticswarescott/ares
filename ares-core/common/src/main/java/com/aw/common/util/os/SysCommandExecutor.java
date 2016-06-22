@@ -88,7 +88,7 @@ public class SysCommandExecutor
 			newEnv.putAll(getAddl_Environment());
 
 
-			// newEnv.put("PATH", EnvironmentSettings.getDgHome() +  "/core/jdk1.8.0_25/bin" + ":$PATH");
+			// newEnv.put("PATH", EnvironmentSettings.getAppLayerHome() +  "/core/jdk1.8.0_25/bin" + ":$PATH");
 
 			if (dir != null) {
 				pb.directory(dir);
@@ -126,7 +126,7 @@ public class SysCommandExecutor
             newEnv.putAll(getAddl_Environment());
 
 
-           // newEnv.put("PATH", EnvironmentSettings.getDgHome() +  "/core/jdk1.8.0_25/bin" + ":$PATH");
+           // newEnv.put("PATH", EnvironmentSettings.getAppLayerHome() +  "/core/jdk1.8.0_25/bin" + ":$PATH");
 
             if (dir != null) {
                 pb.directory(dir);

@@ -57,7 +57,7 @@ public class ElasticSearchRoleManager extends AbstractRoleManager {
 
     @Override
     public String getHome() {
-    	return EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "elastic";
+    	return EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "elastic";
     }
 
     @Override

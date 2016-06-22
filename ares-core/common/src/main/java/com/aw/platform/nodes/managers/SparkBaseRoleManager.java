@@ -112,7 +112,7 @@ public abstract class SparkBaseRoleManager extends AbstractRoleManager {
 
     @Override
     public String getHome() {
-        return EnvironmentSettings.getDgHome() + File.separatorChar + "roles" + File.separatorChar + "spark";
+        return EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "spark";
     }
 
 

@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class EnvironmentSettings {
+
+	public static final String MYSQL="mysql";
+	public static final String POSTGRES="postgres";
+
  public static final Logger logger = LoggerFactory.getLogger(EnvironmentSettings.class);
     private static String getPWD() {
         String currentDirectory;
@@ -18,34 +22,21 @@ public class EnvironmentSettings {
 
     private static String determineSparkLibHome() {
 
-		File f = new File(getDgHome()+ File.separatorChar + "lib"  + File.separatorChar + "stream");
-		if (!f.exists()) {
-			System.out.println(" !!! DG_HOME is " + getDgHome());
-			System.out.println(" SPARK_LIB_HOME sys property is " + System.getProperty("SPARK_LIB_HOME"));
-			System.setProperty("SPARK_LIB_HOME", "/Users/scott/dev/src/ares/cluster/ares-core/compute/target/lib");
+		String aresBaseHome = getAresBaseHome();
+		System.out.println(" determineSparkLibHome getAresBaseHome returns " + aresBaseHome);
 
-			return System.getProperty("SPARK_LIB_HOME");
-		}
-
-        return getDgHome() + File.separatorChar + "lib"  + File.separatorChar + "stream";
+        return aresBaseHome + "/ares-core/compute/target" + File.separatorChar + "lib";
     }
 
     private static String determineConfDirectory() {
-/*       String s= new File("").getAbsolutePath() + File.separatorChar + "conf";
 
-		File test = new File (s);
+		Exception e = new Exception();
+		e.printStackTrace();
 
-		if (!test.exists()) {
-			//System.out.println(" CONF! :  " +  getDgHome() + "/conf");*/
+		String alh = getAppLayerHome();
+		System.out.println(" determineConfDirectory getAppLayerHome returns: " + alh);
 
-			return getDgHome() + "/conf";
-
-	/*	}
-		else {
-			return test.getAbsolutePath();
-		}*/
-
-
+			return getAppLayerHome() + "/conf";
     }
 
     public enum Setting {
@@ -62,6 +53,9 @@ public class EnvironmentSettings {
          */
         FIRST_NODE_CONNECT(false, true, null),
 
+
+		DB_VENDOR(false, true, POSTGRES),
+
 		/**
 		 * Setting to determine if a viable platform should always be started immediately
 		 */
@@ -69,17 +63,19 @@ public class EnvironmentSettings {
 
         ARES_REPORTING(false, false, null),
 
+		ARES_BASE_HOME(false, true, null),
+
 		//ARES_HOME(false, true, getPWD()),
 		ARES_HOME(false, true, null),
 
         CONF_DIRECTORY(false, true, determineConfDirectory()),
 
 
-        ARES_DATA(false, true, getDgHome() + "/data"),
+        ARES_DATA(false, true, getAppLayerHome() + "/data"),
 
         SPARK_LIB_HOME(false, true, determineSparkLibHome()),
 
-        ARES_SPARK_HOME(false, true, getDgHome() + File.separatorChar + "spark"),
+        ARES_SPARK_HOME(false, true, getAppLayerHome() + File.separatorChar + "spark"),
 
         /**
          * Root directory for configuration database on a node that hosts one
@@ -111,7 +107,7 @@ public class EnvironmentSettings {
 
 		//TODO: remove some of these?
         MANUAL_SERVICES_START(false, false, "false"),
-        ARES_REPORTING_PREFIX(false, false, null),
+
         CLEAR_DOCS_ON_STARTUP(false, false, "false"),
         SERVICE_SHARED_SECRET(false, false, "sharedsecret"),
         ARES_HOST(false, true, "localhost"),
@@ -197,7 +193,16 @@ public class EnvironmentSettings {
     	return fetch(Setting.ARES_HOST);
     }
 
-    public static String getDgHome() {
+
+	/**
+	 * This is the home
+	 * @return
+	 */
+	public static String getAresBaseHome() {
+		return fetch(Setting.ARES_BASE_HOME);
+	}
+
+    public static String getAppLayerHome() {
         return fetch(Setting.ARES_HOME);
     }
 
@@ -206,6 +211,9 @@ public class EnvironmentSettings {
     }
 
     public static String getSparkLibHome() {
+
+		System.out.println("getSparkLibHome called");
+
         return fetch(Setting.SPARK_LIB_HOME);
     }
 
@@ -218,9 +226,9 @@ public class EnvironmentSettings {
         return null;
     }
 
-    public static String getReportingPrefix() {
-        return fetch(Setting.ARES_REPORTING_PREFIX);
-    }
+	public static String getDBVendor() {
+		return fetch(Setting.DB_VENDOR);
+	}
 
     public static String getServiceSharedSecret() {
         return fetch(Setting.SERVICE_SHARED_SECRET);
