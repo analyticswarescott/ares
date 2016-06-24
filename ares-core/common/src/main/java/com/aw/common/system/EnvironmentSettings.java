@@ -56,6 +56,10 @@ public class EnvironmentSettings {
         FIRST_NODE_CONNECT(false, true, null),
 
 
+		CUSTOM_WEBAPP_PKG(false, true, "foo.pkg"),
+		CUSTOM_WEBAPP_JAR(false, true, "placeholder.jar"),
+
+
 		DB_VENDOR(false, true, POSTGRES),
 
 		/**

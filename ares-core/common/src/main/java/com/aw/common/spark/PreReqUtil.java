@@ -103,7 +103,7 @@ public class PreReqUtil {
 					sourceTopics.addAll(streamDef.getSourceTopicNames(Tenant.forId(tenantAware.getTenantID())));
 				}
 				else {
-					logger.error("skipping topic creation for tenant stream not marked as system " + doc.getName());
+					logger.warn("skipping topic creation for tenant stream not marked as system " + doc.getName());
 				}
 			}
 			else {
@@ -111,7 +111,7 @@ public class PreReqUtil {
 					sourceTopics.addAll(streamDef.getSourceTopicNames(Tenant.forId(tenantAware.getTenantID())));
 				}
 				else {
-					logger.error("skipping topic creation for tenant stream not marked as tenant " + doc.getName());
+					logger.warn("skipping topic creation for tenant stream not marked as tenant " + doc.getName());
 				}
 			}
 

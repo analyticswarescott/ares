@@ -59,16 +59,19 @@ public class AresResource extends RestMgrBase {
 
 
 	@PUT
-	@Path("/event/{siteId}/event")
+	//@Path("/event/{siteId}/event")
+	@Path("/generic/{tenant_id}")
+
 /*	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)*/
-	public Response putEvent( @PathParam("siteId") String siteId,
+	public Response putEvent( @PathParam("tenant_id") String tenant_id,
 							  @Context HttpHeaders headers,
 							  String jsonStr) throws WebApplicationException {
 		try {
 
-			//site is tenant
 
+			//TODO: implement generic test functionality -- this path is only for testing overall reliability
+/*
 			JSONArray rawJsons = new JSONArray(jsonStr);
 			JSONObject o = rawJsons.getJSONObject(0);
 			String eventType = o.getString(CommonField.EVENT_TYPE_FIELD);
@@ -85,6 +88,7 @@ public class AresResource extends RestMgrBase {
 
 			logger.warn("REST:  §§§§§§§§§§§§§§±±±±±±± file  " + fileName + " added to HDFS and ticketed for processing ");
 
+*/
 
 			return Response.status(Response.Status.OK).build();
 

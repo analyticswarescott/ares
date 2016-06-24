@@ -284,6 +284,7 @@ public class RestClient {
 				url = getScheme() + "://" + node.getHost() + ":" + node.getSettingInt(m_port) + path;
 
 				logger.debug(" Rest URL is " + url); //TODO: promoted for ease of cluster debugging -- demote when stable
+				//System.out.println(" Rest URL is " + url); //TODO: promoted for ease of cluster debugging -- demote when stable
 
 				switch (method) {
 					case GET:

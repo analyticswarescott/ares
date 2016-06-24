@@ -57,6 +57,8 @@ public abstract class RestServiceWrapper {
     	//set up test dependency injector to give us access to common dependencies
     	System.setProperty(EnvironmentSettings.Setting.DEPENDENCY_INJECTOR.name(), di);
 
+
+
     	//set up the service properties - path and port
         if (port < 1) {
             logger.warn("No reportingServicePort provided, defaulting to 8080");

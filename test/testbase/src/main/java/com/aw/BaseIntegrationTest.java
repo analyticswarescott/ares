@@ -256,7 +256,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
         		lastE = e;
         	}
         	tries++;
-			System.out.println(" service start wait for " + request.getURI().toString());
+			//System.out.println(" service start wait for " + request.getURI().toString());
         	Thread.sleep(1000L);
         }
 

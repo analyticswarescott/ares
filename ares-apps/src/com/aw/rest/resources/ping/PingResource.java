@@ -1,9 +1,14 @@
 package com.aw.rest.resources.ping;
 
+import io.swagger.annotations.Api;
+
+import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+@Api
+@Singleton
 @Path(com.aw.util.Statics.REST_VERSION + "/ping")
 public class PingResource {
 

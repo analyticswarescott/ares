@@ -1,5 +1,6 @@
 package com.aw.test.nodeservice;
 
+import com.aw.util.Statics;
 import org.glassfish.hk2.utilities.Binder;
 
 import com.aw.rest.AbstractResourceConfig;
@@ -29,6 +30,11 @@ public class TestNodeResourceConfig extends AbstractResourceConfig {
 	@Override
 	protected Binder getDefaultBindings() {
 		return new TestNodeBinder();
+	}
+
+	@Override
+	protected String getBasePath() {
+		return Statics.VERSIONED_REST_PREFIX;
 	}
 
 }

@@ -127,5 +127,9 @@ public class DriverDef {
 	public void setExtraJavaOptions(String extraJavaOptions) { m_extraJavaOptions = extraJavaOptions; }
 	private String m_extraJavaOptions;
 
+	public String getCustomJar() {return custom_jar;}
+	public void setCustom_jar(String custom_jar) {this.custom_jar = custom_jar;}
+	private String custom_jar;
+
 
 }

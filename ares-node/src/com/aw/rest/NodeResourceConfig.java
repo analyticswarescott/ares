@@ -2,6 +2,7 @@ package com.aw.rest;
 
 import javax.ws.rs.ApplicationPath;
 
+import com.aw.util.Statics;
 import org.apache.log4j.Logger;
 import org.glassfish.hk2.utilities.Binder;
 
@@ -47,6 +48,11 @@ public class NodeResourceConfig extends AbstractResourceConfig {
 	@Override
 	protected Binder getDefaultBindings() {
 		return new NodeBinder();
+	}
+
+	@Override
+	protected String getBasePath() {
+		return Statics.VERSIONED_REST_PREFIX;
 	}
 
 }

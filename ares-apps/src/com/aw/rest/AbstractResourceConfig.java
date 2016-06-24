@@ -21,13 +21,15 @@ public abstract class AbstractResourceConfig extends ResourceConfig {
 	public AbstractResourceConfig() throws Exception {
 
 		//set up swagger
-		BeanConfig beanConfig = new BeanConfig();
+/*		BeanConfig beanConfig = new BeanConfig();
 	    beanConfig.setVersion(Statics.REST_VERSION);
 	    beanConfig.setSchemes(Statics.SCHEMES);
 	    beanConfig.setHost(EnvironmentSettings.getHost());
-	    beanConfig.setBasePath(Statics.VERSIONED_REST_PREFIX);
+	    beanConfig.setBasePath(getBasePath());
 	    beanConfig.setResourcePackage(getSwaggerResourcePackage());
-	    beanConfig.setScan(true);
+	    beanConfig.setScan(true);*/
+
+	//	System.out.println("$$$$$$$$$$$$$+++++++++++++++++++----------->> init abstract RC" );
 
 	    registerBindings();
 
@@ -36,7 +38,13 @@ public abstract class AbstractResourceConfig extends ResourceConfig {
 	protected void registerBindings() throws Exception {
 
 		//check for custom di bindings
+
+
+
 		String strDiCls = EnvironmentSettings.fetch(Setting.DEPENDENCY_INJECTOR);
+
+		//System.out.println(" ################### DEPENDENCY INJECTOR is " + strDiCls );
+
 
 		Object bindings = null;
 		if (strDiCls != null) {
@@ -62,5 +70,7 @@ public abstract class AbstractResourceConfig extends ResourceConfig {
 	 * @return default dependency injection bindings if environment override has not been set
 	 */
 	protected abstract Binder getDefaultBindings();
+
+	protected abstract String getBasePath();
 
 }

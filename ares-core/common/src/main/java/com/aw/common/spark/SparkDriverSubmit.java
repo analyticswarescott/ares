@@ -91,9 +91,14 @@ public class SparkDriverSubmit {
         }
 
 
+		String customJarName = driverDef.getCustomJar();
+
+
         command.add("--jars");
 
         String jarsRaw = getStreamClasspath().replace(':', ',') + ',';
+
+		jarsRaw = jarsRaw + ","  + "$SPARK_LIB_HOME/" + customJarName;
 
         String computeJar = locateComputeJar();
 		System.out.println("COMPUTE JAR LOCATION: " + computeJar);
@@ -102,20 +107,13 @@ public class SparkDriverSubmit {
 
 		System.out.println("SPARK_LIB_HOME: " +  sparkLibHome);
 
-
         String jars = jarsRaw.replace("$SPARK_LIB_HOME", sparkLibHome);
 
-
-
         jars = jars + "," + computeJar;
-
-		jars = jars + ",/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
-
 
 		System.out.println(jars + "\n\n\n\n");
 
         command.add(jars);
-
 
         command.add("--name");
         command.add(driverNameAndTag);
@@ -126,23 +124,26 @@ public class SparkDriverSubmit {
             command.add(Integer.toString(driverDef.getSparkExecutorCores()));
        }
 
-
         command.add("--executor-memory");
         command.add(driverDef.getSparkExecutorMemory());
 
         command.add("--driver-class-path");
         //command.add(jars.replace(",",":"));
 
+		//add custom jar that should be in the stream lib
 
-		String dcp = getStreamClasspath().replace("$SPARK_LIB_HOME", sparkLibHome);
-		dcp = dcp + ":" + "/Users/scott/dev/src/ares/cluster/aresx-custom-hg/target/aresx-custom-hg-1.0.0-SNAPSHOT.jar";
+		String dcp = getStreamClasspath();
+		dcp = dcp + ":" + "$SPARK_LIB_HOME/" + customJarName;
 
+		//replace the home placeholder
+		 dcp =dcp.replace("$SPARK_LIB_HOME", sparkLibHome);
+
+		//add compute jar
 		dcp = dcp + ":" + computeJar;
 
 		System.out.println(dcp + "\n\n\n\n");
 
         command.add(dcp);
-
 
         //Add any defined options to the conf
         Map<String, String> sparkConfig = driverDef.getSparkConfigOptions();
