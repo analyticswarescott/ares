@@ -1,6 +1,7 @@
 package com.aw.document.jdbc.mysql;
 
 import com.aw.common.tenant.Tenant;
+import com.aw.document.Document;
 import com.aw.document.jdbc.AbstractDocumentJDBCProvider;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
@@ -8,7 +9,7 @@ import com.aw.platform.PlatformNode;
 import com.aw.platform.roles.ConfigDbMaster;
 import com.aw.platform.roles.ConfigDbWorker;
 import org.apache.log4j.Logger;
-import org.postgresql.Driver;
+import org.gjt.mm.mysql.Driver;
 
 import java.sql.*;
 
@@ -22,8 +23,8 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(MySQLJDBCProvider.class);
 
-	public static final String DEFAULT_USERNAME = "postgres";
-	static final String SYSTEM_DATABASE = "postgres";
+	public static final String DEFAULT_USERNAME = "root";
+	static final String SYSTEM_DATABASE = "sys";
 
 	@Override
 	public void shutdown() {
@@ -32,12 +33,28 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 
 	}
 
+	/**
+	 * Override due to 5.7 aliasing requirement for subquery
+	 * @return
+	 */
+	protected String getUpdateSQL() {
+		return "insert into DOCUMENT (version, name, is_current, type, body_class, id, tenant_id,  " +
+			"author, scope, display_name, description, body, version_author, grouping, perm_read, perm_write, deleted)"
+			+ "values ( (select max(version) + 1 from DOCUMENT d2 where d2.type =? and d2.name = ? and d2.tenant_id = ?) " +
+			",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	}
+
+
 	@Override
 	public boolean dbExists(Platform platform, Tenant tenant) throws SQLException {
 
 		try (Connection conn = DriverManager.getConnection(getJDBCURL(platform, SYSTEM_DATABASE), getUsername(), getPassword())) {
-			try (PreparedStatement stmt = conn.prepareStatement("select count(*) from pg_database where datname='" + getDatabaseName(tenant) + "'")) {
+			try (PreparedStatement stmt =
+					 conn.prepareStatement("SELECT count(*) cnt FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + getDatabaseName(tenant) + "'")) {
 				try (ResultSet rs = stmt.executeQuery()) {
+					if (rs.isAfterLast()) {
+						return false;
+					}
 					rs.next();
 					return rs.getInt(1) > 0;
 				}
@@ -61,6 +78,11 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 			}
 		}
 
+	}
+
+	@Override
+	public String getConflictClause(String keyField) throws Exception {
+		return " ON DUPLICATE KEY UPDATE " + keyField + " = " + keyField;
 	}
 
 	@Override
@@ -95,7 +117,7 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 		int port = master.getSettings(NodeRole.CONFIG_DB_MASTER).getSettingInt(ConfigDbMaster.MASTER_DB_PORT);
 
 		//build the jdbc url:
-		String url = "jdbc:mysql://"+master.getHost()+":" + port + "/" + databaseName;
+		String url = "jdbc:mysql://"+master.getHost()+":" + port + "/" + databaseName + "?user=root";
 
 		return url;
 

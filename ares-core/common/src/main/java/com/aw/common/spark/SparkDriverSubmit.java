@@ -27,10 +27,10 @@ public class SparkDriverSubmit {
     private static String locateComputeJar() {
 
         //get the parent dir
-        String parentDir = System.getProperty("stream_lib_override");
-        if (parentDir == null) {
+        String parentDir = EnvironmentSettings.getAresBaseHome() + "/ares-core/compute/target";
+       /* if (parentDir == null) {
             parentDir = EnvironmentSettings.getSparkLibHome();
-        }
+        }*/
 
 		System.out.println("stream lib directory computed as: " + parentDir);
 
@@ -55,15 +55,9 @@ public class SparkDriverSubmit {
     private static String getStreamClasspath() throws Exception{
         //TODO: resolve test vs. prod compute JAR build targeting
 
-        String cpFile = "unset";
-        if (System.getProperty("stream_lib_override") != null) {
-            cpFile =  System.getProperty("stream_lib_override").toString() + File.separatorChar + "stream.classpath";
-        }
-        else {
-            File f2 = new File(EnvironmentSettings.getAppLayerHome() + File.separatorChar + "conf"
-                    + File.separatorChar + "stream" +  File.separatorChar + "stream.classpath");
-            cpFile = f2.getAbsolutePath();
-        }
+        String cpFile =
+            cpFile =  EnvironmentSettings.getAresBaseHome() + "/ares-core/compute/target/stream.classpath";
+
 
         String cp = FileUtils.readFileToString(new File(cpFile));
         return cp;
@@ -165,6 +159,8 @@ public class SparkDriverSubmit {
         command.add(computeJar);
         command.add(driverDef.getDriverClass());
         command.add(driverDefDoc.getName());
+
+		command.add("mysql");
 
 
 // execute my command

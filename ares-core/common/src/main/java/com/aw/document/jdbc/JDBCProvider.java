@@ -76,6 +76,9 @@ public interface JDBCProvider {
 	 */
 	public void initDB(Platform platform, DataSource dataSource, Tenant tenant, boolean clean) throws Exception;
 
+
+	public String getConflictClause(String keyField) throws Exception;
+
 	/**
 	 * @return the schema for this provider, or null if no schema needs to be set on the JDBC connections
 	 */

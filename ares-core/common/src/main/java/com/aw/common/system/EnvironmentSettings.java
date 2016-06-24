@@ -30,8 +30,10 @@ public class EnvironmentSettings {
 
     private static String determineConfDirectory() {
 
+/*
 		Exception e = new Exception();
 		e.printStackTrace();
+*/
 
 		String alh = getAppLayerHome();
 		System.out.println(" determineConfDirectory getAppLayerHome returns: " + alh);
@@ -253,6 +255,7 @@ public class EnvironmentSettings {
 
         if (value == null && setting.checkSystemProperty) {
             value = System.getProperty(propName);
+			logger.debug("  system property checked during env fetch " + propName+ " was : " + value);
         }
 
         if (value != null) {

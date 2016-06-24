@@ -1,3 +1,4 @@
+/*
 package com.aw.document.jdbc.derby;
 
 import static org.junit.Assert.assertFalse;
@@ -325,3 +326,4 @@ public class DerbyJDBCProviderTest {
 
 
 }
+*/

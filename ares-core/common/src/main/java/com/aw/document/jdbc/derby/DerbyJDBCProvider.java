@@ -30,6 +30,11 @@ public class DerbyJDBCProvider extends AbstractDocumentJDBCProvider implements S
 	}
 
 	@Override
+	public String getConflictClause(String keyField) throws Exception {
+		return null;
+	}
+
+	@Override
 	public void shutdown() {
 
 		/* In embedded mode, an application should shut down Derby.

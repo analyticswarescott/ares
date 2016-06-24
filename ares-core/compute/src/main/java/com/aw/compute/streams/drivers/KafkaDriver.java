@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import com.aw.common.system.structure.Hive;
+import com.aw.common.util.JSONUtils;
 import com.aw.common.zookeeper.DefaultZkAccessor;
 import com.aw.common.zookeeper.ZkAccessor;
 import org.apache.commons.lang.ObjectUtils;
@@ -76,6 +77,12 @@ public class KafkaDriver implements Driver, Dependent {
 
 	public static void main(String[] args) throws Exception {
 		//for testing
+
+		if (args.length > 1) {
+			String dbVendor = args[1];
+			System.setProperty("DB_VENDOR", dbVendor);
+		}
+
 		KafkaDriver d = ComputeInjector.get().getInstance(KafkaDriver.class);
 		d.initialize(args);
 		d.start();
@@ -99,19 +106,22 @@ public class KafkaDriver implements Driver, Dependent {
 	public void initialize(String... arguments) throws Exception {
 
 
-
-		//make sure we have our topic name
-		if (arguments.length != 1) {
+	/*	if (arguments.length != 1) {
 			throw new DriverInitializationException("Usage: \"<driver_name> " + Arrays.toString(arguments));
-		}
+		}*/
 
 		//driver name is the first argument
 		driverRootName = arguments[0];
 
+
+
 		SecurityUtil.setThreadSystemAccess();
 
 		//get def
+
 		m_def = docs.get().getDocument(DocumentType.STREAM_DRIVER, driverRootName).getBodyAsObject();
+
+
 
 	}
 

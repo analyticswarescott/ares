@@ -6,6 +6,7 @@ import com.aw.common.inject.*;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.system.EnvironmentSettings;
 import com.aw.document.jdbc.mysql.MySQLJDBCProvider;
+import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.user.DgmcDbUserManager;
 import com.aw.user.UserManager;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -30,7 +31,6 @@ import com.aw.common.util.TimeSource;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
 import com.aw.document.jdbc.DocumentJDBCProvider;
-import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.incident.IncidentManager;
 import com.aw.incident.UnityIncidentManager;
 import com.aw.incident.action.IncidentAction;
@@ -103,7 +103,10 @@ public class DGBinder extends AbstractBinder {
 	}
 
 	protected DocumentJDBCProvider getDBProvider()  {
-		if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.POSTGRES)) {
+
+		return new MySQLJDBCProvider(); //TODO: re-enable DB independence after stream driver supports it
+
+		/*if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.POSTGRES)) {
 			return new PostgresJDBCProvider();
 		}
 		else if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.MYSQL)) {
@@ -111,7 +114,7 @@ public class DGBinder extends AbstractBinder {
 		}
 		else {
 			throw new RuntimeException(" unsupported DB vendor " + EnvironmentSettings.getDBVendor());
-		}
+		}*/
 
 
 	}

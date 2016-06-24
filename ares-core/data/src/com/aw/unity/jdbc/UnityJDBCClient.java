@@ -73,7 +73,9 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		}
 		sql = sql + ")";
 
-		sql = sql + " ON CONFLICT (" + dataType.getIDField().getName() +  ") DO NOTHING ";
+
+		//sql = sql + " ON CONFLICT (" + dataType.getIDField().getName() +  ") DO NOTHING ";
+		sql = sql + dbMgr.getJDBCProvider().getConflictClause(dataType.getIDField().getName());
 
 		logger.warn(" GENERATED SQL is " + sql);
 
@@ -119,18 +121,28 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		//simple type based insert generation
 
 		//Connection conn = null;
-
+		PreparedStatement ps = null;
+		try {
 			conn = dbMgr.getConnection(tenant);
-			PreparedStatement ps = getInsertForDataType(conn, dataType);
+			 ps = getInsertForDataType(conn, dataType);
 
 			for (Data d : data) {
 				processRow(ps, d);
 
-				logger.error(" DEBUG: About to execute SQL: " + ps.toString());
+				logger.debug(" DEBUG: About to execute SQL: " + ps.toString());
 				int i = ps.executeUpdate();
 
-				logger.error(" DEBUG: SQL result was " + i);
+				logger.debug(" DEBUG: SQL result was " + i);
 			}
+		}
+		catch (Exception ex) {
+			if (ps != null) {
+				logger.error(" error executing SQL "  + ps.toString());
+			}
+
+			throw ex;
+
+		}
 
 
 

@@ -60,7 +60,13 @@ public class Document extends DocumentEnvelope {
     @Override
     protected void build(JSONObject json) throws Exception {
     	super.build(json);
-		m_body = json.getJSONObject(BODY);
+		Object o = json.get(BODY);
+		if (o instanceof JSONObject) {
+			m_body = json.getJSONObject(BODY);
+		}
+		else {
+			m_body = new JSONObject(o.toString());
+		}
     }
 
 

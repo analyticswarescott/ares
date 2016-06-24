@@ -280,8 +280,13 @@ public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBC
 
 	}
 
+	@Override
+	public String getConflictClause(String keyField) throws Exception {
+		return null;
+	}
 
-   private boolean isSingleNodeSingleDB(Platform platform) {
+
+	private boolean isSingleNodeSingleDB(Platform platform) {
 	   return PlatformUtils.isSingleNodeSingleDB(platform);
    }
 

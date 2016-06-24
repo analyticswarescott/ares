@@ -3,16 +3,13 @@ package com.aw.common.util;
 
 import java.io.Serializable;
 
-import com.aw.common.rdbms.DBMgr;
 import com.aw.common.spark.JsonTransformerFactory;
-import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformUtils;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.ProducerConfig;
 
-import javax.inject.Provider;
 
 public class ResourceManager implements Serializable {
 

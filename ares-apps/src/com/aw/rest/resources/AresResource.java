@@ -83,7 +83,7 @@ public class AresResource extends RestMgrBase {
 					, is
 				);
 
-			System.out.println("REST:  §§§§§§§§§§§§§§±±±±±±± file  " + fileName + " added to HDFS and ticketed for processing ");
+			logger.warn("REST:  §§§§§§§§§§§§§§±±±±±±± file  " + fileName + " added to HDFS and ticketed for processing ");
 
 
 			return Response.status(Response.Status.OK).build();

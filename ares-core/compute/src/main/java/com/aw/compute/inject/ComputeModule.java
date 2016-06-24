@@ -17,12 +17,14 @@ import com.aw.common.cluster.ClusterException;
 import com.aw.common.inject.*;
 import com.aw.common.inject.unity.UnityProvider;
 import com.aw.common.rdbms.DBMgr;
+import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.util.TimeSource;
 import com.aw.compute.referencedata.geo.DefaultGeoLocationSource;
 import com.aw.compute.referencedata.geo.GeoLocationSource;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
 import com.aw.document.jdbc.DocumentJDBCProvider;
+import com.aw.document.jdbc.mysql.MySQLJDBCProvider;
 import com.aw.document.jdbc.postgres.PostgresJDBCProvider;
 import com.aw.incident.action.IncidentAction;
 import com.aw.incident.action.IncidentActionType;
@@ -68,7 +70,23 @@ public class ComputeModule extends AbstractModule {
 	};
 
 
-	protected DocumentJDBCProvider getDBProvider() { return new PostgresJDBCProvider(); }
+	protected DocumentJDBCProvider getDBProvider() {
+
+		return new MySQLJDBCProvider(); //TODO: allow driver setting to drive this
+
+/*
+		if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.POSTGRES)) {
+			return new PostgresJDBCProvider();
+		}
+		else if (EnvironmentSettings.getDBVendor().equals(EnvironmentSettings.MYSQL)) {
+			return new MySQLJDBCProvider();
+		}
+		else {
+			throw new RuntimeException(" unsupported DB vendor " + EnvironmentSettings.getDBVendor());
+		}
+*/
+
+	}
 
 	@Override
 	protected void configure() {

@@ -134,14 +134,19 @@ public abstract class AbstractDocumentJDBCProvider extends AbstractJDBCProvider 
 	}
 
 
+
+	protected String getUpdateSQL() {
+		return "insert into DOCUMENT (version, name, is_current, type, body_class, id, tenant_id,  " +
+			"author, scope, display_name, description, body, version_author, grouping, perm_read, perm_write, deleted)"
+			+ "values ( (select max(version) + 1 from DOCUMENT where type =? and name = ? and tenant_id = ?) " +
+			",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	}
+
 	@Override
 	public PreparedStatement getUpdate(Connection conn, Document doc) throws Exception {
 
 		PreparedStatement ps =
-			conn.prepareStatement("insert into DOCUMENT (version, name, is_current, type, body_class, id, tenant_id,  " +
-				"author, scope, display_name, description, body, version_author, grouping, perm_read, perm_write, deleted)"
-				+ "values ( (select max(version) + 1 from DOCUMENT where type =? and name = ? and tenant_id = ?) " +
-				",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
+			conn.prepareStatement(getUpdateSQL());
 
 		int paramOrdinal = 1;
 		ps.setString(paramOrdinal++, doc.getDocumentType().toString());

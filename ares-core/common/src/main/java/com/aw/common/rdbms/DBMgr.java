@@ -44,11 +44,16 @@ public class DBMgr {
     protected HashMap<String, ConnectionPool> pools = new HashMap<String, ConnectionPool>();
     protected HashMap<String, DataSource> datasources = new HashMap<String, DataSource>();
 
+
+	public JDBCProvider getJDBCProvider() {
+		return provider;
+	}
     //the provider for jdbc connectivity
     JDBCProvider provider;
 	Provider<Platform> platform;
 
     public DBMgr(Provider<Platform> platform, JDBCProvider provider) {
+
 		this.provider = provider;
 		this.platform = platform;
 	}

@@ -1,9 +1,6 @@
 package com.aw.document.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -111,6 +108,10 @@ public class JDBCDocumentHandler extends AbstractDocumentHandler implements Secu
                 //Mark all current versions as OLD
                 try (PreparedStatement ps = sqlProvider.getUpdateOldVersions(conn, doc)) {
 
+
+
+
+					System.out.println(" ABOUT TO ISSUE UPDATE: " + ps.toString());
                 	if (ps.executeUpdate() < 1) {
                 		throw new Exception("could not find current document for " + doc.getDocumentType() + "/" + doc.getName());
                 	}

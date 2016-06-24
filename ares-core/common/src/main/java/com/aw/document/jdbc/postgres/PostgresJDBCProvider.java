@@ -69,6 +69,11 @@ public class PostgresJDBCProvider extends AbstractDocumentJDBCProvider {
 	}
 
 	@Override
+	public String getConflictClause(String keyField) throws Exception {
+		return " ON CONFLICT (" + keyField +  ") DO NOTHING ";
+	}
+
+	@Override
 	public void dropDB(Platform platform, Tenant tenant) throws Exception {
 
 		LOGGER.info("dropping database for " + tenant.getTenantID() + " : " + getDatabaseName(tenant));
@@ -120,7 +125,7 @@ public class PostgresJDBCProvider extends AbstractDocumentJDBCProvider {
 
 	}
 
-    @Override
+	@Override
 	public String getJDBCDriver() {
 		return Driver.class.getName();
 	}

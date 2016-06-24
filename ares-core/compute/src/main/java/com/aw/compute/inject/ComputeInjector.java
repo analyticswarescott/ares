@@ -17,9 +17,7 @@ public class ComputeInjector {
 
 	private Injector guice;
 
-	/**
-	 * The DGInjector is initially created with the default set of dependencies for production use
-	 */
+
 	public ComputeInjector() {
 		guice = Guice.createInjector(new ComputeModule());
 	}
