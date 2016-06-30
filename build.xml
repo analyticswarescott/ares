@@ -245,9 +245,10 @@
 
         <copy todir="${platform.target.conf.dir}/stream" file="ares-core/compute/target/stream.classpath"/>
 
-        <copy todir="${platform.target.reporting.webcontent.dir}">
+		<!--this is replaced by downstream project-->
+<!--        <copy todir="${platform.target.reporting.webcontent.dir}">
             <fileset dir="${ares-apps.webcontent.dir}"/>
-        </copy>
+        </copy>-->
         <copy todir="${platform.target.nodeservice.webcontent.dir}">
             <fileset dir="${nodeservice.webcontent.dir}"/>
         </copy>
