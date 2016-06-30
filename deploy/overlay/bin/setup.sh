@@ -25,13 +25,6 @@ CURRENT_USER_GRP=$(id -g -n $CURRENT_USER)
 sudo chown -hRH  "$CURRENT_USER:$CURRENT_USER_GRP" /opt/aw
 
 
-if [ ! -d /mnt/aw ]; then
-    echo "Linking /opt/aw/roles to /mnt/aw."
-
-    # link /opt/aw/roles to /mnt/aw
-    sudo ln -s /opt/aw/roles /mnt/aw
-fi
-
 echo "Done setting up base environment."
 
 addCustomEnv() {

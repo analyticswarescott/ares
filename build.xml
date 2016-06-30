@@ -121,12 +121,14 @@
         <copy todir="${ares.target.dir}" overwrite="true">
             <fileset dir="${control.files.dir}"/>
         </copy>
+
+<!--		conf is modified in derivative
         <copy todir="${ares.target.conf.dir}">
             <fileset dir="${ares-apps.conf.dir}"/>
         </copy>
         <delete dir="${ares.target.conf.dir}/custom"/>
         <delete dir="${ares.target.conf.dir}/derby"/>
-        <delete dir="${ares.target.conf.dir}/temp_hdfs"/>
+        <delete dir="${ares.target.conf.dir}/temp_hdfs"/>-->
     </target>
 
     <target name="build-rpm">
