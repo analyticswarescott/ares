@@ -4,11 +4,11 @@
 	"display_name": "Stream Driver 30 second batch  ",
 	"description": " desc ",
 	"author": "aw",
-	"body_class" : "com.dg.common.spark.DriverDef",
+	"body_class" : "com.aw.common.spark.DriverDef",
 	"body": {
 		"enabled": "true",
 		"supervise" : "true",
-		"driver_class": "com.dg.compute.streams.drivers.KafkaDriver",
+		"driver_class": "com.aw.compute.streams.drivers.KafkaDriver",
 		"batch_inteval_seconds": "30",
 		"heartbeat_interval" : "3",
 		"work_poll_interval" : "15",

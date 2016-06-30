@@ -2,8 +2,8 @@ echo "Setting up base environment ..."
 
 DG_HOST=`hostname`
 
-_TARGET_USER="dg8service"
-_TARGET_USER_GRP="dg8service"
+_TARGET_USER="eric"
+_TARGET_USER_GRP="eric"
 read -p "* What is the service user's name? (press enter for $_TARGET_USER) " TARGET_USER
 if [ -z "$TARGET_USER" ]; then TARGET_USER=$_TARGET_USER; fi
 echo "Your service user is $TARGET_USER"
@@ -22,14 +22,14 @@ echo "Setting up for $TARGET_USER, group $TARGET_USER_GRP ...";
 CURRENT_USER=`whoami`
 CURRENT_USER_GRP=$(id -g -n $CURRENT_USER)
 # temporarily make /opt/aw owned by the current user
-sudo chown -hRH  "$CURRENT_USER:$CURRENT_USER_GRP" /opt/dg
+sudo chown -hRH  "$CURRENT_USER:$CURRENT_USER_GRP" /opt/aw
 
 
-if [ ! -d /mnt/dg ]; then
+if [ ! -d /mnt/aw ]; then
     echo "Linking /opt/aw/roles to /mnt/aw."
 
     # link /opt/aw/roles to /mnt/aw
-    sudo ln -s /opt/dg/roles /mnt/dg
+    sudo ln -s /opt/aw/roles /mnt/aw
 fi
 
 echo "Done setting up base environment."
@@ -40,11 +40,11 @@ addCustomEnv() {
     PROMPT_TEXT=$3
     CONFIRM_TEXT=$4
 
-    if [[ ! -f /opt/dg/conf/custom_env.sh ]] || [[ -z `cat /opt/dg/conf/custom_env.sh | grep "$VARIABLE_NAME"` ]]; then
+    if [[ ! -f /opt/aw/conf/custom_env.sh ]] || [[ -z `cat /opt/aw/conf/custom_env.sh | grep "$VARIABLE_NAME"` ]]; then
         read -p "* $PROMPT_TEXT (press enter for $DEFAULT_VALUE) " VARIABLE_VALUE
         if [ -z "$VARIABLE_VALUE" ]; then VARIABLE_VALUE=$DEFAULT_VALUE; fi
         echo "$CONFIRM_TEXT is $VARIABLE_VALUE"
-        echo "export $VARIABLE_NAME=\"$VARIABLE_VALUE\"" >> /opt/dg/conf/custom_env.sh
+        echo "export $VARIABLE_NAME=\"$VARIABLE_VALUE\"" >> /opt/aw/conf/custom_env.sh
 
     fi
 }
@@ -67,9 +67,9 @@ addCustomEnv "ALLOW_ORIGIN_HOST" "http://localhost:63342" "What host to allow CO
 #configure sysstat
 
 
-sudo cp /opt/dg/conf/sysstat/sysstat.dgconf /etc/sysconfig/sysstat
+sudo cp /opt/aw/conf/sysstat/sysstat.awconf /etc/sysconfig/sysstat
 
-sudo cp /opt/dg/conf/sysstat/sysstat.cron /etc/cron.d/sysstat
+sudo cp /opt/aw/conf/sysstat/sysstat.cron /etc/cron.d/sysstat
 
 #restart cron? -- should not be needed TODO: early testing has seen this to be needed after changing the files, but need to follow up
 sudo service crond restart
@@ -89,64 +89,64 @@ if [[ -z `cat ~/.bashrc | grep "setEnv.sh"` ]]; then
 fi
 
 # setup symlinks
-rm -f /opt/dg/roles/elastic
-ln -s /opt/dg/roles/elasticsearch-2.1.1 /opt/dg/roles/elastic
+rm -f /opt/aw/roles/elastic
+ln -s /opt/aw/roles/elasticsearch-2.1.1 /opt/aw/roles/elastic
 
-rm -f /opt/dg/roles/hadoop
-ln -s /opt/dg/roles/hadoop-2.7.1 /opt/dg/roles/hadoop
+rm -f /opt/aw/roles/hadoop
+ln -s /opt/aw/roles/hadoop-2.7.1 /opt/aw/roles/hadoop
 
-rm -f /opt/dg/roles/java
-ln -s /opt/dg/roles/jdk1.8.0_25 /opt/dg/roles/java
+rm -f /opt/aw/roles/java
+ln -s /opt/aw/roles/jdk1.8.0_25 /opt/aw/roles/java
 
-rm -f /opt/dg/roles/kafka
-ln -s /opt/dg/roles/kafka_2.10-0.8.2.1 /opt/dg/roles/kafka
+rm -f /opt/aw/roles/kafka
+ln -s /opt/aw/roles/kafka_2.10-0.8.2.1 /opt/aw/roles/kafka
 
-rm -f /opt/dg/roles/kibana
-ln -s /opt/dg/roles/kibana-4.0.2-linux-x64 /opt/dg/roles/kibana
+rm -f /opt/aw/roles/kibana
+ln -s /opt/aw/roles/kibana-4.0.2-linux-x64 /opt/aw/roles/kibana
 
-rm -f /opt/dg/roles/zookeeper
-ln -s /opt/dg/roles/zookeeper-3.4.6 /opt/dg/roles/zookeeper
+rm -f /opt/aw/roles/zookeeper
+ln -s /opt/aw/roles/zookeeper-3.4.6 /opt/aw/roles/zookeeper
 
-rm -f /opt/dg/roles/kafka-manager
-ln -s /opt/dg/roles/kafka-manager-1.2.8 /opt/dg/roles/kafka-manager
+rm -f /opt/aw/roles/kafka-manager
+ln -s /opt/aw/roles/kafka-manager-1.2.8 /opt/aw/roles/kafka-manager
 
-rm -f /opt/dg/roles/spark
-ln -s /opt/dg/roles/spark-1.6.0-bin-hadoop2.6 /opt/dg/roles/spark
+rm -f /opt/aw/roles/spark
+ln -s /opt/aw/roles/spark-1.6.0-bin-hadoop2.6 /opt/aw/roles/spark
 
 # make all shell scripts executable
-chmod +x /opt/dg/patch.sh
-chmod +x /opt/dg/roles/rest/bin/*.sh
-chmod +x /opt/dg/roles/elastic/bin/*
-chmod +x /opt/dg/roles/hadoop/bin/*
-chmod +x /opt/dg/roles/hadoop/sbin/*
-chmod +x /opt/dg/roles/spark/bin/*
-chmod +x /opt/dg/roles/spark/sbin/*
-chmod +x /opt/dg/roles/java/bin/*
-chmod +x /opt/dg/roles/java/jre/bin/*
-chmod +x /opt/dg/roles/kafka/bin/*.sh
-chmod +x /opt/dg/roles/kibana/bin/*
-chmod +x /opt/dg/roles/kibana/node/bin/*
-chmod +x /opt/dg/roles/zookeeper/bin/*.sh
-chmod +x /opt/dg/roles/kafka-manager/bin/*
-chmod +x /opt/dg/roles/http-server/node_modules/http-server/bin/*
-chmod +x /opt/dg/roles/node/bin/*
-chmod +x /opt/dg/roles/node_service/bin/*.sh
+chmod +x /opt/aw/patch.sh
+chmod +x /opt/aw/roles/rest/bin/*.sh
+chmod +x /opt/aw/roles/elastic/bin/*
+chmod +x /opt/aw/roles/hadoop/bin/*
+chmod +x /opt/aw/roles/hadoop/sbin/*
+chmod +x /opt/aw/roles/spark/bin/*
+chmod +x /opt/aw/roles/spark/sbin/*
+chmod +x /opt/aw/roles/java/bin/*
+chmod +x /opt/aw/roles/java/jre/bin/*
+chmod +x /opt/aw/roles/kafka/bin/*.sh
+chmod +x /opt/aw/roles/kibana/bin/*
+chmod +x /opt/aw/roles/kibana/node/bin/*
+chmod +x /opt/aw/roles/zookeeper/bin/*.sh
+chmod +x /opt/aw/roles/kafka-manager/bin/*
+chmod +x /opt/aw/roles/http-server/node_modules/http-server/bin/*
+chmod +x /opt/aw/roles/node/bin/*
+chmod +x /opt/aw/roles/node_service/bin/*.sh
 
-source /opt/dg/conf/setEnv.sh
+source /opt/aw/conf/setEnv.sh
 
-/opt/dg/bin/init_platform_cache.sh
-/opt/dg/bin/init_buildstamp.sh 1
+/opt/aw/bin/init_platform_cache.sh
+/opt/aw/bin/init_buildstamp.sh 1
 
 # make it all owned by the target user
 echo "Making /opt/aw owned by $TARGET_USER:$TARGET_USER_GRP"
-sudo chown -hRH "$TARGET_USER:$TARGET_USER_GRP" /opt/dg
+sudo chown -hRH "$TARGET_USER:$TARGET_USER_GRP" /opt/aw
 
 #in case /opt/aw is a sym link, need to chown it explicitly, as hRH seems to leave it behind,
 # but is required to handle the nested sym links in roles
-sudo chown  "$TARGET_USER:$TARGET_USER_GRP" /opt/dg
+sudo chown  "$TARGET_USER:$TARGET_USER_GRP" /opt/aw
 
 echo "Setup Complete. "
 
 sudo su - $TARGET_USER
-source /opt/dg/conf/setEnv.sh
+source /opt/aw/conf/setEnv.sh
 startnode

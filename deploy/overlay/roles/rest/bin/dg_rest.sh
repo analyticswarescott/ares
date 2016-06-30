@@ -12,7 +12,7 @@ case $1 in
         fi
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            nohup $JAVA_HOME/bin/java -Dlog4j.configuration="$LOG4J_FILE" -cp $CLASSPATH com.dg.ops.RestRoleServer $2 $3 1>> $LOG_FILE 2>&1 &
+            nohup $JAVA_HOME/bin/java -Dlog4j.configuration="$LOG4J_FILE" -cp $CLASSPATH com.aw.ops.RestRoleServer $2 $3 1>> $LOG_FILE 2>&1 &
                         echo $! > $PID_PATH_NAME
             sleep 2s
             PID=$(cat $PID_PATH_NAME);
@@ -29,7 +29,7 @@ case $1 in
             PIDS=`ps cax | grep $PID | grep -o '^[ ]*[0-9]*'`
             if [ -z "$PIDS" ]; then
                 rm $PID_PATH_NAME
-                nohup $JAVA_HOME/bin/java -Dlog4j.configuration="$LOG4J_FILE" -cp $CLASSPATH com.dg.ops.RestRoleServer $2 $3 1>> $LOG_FILE 2>&1 &
+                nohup $JAVA_HOME/bin/java -Dlog4j.configuration="$LOG4J_FILE" -cp $CLASSPATH com.aw.ops.RestRoleServer $2 $3 1>> $LOG_FILE 2>&1 &
                             echo $! > $PID_PATH_NAME
                 sleep 2s
                 PID=$(cat $PID_PATH_NAME);

@@ -27,7 +27,7 @@ alias nodejs=$ARES_ROLES/ui/bin/node
 source $ARES_HOME/conf/custom_env.sh
 
 #
-alias stopdg="cd /opt/aw/roles/node_service/bin; ./stop_all.sh; tail -f /opt/aw/log/rest/rest.log"
+alias stopaw="cd /opt/aw/roles/node_service/bin; ./stop_all.sh; tail -f /opt/aw/log/rest/rest.log"
 
 alias stopnode="cd /opt/aw/roles/node_service/bin; ./node_service.sh stop; jp"
 alias startnode="cd /opt/aw/roles/node_service/bin; ./node_service.sh start; touch /opt/aw/log/node_service/node_service.log; tail -f /opt/aw/log/node_service/node_service.log"
