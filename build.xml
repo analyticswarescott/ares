@@ -21,7 +21,7 @@
     <property name="platform.target.stream.lib.dir" value="${platform.target.dir}/lib/stream"/>
     <property name="platform.target.reporting.lib.dir" value="${platform.target.dir}/lib/rest"/>
     <property name="platform.target.reporting.webcontent.dir" value="${platform.target.dir}/roles/rest/WebContent"/>
-    <property name="platform.target.nodeservice.webcontent.dir" value="${platform.target.dir}/roles/node_service/WebContent"/>
+    <property name="platform.target.nodeservice.webcontent.dir" value="${platform.target.dir}/roles/ares_node/WebContent"/>
 
     <property name="platform.target.rest.dir" value="${platform.target.dir}/roles"/>
     <property name="platform.target.conf.dir" value="${platform.target.dir}/conf"/>
@@ -29,9 +29,9 @@
 <!--    <property name="platform.target.conf.streams.dir" value="${platform.target.reporting.dir}/conf/streams"/>-->
     <property name="control.files.dir" value="${basedir}/deploy/overlay" />
     <property name="dev.tools.control.files.dir" value="${basedir}/deploy/dev/overlay" />
-    <property name="ares-apps.conf.dir" value="${basedir}/ares-apps/conf"/>
+    <property name="ares-apps.conf.dir" value="${basedir}/conf"/>
     <property name="ares-apps.webcontent.dir" value="${basedir}/ares-apps/WebContent"/>
-    <property name="nodeservice.webcontent.dir" value="${basedir}/node_service/WebContent"/>
+    <property name="nodeservice.webcontent.dir" value="${basedir}/ares-node/WebContent"/>
 
     <property name="ares-apps.infrastructure.dir" value="${infrastructure.dir}"/>
     <property name="deploy.archive.dir" value="${remote.deploy.archive.dir}"/>
@@ -44,7 +44,7 @@
 
         <mkdir dir="${control.files.dir}/log"/>
         <mkdir dir="${control.files.dir}/log/rest"/>
-        <mkdir dir="${control.files.dir}/log/node_service"/>
+        <mkdir dir="${control.files.dir}/log/node"/>
         <mkdir dir="${control.files.dir}/data"/>
     </target>
 
@@ -230,7 +230,7 @@
                 <include name="*.jar"/>
                 <exclude name="*sources*.jar"/>
             </fileset>
-            <fileset dir="node_service/target">
+            <fileset dir="ares-node/target">
                 <include name="*.jar"/>
                 <exclude name="*sources*.jar"/>
             </fileset>
@@ -259,16 +259,16 @@
 
 		<copy todir="${platform.target.stream.lib.dir}" flatten="true">
 			<fileset dir="." >
-				<include name="*/**/target/dg*.jar"/>
-				<exclude name="*/**/target/dg*sources*.jar"/>
+				<include name="*/**/target/ares*.jar"/>
+				<exclude name="*/**/target/ares*sources*.jar"/>
 				<exclude name="*/**/target/ares-apps-tools*.jar"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${platform.target.reporting.lib.dir}" flatten="true">
 			<fileset dir=".">
-				<include name="*/**/target/dg*.jar"/>
-				<exclude name="*/**/target/dg*sources*.jar"/>
+				<include name="*/**/target/ares*.jar"/>
+				<exclude name="*/**/target/ares*sources*.jar"/>
 				<exclude name="*/**/target/ares-apps-tools*.jar"/>
 			</fileset>
 		</copy>
@@ -333,18 +333,6 @@
         <antcall target="unpack-thirdparty" />
     </target>
 
-    <target name="explode-platform-do">
-        <sshexec host="${deploy.host}"
-                 username="${deploy.username}"
-                 password="${deploy.password}"
-                 command="
-                    cp ${deploy.archive.dir}/platform.tar.gz /opt/dg;
-                    cd /opt/dg;
-                    tar -xf platform.tar.gz;
-                    find reporting -name '*.sh' | xargs chmod +x;
-                    find core -name '*.sh' | xargs chmod +x;
-                "/>
-    </target>
 
 
 </project>
