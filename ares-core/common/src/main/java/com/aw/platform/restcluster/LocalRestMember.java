@@ -13,6 +13,7 @@ import com.aw.common.cluster.zk.ZkCluster;
 
 import com.aw.common.rest.security.SecurityUtil;
 import com.aw.common.zookeeper.structure.ZkPurpose;
+import com.aw.platform.roles.ConfigDbMaster;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -153,6 +154,12 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 	void ensureConfigDbRunning() throws ClusterException {
 
 		try {
+
+
+			if (platformMgr.get().getNode(NodeRole.CONFIG_DB_MASTER).getSetting(ConfigDbMaster.IS_OFF_PLATFORM).equals("true")) {
+				logger.warn(" config DB master marked as IS_OFF_PLATFORM...assuming it is running ");
+				return;
+			}
 
 			logger.info("making sure database is running");
 			PlatformController controller = newController();

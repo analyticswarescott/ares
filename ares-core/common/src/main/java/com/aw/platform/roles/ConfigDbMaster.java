@@ -13,6 +13,7 @@ public enum ConfigDbMaster implements RoleSetting {
 	 */
 	MASTER_DB_PORT,
 	TARGET_REPLICATION,
+	IS_OFF_PLATFORM,
 	CONF_DIR;
 
 	public String toString() { return name().toLowerCase(); }
