@@ -3,15 +3,9 @@ package com.aw.common.rdbms;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.aw.platform.Platform;
 import org.apache.commons.io.IOUtils;
@@ -365,6 +359,14 @@ public class DBMgr {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Connection getConnection(String url, String user, String pass) throws  Exception {
+
+		Connection conn = DriverManager.getConnection(url,user, pass);
+		return  conn;
+
+
 	}
 
 

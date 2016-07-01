@@ -1,9 +1,11 @@
 package com.aw.unity.jdbc;
 
+import com.aw.common.rdbms.DBConfig;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.*;
+import com.aw.document.jdbc.JDBCProvider;
 import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
@@ -19,6 +21,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A general use elasticsearch client. Uses the platform to determine how to connect. This client is NOT thread safe.
@@ -31,16 +34,17 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 	private static final Logger logger = Logger.getLogger(UnityJDBCClient.class);
 
-
-	private DBMgr dbMgr;
-	private Platform platform;
+	public static final String TABLE_NAME = "table_name";
 
 
+	private Map<String, String> dbConfig;
+	private JDBCProvider provider;
 	private Connection conn;
 
-	public UnityJDBCClient(DBMgr dbMgr) throws Exception {
+	public UnityJDBCClient(Map<String, String> dbConfig) throws Exception {
 
-		this.dbMgr = dbMgr;
+		this.dbConfig = dbConfig;
+
 
 
 	}
@@ -49,7 +53,7 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 	private HashMap<Field, Integer> ordinals = new HashMap<>();
 	private PreparedStatement getInsertForDataType(Connection conn, DataType dataType) throws Exception{
 
-		String sql = "INSERT INTO " + dataType.getName();
+		String sql = "INSERT INTO "  + dataType.getName();
 
 		sql = sql + " (";
 
@@ -75,7 +79,7 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 
 		//sql = sql + " ON CONFLICT (" + dataType.getIDField().getName() +  ") DO NOTHING ";
-		sql = sql + dbMgr.getJDBCProvider().getConflictClause(dataType.getIDField().getName());
+		sql = sql + provider.getConflictClause(dataType.getIDField().getName());
 
 		logger.warn(" GENERATED SQL is " + sql);
 
@@ -123,7 +127,16 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		//Connection conn = null;
 		PreparedStatement ps = null;
 		try {
-			conn = dbMgr.getConnection(tenant);
+			if (provider == null) {
+				provider = (JDBCProvider) Class.forName(dbConfig.get(DBConfig.DB_PROVIDER)).newInstance();
+			}
+
+
+			if (conn == null) {
+				//get schema-ed connection to the defined target DB
+				conn = DBMgr.getConnection(provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID()))
+					, dbConfig.get(DBConfig.DB_USER), dbConfig.get(DBConfig.DB_PASS));
+			}
 			 ps = getInsertForDataType(conn, dataType);
 
 			for (Data d : data) {
@@ -142,6 +155,11 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 			throw ex;
 
+		}
+		finally {
+			if (conn != null) {
+				conn.close();
+			}
 		}
 
 

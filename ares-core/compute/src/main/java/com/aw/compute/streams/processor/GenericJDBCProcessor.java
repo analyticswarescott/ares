@@ -9,12 +9,14 @@ import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.compute.streams.processor.framework.AbstractIterableDataProcessor;
 import com.aw.compute.streams.processor.framework.IterableTupleProcessor;
+import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.unity.UnityInstance;
 import com.aw.unity.jdbc.UnityJDBCClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Process an Iterable of strings into Elasticsearch
@@ -32,6 +34,11 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
 
     private String table_name;
 
+	//TODO: DBDef object?
+	private Map<String, String> configData;
+
+	private DBMgr dbMgr;
+
     @Override
     public void process(String tenant, Iterable<String> messages) throws StreamProcessingException {
 
@@ -41,9 +48,11 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
     	   //just convert to a single list
     	   List<Data> data = toData(messages);
 
-		   DBMgr dbMgr = getProviderDependency(DBMgr.class).get();
 
-		   UnityJDBCClient jdbcClient = new UnityJDBCClient(dbMgr);
+
+		  // DBMgr dbMgr = getProviderDependency(DBMgr.class).get();
+
+		   UnityJDBCClient jdbcClient = new UnityJDBCClient(configData);
 		   jdbcClient.bulkInsert(Tenant.forId(tenant), "", data.get(0).getType(), data);
 
 
@@ -61,7 +70,7 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
     public void init(StreamDef streamDef) throws ProcessorInitializationException{
         try {
             table_name = streamDef.getConfigData().get(TABLE_NAME).toUpperCase();
-
+			this.configData = streamDef.getConfigData();
         }
         catch (Exception ex) {
             throw new ProcessorInitializationException(ex.getMessage(), ex);

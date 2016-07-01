@@ -1,5 +1,6 @@
 package com.aw.document.jdbc.mysql;
 
+import com.aw.common.rdbms.DBConfig;
 import com.aw.common.tenant.Tenant;
 import com.aw.document.Document;
 import com.aw.document.jdbc.AbstractDocumentJDBCProvider;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.gjt.mm.mysql.Driver;
 
 import java.sql.*;
+import java.util.Map;
 
 /**
  * a sql provider for postgres
@@ -61,6 +63,16 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 			}
 		}
 
+	}
+
+	@Override
+	public String getJDBCURL(Map<String, String> dbConfig, Tenant tenant) {
+
+		int port = Integer.parseInt(dbConfig.get(DBConfig.DB_PORT));
+		//build the jdbc url:
+		String url = "jdbc:mysql://"+ dbConfig.get(DBConfig.DB_HOST) +":" + port + "/" +  dbConfig.get(DBConfig.DB_SCHEMA) + "_" + tenant.getTenantID() ;
+		url = url + "?allowMultiQueries=true";
+		return url;
 	}
 
 	@Override

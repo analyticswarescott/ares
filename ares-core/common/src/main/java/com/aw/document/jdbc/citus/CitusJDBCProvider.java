@@ -1,3 +1,4 @@
+/*
 package com.aw.document.jdbc.citus;
 
 import com.aw.common.system.EnvironmentSettings;
@@ -19,12 +20,14 @@ import java.io.File;
 import java.sql.*;
 import java.util.HashSet;
 
+*/
 /**
  * a sql provider for postgres
  *
  *
  *
- */
+ *//*
+
 public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBCProvider, CitusProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(CitusJDBCProvider.class);
@@ -260,7 +263,8 @@ public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBC
 
 
 
-		/*	try (PreparedStatement stmt = conn.prepareStatement("SELECT table_name FROM information_schema.tables where table_schema = 'public'")) {
+		*/
+/*	try (PreparedStatement stmt = conn.prepareStatement("SELECT table_name FROM information_schema.tables where table_schema = 'public'")) {
 
 				//execute the create
 				ResultSet rs = stmt.executeQuery();
@@ -273,7 +277,8 @@ public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBC
 
 				}
 
-			}*/
+			}*//*
+
 		}
 
 
@@ -383,3 +388,4 @@ public class CitusJDBCProvider extends CitusDocumentJDBCProvider implements JDBC
 	}
 
 }
+*/

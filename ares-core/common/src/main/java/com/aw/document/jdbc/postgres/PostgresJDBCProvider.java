@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
@@ -49,6 +50,11 @@ public class PostgresJDBCProvider extends AbstractDocumentJDBCProvider {
 			}
 		}
 
+	}
+
+	@Override
+	public String getJDBCURL(Map<String, String> dbConfig, Tenant tenant) {
+		return null;
 	}
 
 	@Override

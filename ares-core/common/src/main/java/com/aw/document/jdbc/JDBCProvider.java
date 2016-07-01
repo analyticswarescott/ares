@@ -1,6 +1,7 @@
 package com.aw.document.jdbc;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -20,6 +21,18 @@ public interface JDBCProvider {
 	 * @return whether the tenant's configuration database exists
 	 */
 	public boolean dbExists(Platform platform,  Tenant tenant) throws SQLException;
+
+
+
+	/**
+	 * get the jdbc url for the given host:port and tenant
+	 *
+	 * @param host
+	 * @param port
+	 * @param tenant
+	 * @return a jdbc url for the given host/port/tenant
+	 */
+	public String getJDBCURL(Map<String , String> dbConfig, Tenant tenant);
 
 	/**
 	 * get the jdbc url for the given host:port and tenant

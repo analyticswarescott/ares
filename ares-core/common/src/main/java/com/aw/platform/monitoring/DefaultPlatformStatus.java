@@ -98,11 +98,6 @@ public class DefaultPlatformStatus extends AbstractStatus implements PlatformSta
 		//collect role status
 		for (NodeRole role : NodeRole.values()) {
 
-			if (role == NodeRole.CONFIG_DB_MASTER || role == NodeRole.CONFIG_DB_WORKER ) {
-				//skip to allow DB to be run on server(s) not in platform control
-				continue;
-			}
-
 			RoleStatus status = new DefaultRoleStatus(platform, docs, role, this);
 			if (status.getNodeStatus().size() > 0) {
 				this.roleStatus.put(role, status);

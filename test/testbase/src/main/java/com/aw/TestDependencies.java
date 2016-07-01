@@ -12,7 +12,6 @@ import com.aw.common.util.TimeSource;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentMgr;
 import com.aw.document.jdbc.DocumentJDBCProvider;
-import com.aw.document.jdbc.derby.DerbyJDBCProvider;
 import com.aw.incident.IncidentManager;
 import com.aw.incident.UnityIncidentManager;
 import com.aw.platform.Platform;
@@ -68,12 +67,7 @@ public class TestDependencies extends DGBinder {
 
 	@Override
 	protected DocumentJDBCProvider getDBProvider() {
-		String useDerby = System.getProperty(USE_DERBY);
-		if (useDerby != null) {
-			return new DerbyJDBCProvider(); //use derby for integration tests for now
-		} else {
 			return super.getDBProvider();
-		}
 	}
 
 	/**

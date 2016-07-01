@@ -156,11 +156,6 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 		try {
 
 
-			if (platformMgr.get().getNode(NodeRole.CONFIG_DB_MASTER).getSetting(ConfigDbMaster.IS_OFF_PLATFORM).equals("true")) {
-				logger.warn(" config DB master marked as IS_OFF_PLATFORM...assuming it is running ");
-				return;
-			}
-
 			logger.info("making sure database is running");
 			PlatformController controller = newController();
 			controller.configureRole(NodeRole.CONFIG_DB_WORKER, platformMgr.getPlatform());
