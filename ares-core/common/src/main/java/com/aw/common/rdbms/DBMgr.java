@@ -300,18 +300,7 @@ public class DBMgr {
 		}
 	}
 
-	public long executeScalarCountSelect(Tenant tenant, String sql) throws Exception {
 
-		try (Connection conn = getConnection(tenant)) {
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(sql);
-			rs.next();
-			return rs.getLong(1);
-
-		} catch (Exception ex) {
-			throw ex;
-		}
-	}
 
 	public int execUpdateWithCount(Tenant tenant, String sql) throws Exception {
 		Statement st = null;
@@ -368,6 +357,19 @@ public class DBMgr {
 
 
 	}
+
+/*	public long executeScalarCountSelect(Tenant tenant, String sql) throws Exception {
+
+		try (Connection conn = getConnection(tenant)) {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			rs.next();
+			return rs.getLong(1);
+
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}*/
 
 
 

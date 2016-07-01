@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Processes kafka queue as unity data.
@@ -82,7 +83,7 @@ public abstract class AbstractIterableDataProcessor implements IterableProcessor
 		Reference ref = f.getReference();
 		String localKey = json.getString(ref.getLocal_key());
 		GenericLookupDataMgr ld = getDependency(GenericLookupDataMgr.class);
-		GenericLookupData gld = ld.getLookup(ref.getReference_type());
+		GenericLookupData gld = ld.getLookup(ref.getReference_type(), getRefDBConfig());
 
 		logger.error(" DEBUG: resolving reference ");
 		//get the lookup value
@@ -94,7 +95,7 @@ public abstract class AbstractIterableDataProcessor implements IterableProcessor
 
 	}
 
-
+	protected abstract Map<String, String> getRefDBConfig();
 
 
 }

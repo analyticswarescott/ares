@@ -78,5 +78,8 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
     }
 
 
-
+	@Override
+	protected Map<String, String> getRefDBConfig() {
+		return configData;
+	}
 }

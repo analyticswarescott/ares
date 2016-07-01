@@ -111,7 +111,7 @@ public class JDBCDocumentHandler extends AbstractDocumentHandler implements Secu
 
 
 
-					System.out.println(" ABOUT TO ISSUE UPDATE: " + ps.toString());
+					logger.debug(" about to issue update statement: " + ps.toString());
                 	if (ps.executeUpdate() < 1) {
                 		throw new Exception("could not find current document for " + doc.getDocumentType() + "/" + doc.getName());
                 	}

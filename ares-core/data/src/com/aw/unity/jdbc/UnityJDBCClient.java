@@ -53,7 +53,7 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 	private HashMap<Field, Integer> ordinals = new HashMap<>();
 	private PreparedStatement getInsertForDataType(Connection conn, DataType dataType) throws Exception{
 
-		String sql = "INSERT INTO "  + dataType.getName();
+		String sql = "INSERT INTO "  + dataType.getName().toUpperCase() ;
 
 		sql = sql + " (";
 

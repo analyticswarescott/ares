@@ -1,6 +1,7 @@
 package com.aw.compute.referencedata;
 
 import com.aw.common.exceptions.ProcessingException;
+import com.aw.common.rdbms.DBConfig;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.rest.security.TenantAware;
 import com.aw.common.tenant.Tenant;
@@ -8,6 +9,7 @@ import com.aw.compute.inject.ComputeInjector;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.document.DocumentHandler;
+import com.aw.document.jdbc.JDBCProvider;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
 import com.aw.platform.roles.Rest;
@@ -42,14 +44,14 @@ public class GenericLookupData extends AbstractReferenceData implements Referenc
 	private static final Duration TTL = Duration.ofMinutes(5);
 
 	protected Platform platform;
-	protected Provider<DBMgr> dbMgr;
+	protected Map<String, String> refDBConfig;
 
 	protected String referenceType;
 
 	@Inject @com.google.inject.Inject
-	public GenericLookupData(String referenceType, Platform platform, Provider<DBMgr> dbMgr) throws Exception {
+	public GenericLookupData(String referenceType, Map<String, String> refDBConfig) throws Exception {
 		this.platform = platform;
-		this.dbMgr = dbMgr;
+		this.refDBConfig = refDBConfig;
 		this.referenceType = referenceType;
 		setTTL(TTL);
 	}
@@ -77,10 +79,14 @@ public class GenericLookupData extends AbstractReferenceData implements Referenc
 		try {
 			logger.error(" DEBUG: updating from source ");
 
-			DBMgr db = dbMgr.get();
+
+			JDBCProvider provider = (JDBCProvider) Class.forName(refDBConfig.get(DBConfig.DB_PROVIDER)).newInstance();
 
 
-			try (Connection conn = db.getConnection(Tenant.forId(getTenantID()))) {
+			try (Connection conn = DBMgr.getConnection(provider.getJDBCURL(refDBConfig, Tenant.forId(getTenantID()))
+				, refDBConfig.get(DBConfig.DB_USER), refDBConfig.get(DBConfig.DB_PASS)))
+
+			{
 				String sql = " select ref_key, ref_value from " + referenceType;
 				PreparedStatement ps = conn.prepareStatement(sql);
 
