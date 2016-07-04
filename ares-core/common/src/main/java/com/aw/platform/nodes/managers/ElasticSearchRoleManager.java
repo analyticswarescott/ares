@@ -38,7 +38,7 @@ public class ElasticSearchRoleManager extends AbstractRoleManager {
     public static final String ES_YML = "elasticsearch.yml";
     public static final String LOGGING_YML = "logging.yml";
 
-	public static final String ES_YML_TEMPLATE = "elasticsearch_yml";
+
 
 	@Inject
 	public ElasticSearchRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -66,7 +66,7 @@ public class ElasticSearchRoleManager extends AbstractRoleManager {
     }
 
     private void configureESYML()  throws Exception{
-        String fyml = m_roleConfig.getConfigTemplateContent(ES_YML_TEMPLATE);
+        String fyml = m_roleConfig.getConfigTemplateContent(ES_YML);
         Map<String, String> configs = new HashMap<String, String>();
         HashMap<String, Object> yml = new HashMap<String, Object>();
 

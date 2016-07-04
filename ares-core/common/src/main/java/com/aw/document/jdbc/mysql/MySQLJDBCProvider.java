@@ -26,7 +26,7 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 	private static final Logger LOGGER = Logger.getLogger(MySQLJDBCProvider.class);
 
 	public static final String DEFAULT_USERNAME = "root";
-	static final String SYSTEM_DATABASE = "sys";
+	static final String SYSTEM_DATABASE = "mysql";
 
 	@Override
 	public void shutdown() {

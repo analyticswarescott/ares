@@ -72,11 +72,7 @@ public abstract class ConfigDbBaseRoleManager extends AbstractRoleManager {
 	private boolean isRunning() throws Exception {
 
 		//check if we are running, if so don't bother - this command will just list the available databases
-		RoleOSCommand command = new RoleOSCommand("/usr/bin", "psql", Arrays.asList("-c", "\\list"));
-		CommandResult result = command.execute(false);
-
-		//postgresql is running if we get the invalid user error or if the return code is 0 and there is no error at all
-		return result.getStdErr().contains("does not exist") || result.getResult() == 0 || result.getStdErr().length() == 0;
+		return true; //TODO: set up on a per-DBMS basis
 
 	}
 

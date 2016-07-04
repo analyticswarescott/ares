@@ -67,7 +67,7 @@ public abstract class AbstractRoleManager implements RoleManager {
 
     public AbstractRoleManager(PlatformMgr platform, Provider<DocumentHandler> docs) {
     	this.platformMgr = platform;
-    	m_roleConfig = new RoleConfig(docs);
+    	m_roleConfig = new RoleConfig(this.getRole());
 		this.docs = docs;
     }
 

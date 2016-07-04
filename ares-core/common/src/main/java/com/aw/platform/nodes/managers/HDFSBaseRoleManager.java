@@ -33,9 +33,6 @@ public abstract class HDFSBaseRoleManager extends AbstractRoleManager {
 	public static final String HDFS_SITE_XML = "hdfs-site.xml";
 	public static final String HADOOP_ENV = "hadoop-env.sh";
 
-	public static final String CORE_SITE_XML_TEMPLATE = "hdfs_core_site";
-	public static final String HDFS_SITE_XML_TEMPLATE = "hdfs_hdfs_site";
-	public static final String HADOOP_ENV_TEMPLATE = "hdfs_hadoop_env";
 
 	@Inject
 	public HDFSBaseRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -65,7 +62,7 @@ public abstract class HDFSBaseRoleManager extends AbstractRoleManager {
 	}
 
 	private void configureHadoopENV() throws Exception{
-		String conf = m_roleConfig.getConfigTemplateContent(HADOOP_ENV_TEMPLATE);
+		String conf = m_roleConfig.getConfigTemplateContent(HADOOP_ENV);
 		//TODO: no changes based on platform at present -- using template only
 		m_roleConfig.saveConfig(getHome() + File.separatorChar + "etc" + File.separatorChar
 				+ "hadoop" + File.separatorChar + HADOOP_ENV,
@@ -81,7 +78,7 @@ public abstract class HDFSBaseRoleManager extends AbstractRoleManager {
 
 
 	private void configureCoreSiteXML() throws Exception{
-		String hdfs = m_roleConfig.getConfigTemplateContent(CORE_SITE_XML_TEMPLATE);
+		String hdfs = m_roleConfig.getConfigTemplateContent(CORE_SITE_XML);
 		Configuration conf = XMLUtils.unmarshal(new StringReader(hdfs), Configuration.class);
 		List<Property> propertyList = conf.getProperty();
 
@@ -116,7 +113,7 @@ public abstract class HDFSBaseRoleManager extends AbstractRoleManager {
 		//TODO: this will need to change if HA (2 name nodes) is detected
 		//namenode RPC address will need to become name-service based
 
-		String hdfs = m_roleConfig.getConfigTemplateContent(HDFS_SITE_XML_TEMPLATE);
+		String hdfs = m_roleConfig.getConfigTemplateContent(HDFS_SITE_XML);
 		Configuration conf = XMLUtils.unmarshal(new StringReader(hdfs), Configuration.class);
 		List<Property> propertyList = conf.getProperty();
 

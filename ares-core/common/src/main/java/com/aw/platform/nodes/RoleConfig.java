@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.inject.Provider;
 
+import com.aw.platform.NodeRole;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,47 +32,40 @@ public class RoleConfig {
 
     protected HashMap<String, String> m_overlays;
 
-    private Provider<DocumentHandler> docs;
+    private NodeRole role;
 
-    public RoleConfig(Provider<DocumentHandler> docs) {
-    	this.docs = docs;
+    public RoleConfig(NodeRole role) {
+    	this.role = role;
 	}
 
-    public String getConfigTemplatePath(String docName) throws Exception {
+	public String getConfigTemplatePath(String docPath) throws Exception {
 
-    	Document doc = getTemplateDoc(docName);
-    	return EnvironmentSettings.getConfDirectory() + "/" + TEMPLATES_DIR + "/" + doc.getBodyAsObject(ConfigTemplate.class).getFilePath();
+		return EnvironmentSettings.getConfDirectory() + "/" + TEMPLATES_DIR + "/" + docPath;
 
-    }
+	}
 
-    public  String getConfigTemplateContent(String docName) throws Exception{
+/*
+	public  String getConfigTemplateContent(NodeRole role, String docName) throws Exception{
 
-    	Document d = getTemplateDoc(docName);
-		ConfigTemplate template = d.getBodyAsObject(ConfigTemplate.class);
-		return template.getFileContents();
+		String path = getConfigTemplatePath(role + File.separator + docName);
+		return FileUtils.readFileToString(new File(path));
+	}
+*/
 
-    }
+	public  String getConfigTemplateContent(String docName) throws Exception{
 
-    private Document getTemplateDoc(String docName) throws Exception {
-
-    	Document d = null;
-
-		try {
-			d = docs.get().getDocument(DocumentType.CONFIG_3P, docName);
+		String roleToUse = role.toString();
+		if (roleToUse.startsWith("hdfs")) {
+			roleToUse = "hdfs_name"; //all templates stored under name
 		}
-		catch (Exception ex) {
-
-			logger.info("connot retrieve config template from document server...trying locally" + ex.getMessage());
-
-			LocalDocumentHandler local = new LocalDocumentHandler(EnvironmentSettings.getConfDirectory() +
-			File.separatorChar + "defaults");
-			d = local.getDocument(DocumentType.CONFIG_3P, docName);
-
+		if (roleToUse.startsWith("spark")) {
+			roleToUse = "spark_master"; //all templates stored under master
 		}
 
-		return d;
+		String path = getConfigTemplatePath(roleToUse + File.separator + docName);
+		return FileUtils.readFileToString(new File(path));
 
-    }
+	}
 
     public  String applyConfig (String template, Map<String, String> lineReplacements, String commentChar) throws Exception {
 

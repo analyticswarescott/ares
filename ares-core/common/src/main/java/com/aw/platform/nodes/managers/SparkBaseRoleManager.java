@@ -25,8 +25,6 @@ public abstract class SparkBaseRoleManager extends AbstractRoleManager {
 
     public static final String SPARK_ENV = "spark-env.sh";
 
-	public static final String SPARK_ENV_TEMPLATE = "spark_env";
-
 	public SparkBaseRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
 		super(platformMgr, docs);
 	}
@@ -41,7 +39,7 @@ public abstract class SparkBaseRoleManager extends AbstractRoleManager {
 
     private void configureSparkEnv() throws Exception{
 
-		String env = m_roleConfig.getConfigTemplateContent(SPARK_ENV_TEMPLATE);
+		String env = m_roleConfig.getConfigTemplateContent(SPARK_ENV);
 		Map<String, String> configs = new HashMap<String, String>();
 		Map<String, Object> daemonOpts = new HashMap<String, Object>();
 

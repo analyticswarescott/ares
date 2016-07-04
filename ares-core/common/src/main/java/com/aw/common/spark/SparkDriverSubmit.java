@@ -58,6 +58,10 @@ public class SparkDriverSubmit {
         String cpFile =
             cpFile =  EnvironmentSettings.getAresBaseHome() + "/ares-core/compute/target/stream.classpath";
 
+		File chk = new File(cpFile);
+		if (!chk.exists()) { //prod
+			cpFile =  EnvironmentSettings.getAresBaseHome() + "/conf/stream/stream.classpath";
+		}
 
         String cp = FileUtils.readFileToString(new File(cpFile));
         return cp;

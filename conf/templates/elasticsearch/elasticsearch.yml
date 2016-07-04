@@ -30,11 +30,14 @@ node.name: localhost
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: ${DG_HOME}/data/elasticsearch
+path.data: ${:Q
+
+
+ARES_HOME}/data/elasticsearch
 #
 # Path to log files:
 #
-path.logs: ${DG_HOME}/log/elasticsearch
+path.logs: ${ARES_HOME}/log/elasticsearch
 #
 # ----------------------------------- Memory -----------------------------------
 #

@@ -32,8 +32,7 @@ public class KafkaRoleManager extends AbstractRoleManager {
     public static final String SERVER_PROPERTIES = "server.properties";
     public static final String LOG4J_PROPERTIES = "log4j.properties";
 
-	public static final String SERVER_PROPERTIES_TEMPLATE = "kafka_server";
-	public static final String LOG4J_PROPERTIES_TEMPLATE = "kafka_log4j";
+
 
     static final String HOME = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "kafka";
 
@@ -67,7 +66,7 @@ public class KafkaRoleManager extends AbstractRoleManager {
     }
 
     private void configureLog4j() throws  Exception{
-        String log4J = m_roleConfig.getConfigTemplateContent(LOG4J_PROPERTIES_TEMPLATE);
+        String log4J = m_roleConfig.getConfigTemplateContent(LOG4J_PROPERTIES);
         //TODO: currently no changes, so copy template, should add overrides somewhere, but possibly
         // don't belong in platform def as spark and zookeeper are now
         String newConf = log4J;
@@ -78,7 +77,7 @@ public class KafkaRoleManager extends AbstractRoleManager {
     }
 
     private void configureServerProperties() throws Exception{
-        String kafkaSP = m_roleConfig.getConfigTemplateContent(SERVER_PROPERTIES_TEMPLATE);
+        String kafkaSP = m_roleConfig.getConfigTemplateContent(SERVER_PROPERTIES);
         Map<String, String> configs = new HashMap<String, String>();
         HashMap<String, Object> settings = new HashMap<String, Object>();
 

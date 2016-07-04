@@ -30,9 +30,6 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
     public static final String ZOO_CFG = "zoo.cfg";
     public static final String LOG_4J = "log4j.properties";
 
-	public static final String CFG_TEMPLATE_DOC = "zookeeper_cfg";
-	public static final String LOG4J_TEMPLATE_DOC = "zookeeper_log4j";
-
 
     static final String HOME = EnvironmentSettings.getAppLayerHome() + File.separatorChar + "roles" + File.separatorChar + "zookeeper";
 
@@ -68,7 +65,7 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
 
     private void configureZooCfg() throws Exception{
 
-        String zooCFG = m_roleConfig.getConfigTemplateContent(CFG_TEMPLATE_DOC);
+        String zooCFG = m_roleConfig.getConfigTemplateContent(ZOO_CFG);
         Map<String, String> configs = new HashMap<String, String>();
         HashMap<String, Object> settings = new HashMap<String, Object>();
 
@@ -119,7 +116,7 @@ public class ZookeeperRoleManager extends AbstractRoleManager {
     }
 
     private void configureLog4J() throws Exception {
-        String log4J = m_roleConfig.getConfigTemplateContent( LOG4J_TEMPLATE_DOC);
+        String log4J = m_roleConfig.getConfigTemplateContent( LOG_4J);
 
         Map<String, String> configs = new HashMap<String, String>();
         Map<String, Object> overrides = m_node.getSettingMap(Zookeeper.LOG4J_OVERRIDES);

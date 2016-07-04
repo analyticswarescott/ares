@@ -29,7 +29,7 @@ import com.aw.platform.roles.SparkMaster;
 public class SparkMasterRoleManager extends SparkBaseRoleManager {
 
     public static final String LOG_4J = "log4j.properties";
-	public static final String LOG_4J_TEMPLATE = "spark_log4j";
+
 
 	@Inject @com.google.inject.Inject
 	public SparkMasterRoleManager(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
@@ -48,7 +48,7 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
 
 
 	private void configureLog4J() throws Exception {
-        String log4J = m_roleConfig.getConfigTemplateContent(LOG_4J_TEMPLATE);
+        String log4J = m_roleConfig.getConfigTemplateContent(LOG_4J);
         Map<String, String> configs = new HashMap<String, String>();
         Map<String, Object> overrides = m_node.getSettingMap(SparkMaster.LOG4J_OVERRIDES);
 

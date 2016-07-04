@@ -21,7 +21,7 @@
     <property name="ares.target.stream.lib.dir" value="${ares.target.dir}/lib/stream"/>
     <property name="ares.target.reporting.lib.dir" value="${ares.target.dir}/lib/rest"/>
     <property name="ares.target.reporting.webcontent.dir" value="${ares.target.dir}/roles/rest/WebContent"/>
-    <property name="ares.target.nodeservice.webcontent.dir" value="${ares.target.dir}/roles/ares_node/WebContent"/>
+    <property name="ares.target.nodeservice.webcontent.dir" value="${ares.target.dir}/roles/node_service/WebContent"/>
 
     <property name="ares.target.rest.dir" value="${ares.target.dir}/roles"/>
     <property name="ares.target.conf.dir" value="${ares.target.dir}/conf"/>
@@ -122,7 +122,7 @@
             <fileset dir="${control.files.dir}"/>
         </copy>
 
-<!--		conf is modified in derivative
+<!--		copy is modified in derivative
         <copy todir="${ares.target.conf.dir}">
             <fileset dir="${ares-apps.conf.dir}"/>
         </copy>
