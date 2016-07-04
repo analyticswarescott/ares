@@ -28,9 +28,11 @@ public class SparkDriverSubmit {
 
         //get the parent dir
         String parentDir = EnvironmentSettings.getAresBaseHome() + "/ares-core/compute/target";
-       /* if (parentDir == null) {
-            parentDir = EnvironmentSettings.getSparkLibHome();
-        }*/
+
+		File chk = new File(parentDir);
+		if (!chk.exists()) {
+			parentDir = EnvironmentSettings.getAresBaseHome() + "/lib/stream";
+		}
 
 		System.out.println("stream lib directory computed as: " + parentDir);
 
