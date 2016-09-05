@@ -51,7 +51,7 @@ public class ActionMirror implements IAction, TenantAware {
 				logger.debug("current host " + thisHost + ": mirroring sequence " + doc.getOpSequence() + " on document " + doc.getKey() + " to " + restNode.getHost());
 
 				try {
-					DocumentHandlerRest target = new DocumentHandlerRest(getTenantID(), restNode);
+					DocumentHandlerRest target = new DocumentHandlerRest(getTenantID(), null);
 					target.acceptMirrorUpdate(doc, operation);
 					successes++;
 				}

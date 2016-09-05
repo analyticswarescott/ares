@@ -98,7 +98,7 @@ public class TenantPruneTask extends AbstractTask {
 
 	protected void pruneElasticsearch(Tenant tenant) throws Exception {
 
-		ESClient client = newESClient(platform.get());
+		ESClient client = newESClient(platform);
 		for (ESKnownIndices index : ESKnownIndices.values()) {
 
 			List<String> indices = client.getAllIndices(tenant, index);
@@ -108,7 +108,7 @@ public class TenantPruneTask extends AbstractTask {
 
 	}
 
-	protected ESClient newESClient(Platform platform) {
+	protected ESClient newESClient(Provider<Platform> platform) {
 		return new ESClient(platform);
 	}
 

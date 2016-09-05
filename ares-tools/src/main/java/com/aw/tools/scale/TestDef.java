@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.scale;
 
 import java.util.ArrayList;
@@ -6,9 +7,11 @@ import java.util.concurrent.Executors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+*/
 /**
  * Settings for a test
- */
+ *//*
+
 public class TestDef implements Runnable {
 
 
@@ -53,3 +56,4 @@ public class TestDef implements Runnable {
 
 
 }
+*/

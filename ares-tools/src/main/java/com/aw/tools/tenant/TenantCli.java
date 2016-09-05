@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.tenant;
 
 import com.aw.common.tenant.Tenant;
@@ -8,9 +9,11 @@ import com.aw.platform.PlatformClient;
 import com.aw.platform.PlatformMgr;
 import org.apache.commons.cli.*;
 
+*/
 /**
  * Manage the process of firing a scale test at a platform
- */
+ *//*
+
 public class TenantCli {
 
 
@@ -77,3 +80,4 @@ public class TenantCli {
 	}
 
 }
+*/

@@ -70,7 +70,7 @@ public abstract class AbstractIncidentAction extends AbstractAction implements I
 	protected IncidentESClient getClient(ActionContext ctx) {
 
 		if (client == null) {
-			client = new IncidentESClient(ctx.getPlatform());
+			client = new IncidentESClient(ctx.getPlatformMgr());
 		}
 
 		return client;

@@ -24,13 +24,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import javax.inject.Provider;
+
+
 /**
  * Defines the State and last status activity of a Platform
  */
 public class DefaultPlatformStatus extends AbstractStatus implements PlatformStatus, NodeClientFactory {
 
 
-	Platform platform;
+	Provider<Platform> platform;
 	DocumentHandler docs;
 	RestCluster cluster;
 
@@ -44,7 +47,7 @@ public class DefaultPlatformStatus extends AbstractStatus implements PlatformSta
 	 * @param platform The platform we are collecting status for
 	 * @throws Exception If anything goes wrong
 	 */
-	public DefaultPlatformStatus(Platform platform, DocumentHandler docs, RestCluster cluster) throws Exception {
+	public DefaultPlatformStatus(Provider<Platform> platform, DocumentHandler docs, RestCluster cluster) throws Exception {
 
 		try {
 			this.platform = platform;
@@ -85,7 +88,7 @@ public class DefaultPlatformStatus extends AbstractStatus implements PlatformSta
 			//impersonate the tenant to collect its status
 			Impersonation.impersonateTenant(tenant);
 			try {
-				status.collect(zk, platform, tenant, docs);
+				status.collect(zk, platform.get(), tenant, docs);
 			} finally {
 				Impersonation.unImpersonate();
 			}
@@ -106,7 +109,7 @@ public class DefaultPlatformStatus extends AbstractStatus implements PlatformSta
 		}
 
 		//get node performance statuses since timestamp
-		for (PlatformNode node : platform.getNodes().values()) {
+		for (PlatformNode node : platform.get().getNodes().values()) {
 
 			//TODO: how to mock this for testing?
 			NodeClient nc = ncf.newNodeClient(node);
@@ -119,7 +122,7 @@ public class DefaultPlatformStatus extends AbstractStatus implements PlatformSta
 
 	@Override
 	public NodeClient newNodeClient(PlatformNode node) {
-		return new DefaultNodeClient(node);
+		return new DefaultNodeClient(node, platform);
 	}
 
 	public Map<NodeRole, RoleStatus> getRoleStatus() { return this.roleStatus;  }

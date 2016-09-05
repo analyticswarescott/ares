@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.aw.common.inject.TestProvider;
 import org.junit.Test;
 
 import com.aw.common.TestPlatform;
@@ -23,7 +24,7 @@ public class AbstractPlatformRestDataTest {
 		final AtomicInteger refreshes = new AtomicInteger(0);
 		Platform platform = new TestPlatform();
 
-		AbstractPlatformRestData data = new AbstractPlatformRestData(NodeRole.REST, Rest.PORT, platform) {
+		AbstractPlatformRestData data = new AbstractPlatformRestData(NodeRole.REST, Rest.PORT, new TestProvider<Platform>(platform)) {
 
 			@Override
 			protected boolean shouldRefresh(String checkPayload) throws ProcessingException {
@@ -47,7 +48,7 @@ public class AbstractPlatformRestDataTest {
 
 			@Override
 			protected RestClient getClient() {
-				return new RestClient() {
+				return new RestClient(new TestProvider<>(platform)) {
 					@Override
 					public String getString(String path) throws Exception {
 						return "data";

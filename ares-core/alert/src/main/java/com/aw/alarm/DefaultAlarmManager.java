@@ -24,7 +24,7 @@ public class DefaultAlarmManager implements AlarmManager {
 	@Override
 	public void createAlarm(Alarm alarm) {
 
-		AlarmESClient client = newAlarmESClient(platform.get());
+		AlarmESClient client = newAlarmESClient(platform);
 		client.createAlarm(alarm);
 
 	}
@@ -33,7 +33,7 @@ public class DefaultAlarmManager implements AlarmManager {
 	 * @param platform the platform for which the client should be created
 	 * @return a new alarm elasticsearch client
 	 */
-	protected AlarmESClient newAlarmESClient(Platform platform) {
+	protected AlarmESClient newAlarmESClient(Provider<Platform> platform) {
 		return new AlarmESClient(platform);
 	}
 

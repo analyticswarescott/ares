@@ -1,5 +1,6 @@
 package com.aw.incident;
 
+import com.aw.common.util.RestResponse;
 import com.aw.common.util.es.ESKnownIndices;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -18,6 +19,8 @@ import com.aw.unity.DataType;
 import com.aw.unity.UnityInstance;
 import com.aw.unity.es.UnityESClient;
 
+import javax.inject.Provider;
+
 /**
  * This incident specific class provides apis needed within spark while processing incidents. It should not be required once
  * spark 1.5.2 and elasticsearch 2.0 library issues are resolved so that we can import elasticsearch 2.0 client libraries into
@@ -28,7 +31,7 @@ import com.aw.unity.es.UnityESClient;
  */
 public class IncidentESClient extends UnityESClient implements TenantAware {
 
-	public IncidentESClient(Platform platform) {
+	public IncidentESClient(Provider<Platform> platform) {
 		super(platform);
 	}
 
@@ -50,9 +53,9 @@ public class IncidentESClient extends UnityESClient implements TenantAware {
 	public VersionedObject<Incident> getIncident(DataType type, String guid, int maxRetries, long delay) throws Exception {
 
 		//search indexes that apply
-		HttpResponse response = get("/_cat/indices/" + ESKnownIndices.INCIDENTS.toPrefix(Tenant.forId(getTenantID())) + "*");
+		RestResponse response = get("/_cat/indices/" + ESKnownIndices.INCIDENTS.toPrefix(Tenant.forId(getTenantID())) + "*");
 
-		JSONArray array = new JSONArray(IOUtils.toString(response.getEntity().getContent()));
+		JSONArray array = new JSONArray(response.payloadToString());
 
 		//order by most recent first
 
@@ -69,17 +72,17 @@ public class IncidentESClient extends UnityESClient implements TenantAware {
 
 				response = get("/" + array.getJSONObject(x).getString("index") + "/" + type.getName() + "/" + guid);
 
-				String data = IOUtils.toString(response.getEntity().getContent());
+				String data = response.payloadToString();
 
 				//if we hit max retries, throw
 				//try again if we get a 404
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+				if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
 					Thread.sleep(delay);
 				}
 
 				//anything other than 404 is an immediate error
-				else if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-					throw new ProcessingException("error getting incident from elasticsearch: " + response.getStatusLine().toString());
+				else if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+					throw new ProcessingException("error getting incident from elasticsearch: " + response.toString());
 				}
 
 				else {

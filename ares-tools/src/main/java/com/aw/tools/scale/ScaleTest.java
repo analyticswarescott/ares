@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.scale;
 
 import com.aw.common.util.JSONUtils;
@@ -9,16 +10,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+*/
 /**
  * Manage the process of firing a scale test at a platform
- */
+ *//*
+
 public class ScaleTest {
 
+*/
 /*	static Option PLATFORM = OptionBuilder
 		.withDescription("document file path")
 		.hasArg()
 		.withArgName("platform")
-		.create("platform");*/
+		.create("platform");*//*
+
 
 	static Option TESTDEF = OptionBuilder
 		.withDescription("document file path")
@@ -46,13 +51,15 @@ public class ScaleTest {
 
 		//System.out.println(p.toString());
 
+*/
 /*		//test def -- TODO: this can be used to generate JSON from the default object while the def is volatile
 		TestDef test1 = new TestDef();
 		test1.setTestName("Emergency Broadcast System");
 		TestTenantGroup tg1 = new TestTenantGroup();
 		test1.getTenantGroups().add(tg1);
 		String s = JSONUtils.objectToString(test1);
-		System.out.println(s);*/
+		System.out.println(s);*//*
+
 
 		//Load test def
 		File f = new File(testDefFile);
@@ -73,3 +80,4 @@ public class ScaleTest {
 	}
 
 }
+*/

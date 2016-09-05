@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.scale;
 
 import java.util.HashMap;
@@ -12,10 +13,13 @@ import com.aw.tools.generators.BundleGenerator;
 import com.aw.tools.generators.EDRGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+*/
 /**
  * Definition for launching a group of like test tenants
- */
+ *//*
+
 public class TestTenantGroup implements Runnable {
+
 
 
 
@@ -176,7 +180,7 @@ public class TestTenantGroup implements Runnable {
 		Tenant t = Tenant.forId(tenantID);
 		System.out.println(t.toString());
 
-		PlatformClient pc = new PlatformClient(PlatformMgr.getCachedPlatform());
+		PlatformClient pc = new PlatformClient();
 
 		if (pc.tenantExists(t)) {
 			System.out.println(" tenant already exists with ID " + t.getTenantID());
@@ -299,3 +303,4 @@ public class TestTenantGroup implements Runnable {
 	}
 
 }
+*/

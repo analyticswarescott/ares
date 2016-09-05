@@ -25,7 +25,7 @@ import com.aw.util.Statics;
 
 public class LocalRestMemberTest {
 
-	PlatformMgr mgr = null;
+/*	PlatformMgr mgr = null;
 	LocalRestMember member = null;
 	TestDocumentHandler docHandler = null;
 	TestRestClient restClient = null;
@@ -86,6 +86,6 @@ public class LocalRestMemberTest {
 		}
 
 
-	}
+	}*/
 
 }

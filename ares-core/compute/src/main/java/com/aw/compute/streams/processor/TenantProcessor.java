@@ -3,6 +3,7 @@ package com.aw.compute.streams.processor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import com.aw.platform.PlatformMgr;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class TenantProcessor implements StringTupleProcessor, Dependent {
 			final String payload = tenantDescriptor.toString();
 
 			logger.warn("about to provision tenant " + tenantID);
-			new PlatformClient(getDependency(Platform.class)).provision(JSONUtils.objectFromString(tenantDescriptor.toString(), Tenant.class));
+			new PlatformClient(getDependency(PlatformMgr.class)).provision(JSONUtils.objectFromString(tenantDescriptor.toString(), Tenant.class));
 			logger.warn("tenant provisioned:  " + tenantID);
         }
         catch (Exception ex) {

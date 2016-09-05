@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aw.common.util.*;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
@@ -17,10 +17,6 @@ import com.aw.common.exceptions.ConfigurationException;
 import com.aw.common.exceptions.ProcessingException;
 import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.HttpMethod;
-import com.aw.common.util.HttpStatusUtils;
-import com.aw.common.util.JSONHandler;
-import com.aw.common.util.RestClient;
 import com.aw.document.Document;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentType;
@@ -30,6 +26,8 @@ import com.aw.platform.PlatformMgr;
 import com.aw.platform.PlatformNode;
 import com.google.common.base.Preconditions;
 
+import javax.inject.Provider;
+
 public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 
 	private static final Logger logger = Logger.getLogger(ESClient.class);
@@ -37,7 +35,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	private static final String UPDATE_PREFIX = "{\"doc\":";
 	private static final String UPDATE_SUFFIX = "}";
 
-	public ESClient(Platform platform) {
+	public ESClient(Provider<Platform> platform) {
 		super(NodeRole.ELASTICSEARCH, platform);
 	}
 
@@ -55,10 +53,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	public boolean updateFull(String tenant, ESKnownIndices index, Instant time, String type, String id, long previousVersion, String json) throws Exception {
 
 		//just put the document in again, replacing the old document and incrementing the version
-		HttpResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(Tenant.forId(tenant), index, time) + "/" + type + "/" + id + "?version=" + previousVersion , json);
-		String response = IOUtils.toString(resp.getEntity().getContent());
+		RestResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(Tenant.forId(tenant), index, time) + "/" + type + "/" + id + "?version=" + previousVersion , json);
+		String response = resp.payloadToString();
 
-		return HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode());
+		return HttpStatusUtils.isSuccessful(resp.getStatusCode());
 
 	}
 
@@ -78,12 +76,12 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 		String indexName = index.buildIndexFor(Tenant.forId(getTenantID()), time);
 
 		//execute the update
-		HttpResponse resp = execute(HttpMethod.POST, "/" + indexName + "/" + type + "/" + docId + "/_update" , UPDATE_PREFIX + data + UPDATE_SUFFIX);
+		RestResponse resp = execute(HttpMethod.POST, "/" + indexName + "/" + type + "/" + docId + "/_update" , UPDATE_PREFIX + data + UPDATE_SUFFIX);
 
-		String response = IOUtils.toString(resp.getEntity().getContent());
+		String response = resp.payloadToString();
 
-		if (!HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode())) {
-			throw new Exception("error updating " + type + " : " + resp.getStatusLine() + " : " + response);
+		if (!HttpStatusUtils.isSuccessful(resp.getStatusCode())) {
+			throw new Exception("error updating " + type + " : " + resp.getStatusCode() + " : " + response);
 		}
 
 		//else everything went well
@@ -101,10 +99,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public void updateRaw(String index, String type, String docId, String json) throws Exception {
 
-		HttpResponse resp = execute(HttpMethod.POST, "/" + index + "/" + type + "/" + docId + "/_update" , json);
-		String response = IOUtils.toString(resp.getEntity().getContent());
-		if (!HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode())) {
-			throw new Exception("error updating " + type + " : " + resp.getStatusLine() + " : " + IOUtils.toString(resp.getEntity().getContent()));
+		RestResponse resp = execute(HttpMethod.POST, "/" + index + "/" + type + "/" + docId + "/_update" , json);
+		String response = resp.payloadToString();
+		if (!HttpStatusUtils.isSuccessful(resp.getStatusCode())) {
+			throw new Exception("error updating " + type + " : " + resp.getStatusCode() + " : " + resp.payloadToString());
 		}
 
 		//else everything went well
@@ -135,13 +133,12 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 		if (getTenantID().equals(Tenant.SYSTEM_TENANT_ID) || indexName.startsWith(index.toPrefix(Tenant.forId(getTenantID())))) {
 
 			//delete all indices matching the pattern
-			HttpResponse response = execute(HttpMethod.DELETE, "/" + index.toPrefix(Tenant.forId(getTenantID())) + "*");
+			RestResponse response = execute(HttpMethod.DELETE, "/" + index.toPrefix(Tenant.forId(getTenantID())) + "*");
 
-			//consume the response payload
-			EntityUtils.consume(response.getEntity());
 
-			if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-				throw new ConfigurationException("error deleting index " + indexName + " : " + response.getStatusLine());
+
+			if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+				throw new ConfigurationException("error deleting index " + indexName + " : " + response.getStatusCode());
 			}
 
 		}
@@ -164,10 +161,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 			logger.warn("deleting tenant index " + index);
 
 			//delete all indices matching the pattern
-			HttpResponse response = execute(HttpMethod.DELETE, "/" + index.toPrefix(Tenant.forId(getTenantID())) + "*");
-			EntityUtils.consume(response.getEntity());
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-				platformMgr.handleError("failed to delete index " + index + " message from es: " + response.getStatusLine(), NodeRole.REST); //shouldn't happen
+			RestResponse response = execute(HttpMethod.DELETE, "/" + index.toPrefix(Tenant.forId(getTenantID())) + "*");
+
+			if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+				platformMgr.handleError("failed to delete index " + index + " message from es: " + response.getStatusCode(), NodeRole.REST); //shouldn't happen
 				continue;
 			}
 
@@ -185,10 +182,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public List<String> getAllIndices(Tenant tenant, ESKnownIndices index) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.GET, "/_cat/indices");
+		RestResponse response = execute(HttpMethod.GET, "/_cat/indices");
 
 		List<String> ret = new ArrayList<String>();
-		JSONArray indexArray = new JSONArray(IOUtils.toString(response.getEntity().getContent()));
+		JSONArray indexArray = new JSONArray(response.payloadToString());
 		for (int x=0; x<indexArray.length(); x++) {
 
 			String strIndex = indexArray.getString(x);
@@ -209,9 +206,9 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public boolean indexExists(ESKnownIndices index, Instant time) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.HEAD, "/" + indexForTenant(Tenant.forId(getTenantID()), index, time));
+		RestResponse response = execute(HttpMethod.HEAD, "/" + indexForTenant(Tenant.forId(getTenantID()), index, time));
 
-		boolean ret = HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode());
+		boolean ret = HttpStatusUtils.isSuccessful(response.getStatusCode());
 
 		return ret;
 
@@ -261,15 +258,13 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 		String adjustedMappings = getAdjustedMappings(indexDoc, platform);
 
 		//apply the index
-		HttpResponse response = execute(HttpMethod.POST, "/" + indexName, adjustedMappings);
+		RestResponse response = execute(HttpMethod.POST, "/" + indexName, adjustedMappings);
 
-
-		EntityUtils.consume(response.getEntity()); //consume response TODO: do something with the response
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 
 			//TODO: trying to extract the response content gives closed stream error
 			throw new ProcessingException("error applying index mappings, response from elasticsearch: "
-					+ response.getStatusLine() );
+					+ response.getStatusCode() );
 
 		}
 
@@ -350,19 +345,19 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	//TODO: re-work
 	public long docCount(String index, String type) throws Exception{
 
-		HttpResponse resp = execute(HttpMethod.GET, "/" + index + "/" + type + "/_count");
+		RestResponse resp = execute(HttpMethod.GET, "/" + index + "/" + type + "/_count");
 		JSONObject o = (JSONObject) getJSONEntity(resp);
 
 		return Long.parseLong(o.getString("count"));
 
 	}
 
-	protected Object getJSONEntity( HttpResponse response ) throws Exception {
+	protected Object getJSONEntity( RestResponse response ) throws Exception {
 
-		String data = IOUtils.toString(response.getEntity().getContent());
+		String data = response.payloadToString();
 
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-			throw new Exception("Unexpected http error: " + response.getStatusLine().getStatusCode() + " : " + data);
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+			throw new Exception("Unexpected http error: " + response.getStatusCode() + " : " + data);
 		}
 
 		try {

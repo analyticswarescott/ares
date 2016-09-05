@@ -43,7 +43,7 @@ public class PlatformUpdater  {
 
 
 	private boolean nodeOnCorrectVersion(PlatformNode node) throws Exception {
-		NodeClient nc = new DefaultNodeClient(node);
+		NodeClient nc = new DefaultNodeClient(node, platformMgr);
 		NodeStatus ns = null;
 
 
@@ -117,7 +117,7 @@ public class PlatformUpdater  {
 	public boolean checkNodeVersion(PlatformNode node) {
 
 		try {
-			NodeClient nc = new DefaultNodeClient(node);
+			NodeClient nc = new DefaultNodeClient(node, platformMgr);
 			NodeStatus ns = nc.getNodeStatus();//TODO: upgrading status...needed?
 
 			logger.warn("checkNodeVersion: version of node " + node.getHost() + " is " + ns.getVersion());
@@ -266,7 +266,7 @@ public class PlatformUpdater  {
 
 
 	private void waitForRunning(PlatformNode node) throws Exception {
-		NodeClient nc = new DefaultNodeClient(node);
+		NodeClient nc = new DefaultNodeClient(node, platformMgr);
 		NodeStatus ns = null;
 
 

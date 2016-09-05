@@ -10,13 +10,15 @@ import com.aw.compute.streams.exceptions.DriverInitializationException;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformClient;
 
+import javax.inject.Provider;
+
 /**
  * REST calls for driver and processor operations
  */
 public class ComputeRestClient extends PlatformClient {
  public static final Logger logger = LoggerFactory.getLogger(ComputeRestClient.class);
 
- 	public ComputeRestClient(Platform platform) {
+ 	public ComputeRestClient(Provider<Platform> platform) {
  		super(platform);
 	}
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.aw.common.util.RestResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -26,6 +27,8 @@ import com.aw.platform.Platform;
 import com.aw.platform.PlatformNode;
 import com.google.common.base.Preconditions;
 
+import javax.inject.Provider;
+
 /**
  * RESTful implementation for document handler. The idea here is that any node in the platform can connect to a remote
  * document handler for configuration documents. Not all methods are guaranteed to be implemented.
@@ -38,7 +41,7 @@ public class DocumentHandlerRest extends RestClient implements SequencedDocument
 
 	public static final Logger logger = Logger.getLogger(DocumentHandlerRest.class);
 
-	public DocumentHandlerRest(String tenantID, Platform platform) {
+	public DocumentHandlerRest(String tenantID, Provider<Platform> platform) {
 		super(NodeRole.REST, platform);
 
 		//we are scoped to the tenant ID at the time we were created for the current thread
@@ -46,8 +49,8 @@ public class DocumentHandlerRest extends RestClient implements SequencedDocument
 
 	}
 
-	public DocumentHandlerRest(String tenantID, PlatformNode target) {
-		super(target, NodeRole.REST);
+	public DocumentHandlerRest(String tenantID, PlatformNode target, Provider<Platform> platform) {
+		super(target, NodeRole.REST, platform);
 		setTenant(Tenant.forId(tenantID));
 	}
 
@@ -418,22 +421,22 @@ public class DocumentHandlerRest extends RestClient implements SequencedDocument
 
 	private String put(String path, String payload) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.PUT, getBasePath() + path + "?tenant=" + getTenantID(), payload);
-		return IOUtils.toString(response.getEntity().getContent());
+		RestResponse response = execute(HttpMethod.PUT, getBasePath() + path + "?tenant=" + getTenantID(), payload);
+		return response.payloadToString();
 
 	}
 
 	private String delete(String path) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.DELETE, getBasePath() + path + "?tenant=" + getTenantID());
-		return IOUtils.toString(response.getEntity().getContent());
+		RestResponse response = execute(HttpMethod.DELETE, getBasePath() + path + "?tenant=" + getTenantID());
+		return response.payloadToString();
 
 	}
 
 	private String post(String path, String payload) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.POST, getBasePath() + path + "?tenant=" + getTenantID(), payload);
-		return IOUtils.toString(response.getEntity().getContent());
+		RestResponse response = execute(HttpMethod.POST, getBasePath() + path + "?tenant=" + getTenantID(), payload);
+		return response.payloadToString();
 
 	}
 

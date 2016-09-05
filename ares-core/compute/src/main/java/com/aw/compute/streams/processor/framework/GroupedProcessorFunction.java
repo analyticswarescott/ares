@@ -2,6 +2,7 @@ package com.aw.compute.streams.processor.framework;
 
 import java.io.Serializable;
 
+import com.aw.platform.PlatformMgr;
 import com.aw.utils.kafka.Offset;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -167,7 +168,7 @@ public class GroupedProcessorFunction extends TupleProcessorFunction implements 
 			} catch (Exception e) {
 
 				//handle the exception within the DG platform and rethrow to spark
-				new PlatformClient(getDependency(Platform.class)).logError(new StreamProcessingException("error processing " + m_processor, e), NodeRole.SPARK_WORKER);
+				new PlatformClient(getDependency(PlatformMgr.class)).logError(new StreamProcessingException("error processing " + m_processor, e), NodeRole.SPARK_WORKER);
 
 			}
 

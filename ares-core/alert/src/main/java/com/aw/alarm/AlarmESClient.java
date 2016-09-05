@@ -5,11 +5,13 @@ import org.apache.log4j.Logger;
 import com.aw.common.util.es.ESClient;
 import com.aw.platform.Platform;
 
+import javax.inject.Provider;
+
 public class AlarmESClient extends ESClient {
 
 	private static final Logger LOGGER = Logger.getLogger(AlarmESClient.class);
 
-	public AlarmESClient(Platform platform) {
+	public AlarmESClient(Provider<Platform> platform) {
 		super(platform);
 	}
 

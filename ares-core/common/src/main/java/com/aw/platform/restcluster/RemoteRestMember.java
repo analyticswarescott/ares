@@ -2,6 +2,9 @@ package com.aw.platform.restcluster;
 
 import java.io.InputStream;
 
+import com.aw.common.exceptions.ProcessingException;
+import com.aw.common.util.RestResponse;
+import com.aw.platform.PlatformMgr;
 import com.google.inject.Provider;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,7 +30,7 @@ public class RemoteRestMember extends PlatformClient implements RestMember, Prov
 	public static Logger logger = LoggerFactory.getLogger(RemoteRestMember.class);
 
 	public RemoteRestMember() {
-		super((Platform)null);
+		super((PlatformMgr)null);
 	}
 
 	@Override
@@ -41,12 +44,12 @@ public class RemoteRestMember extends PlatformClient implements RestMember, Prov
 	}
 
 
-	public HttpResponse execute(HttpMethod method, String path, InputStream payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, InputStream payload)  {
 		return execute(method, path, new InputStreamEntity(payload, -1L));
 	}
 
 	@Override
-	public HttpResponse execute(HttpMethod method, String path, HttpEntity payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, HttpEntity payload)  {
 
 
 		logger.warn("in RR Member execute");
@@ -54,17 +57,16 @@ public class RemoteRestMember extends PlatformClient implements RestMember, Prov
 		//make sure node is set
 		if (specificNode == null) {
 			logger.warn(" debug not set in RR Member m_host is " + m_host);
-			specificNode = platform.getNode(m_host);
-		}
-
-		//if it's still null, error
-		if (specificNode == null) {
-			throw new NodeNotFoundException("couldn't find remote rest member to communicate with: " + m_host);
+			specificNode = platform.get().getNode(m_host);
 		}
 
 
 		logger.debug("about to call RestClient execute method");
-		return super.execute(method, path, payload);
+		try {
+			return super.execute(method, path, payload);
+		} catch (ProcessingException e) {
+			throw new RuntimeException((e));
+		}
 
 	}
 
@@ -91,6 +93,6 @@ public class RemoteRestMember extends PlatformClient implements RestMember, Prov
 
 	@Override
 	public Platform get() {
-		return platform;
+		return platform.get();
 	}
 }

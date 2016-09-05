@@ -239,7 +239,7 @@ public class TenantMgr {
     private void provisionSystemTenant() throws Exception {
 
     	//check elasticsearch
-    	ESClient client = new ESClient(platform.get());
+    	ESClient client = new ESClient(platform);
 
     	//TODO: automatically do this using the topic enum
 

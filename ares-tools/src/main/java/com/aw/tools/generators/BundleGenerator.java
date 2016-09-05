@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.generators;
 
 import java.time.Instant;
@@ -70,22 +71,28 @@ public class BundleGenerator extends AbstractEventGenerator {
 			.isRequired(true)
 			.create("server");
 
-	/**
+	*/
+/**
 	 * Supported bundle formats
-	 */
+	 *//*
+
 	public enum Format {
 		XML,
 		JSON
 	}
 
-	/**
+	*/
+/**
 	 * Command line options for this tool
-	 */
+	 *//*
+
 	public static class Cli extends DGCommandLine {
 
-		/**
+		*/
+/**
 		 * serial version UID
-		 */
+		 *//*
+
 		private static final long serialVersionUID = 1L;
 
 		public Cli() {
@@ -341,13 +348,15 @@ public class BundleGenerator extends AbstractEventGenerator {
 
 	}
 
-	/**
+	*/
+/**
 	 * convert the bundle to xml
 	 *
 	 * @param bundle
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
+
 	private String toXml(JSONObject bundle) throws Exception {
 
 		throw new UnsupportedOperationException("xml bundle format not supported yet");
@@ -411,7 +420,8 @@ public class BundleGenerator extends AbstractEventGenerator {
 
 	}
 
-	/**
+	*/
+/**
 {
   "tid": "48db6e86-bdf0-43b3-82a3-02b8b518bf9a",
   "pi": [
@@ -542,7 +552,8 @@ public class BundleGenerator extends AbstractEventGenerator {
   "mid": "266c45bb-7879-4c85-9e5d-a493a27d70ff"
 }
 	 *
-	 */
+	 *//*
+
 	protected static final String REFERENCE_BUNDLE_DATA =
 			"{\n" +
 			"  \"tid\": \"48db6e86-bdf0-43b3-82a3-02b8b518bf9a\",\n" +
@@ -674,3 +685,4 @@ public class BundleGenerator extends AbstractEventGenerator {
 			"  \"mid\": \"266c45bb-7879-4c85-9e5d-a493a27d70ff\"\n" +
 			"}";
 }
+*/

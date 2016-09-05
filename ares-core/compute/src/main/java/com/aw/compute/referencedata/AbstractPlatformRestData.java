@@ -10,6 +10,8 @@ import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformNode.RoleSetting;
 
+import javax.inject.Provider;
+
 /**
  * Get reference data from a particular rest location known to the platform
  *
@@ -26,11 +28,11 @@ public abstract class AbstractPlatformRestData extends AbstractReferenceData imp
 	 * @param port The node setting that holds the REST server port to connect to
 	 * @throws Exception
 	 */
-	public AbstractPlatformRestData(NodeRole role, RoleSetting port, Platform platform) throws Exception {
+	public AbstractPlatformRestData(NodeRole role, RoleSetting port, Provider<Platform> platform) throws Exception {
 		initialize(role, port, platform);
 	}
 
-	private void initialize(NodeRole role, RoleSetting port, Platform platform) throws Exception {
+	private void initialize(NodeRole role, RoleSetting port, Provider<Platform> platform) throws Exception {
 
 		//create our rest client
 		m_client = new RestClient(role, port, platform);

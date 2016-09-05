@@ -13,6 +13,8 @@ import com.aw.common.exceptions.InitializationException;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformClient;
 
+import javax.inject.Provider;
+
 public class AbstractEventGenerator extends AbstractGenerator {
 
 	protected static final String[] USERS = {
@@ -150,7 +152,7 @@ public class AbstractEventGenerator extends AbstractGenerator {
 
 	});
 
-	public AbstractEventGenerator(Platform platform) {
+	public AbstractEventGenerator(Provider<Platform> platform) {
 		setClient(
 			new PlatformClient(platform)
 

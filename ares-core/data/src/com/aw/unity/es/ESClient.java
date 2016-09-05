@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aw.common.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -22,11 +23,6 @@ import org.codehaus.jettison.json.JSONObject;
 import com.aw.common.exceptions.ProcessingException;
 import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.HttpMethod;
-import com.aw.common.util.HttpStatusUtils;
-import com.aw.common.util.JSONHandler;
-import com.aw.common.util.JSONStreamUtils;
-import com.aw.common.util.RestClient;
 import com.aw.document.Document;
 import com.aw.document.DocumentHandler;
 import com.aw.document.DocumentType;
@@ -37,6 +33,8 @@ import com.aw.platform.PlatformNode;
 import com.aw.unity.Data;
 import com.aw.util.Statics;
 import com.google.common.base.Preconditions;
+
+import javax.inject.Provider;
 
 /**
  * A general use elasticsearch client. Uses the platform to determine how to connect. This client is NOT thread safe.
@@ -81,7 +79,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	public static final String INCIDENT_INDEX = "incidents";
 	public static final String PERF_STAT_INDEX = "perf_stat";
 
-	public ESClient(Platform platform) {
+	public ESClient(Provider<Platform> platform) {
 		super(NodeRole.ELASTICSEARCH, platform);
 	}
 
@@ -111,10 +109,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	public boolean updateFull(String tenant, String index, String type, String id, long previousVersion, String json) throws Exception {
 
 		//just put the document in again, replacing the old document and incrementing the version
-		HttpResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(tenant, index) + "/" + type + "/" + id + "?version=" + previousVersion , json);
-		String response = IOUtils.toString(resp.getEntity().getContent());
+		RestResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(tenant, index) + "/" + type + "/" + id + "?version=" + previousVersion , json);
+		String response = resp.payloadToString();
 
-		return HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode());
+		return HttpStatusUtils.isSuccessful(resp.getStatusCode());
 
 	}
 
@@ -129,12 +127,12 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public void update(String index, String type, String docId, String json) throws Exception {
 
-		HttpResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(getTenantID(), index) + "/" + type + "/" + docId + "/_update" , UPDATE_PREFIX + json + UPDATE_SUFFIX);
+		RestResponse resp = execute(HttpMethod.POST, "/" + indexForTenant(getTenantID(), index) + "/" + type + "/" + docId + "/_update" , UPDATE_PREFIX + json + UPDATE_SUFFIX);
 
-		String response = IOUtils.toString(resp.getEntity().getContent());
+		String response = resp.payloadToString();
 
-		if (!HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode())) {
-			throw new Exception("error updating " + type + " : " + resp.getStatusLine() + " : " + response);
+		if (!HttpStatusUtils.isSuccessful(resp.getStatusCode())) {
+			throw new Exception("error updating " + type + " : " + resp + " : " + response);
 		}
 
 		//else everything went well
@@ -152,10 +150,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public void updateRaw(String index, String type, String docId, String json) throws Exception {
 
-		HttpResponse resp = execute(HttpMethod.POST, "/" + index + "/" + type + "/" + docId + "/_update" , json);
-		String response = IOUtils.toString(resp.getEntity().getContent());
-		if (!HttpStatusUtils.isSuccessful(resp.getStatusLine().getStatusCode())) {
-			throw new Exception("error updating " + type + " : " + resp.getStatusLine() + " : " + IOUtils.toString(resp.getEntity().getContent()));
+		RestResponse resp = execute(HttpMethod.POST, "/" + index + "/" + type + "/" + docId + "/_update" , json);
+		String response = resp.payloadToString();
+		if (!HttpStatusUtils.isSuccessful(resp.getStatusCode())) {
+			throw new Exception("error updating " + type + " : " + resp + " : " + resp.payloadToString());
 		}
 
 		//else everything went well
@@ -217,7 +215,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 				//post it using our standard charset
 				String path = "/" + indexForTenant(tenant, index) + "/_bulk";
 				in = new BufferedInputStream(new FileInputStream(tf));
-				HttpResponse resp = execute(HttpMethod.POST, path, in);
+				RestResponse resp = execute(HttpMethod.POST, path, in);
 
 				//close the input stream
 				in.close();
@@ -229,7 +227,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 				m_error = null; //reset error from any previous operation
 				m_error_ordinal = 0;
 
-				JSONStreamUtils.processArrayElements("items", resp.getEntity().getContent(), this, null);
+				JSONStreamUtils.processArrayElements("items", resp.getStream(), this, null);
 
 				//TODO: maybe log these to hadoop and include a pointer ?
 				if (m_error != null) {
@@ -239,7 +237,7 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 
 					throw new ProcessingException(" ElasticSearch errors detected on bulk insert, first error: " + m_error);
 				}
-				EntityUtils.consume(resp.getEntity());
+
 				logger.info(" inserted " + tmpFile.length() + " bytes to index " + index);
 
 			}
@@ -308,10 +306,10 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 			if (indexExists(index.getName())) {
 
 				//apply the index
-				HttpResponse response = execute(HttpMethod.DELETE, "/" + indexName);
-				EntityUtils.consume(response.getEntity());
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-					platformMgr.handleError("failed to delete index " + indexName + " message from es: " + response.getStatusLine(), NodeRole.REST); //shouldn't happen
+				RestResponse response = execute(HttpMethod.DELETE, "/" + indexName);
+
+				if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+					platformMgr.handleError("failed to delete index " + indexName + " message from es: " + response, NodeRole.REST); //shouldn't happen
 					continue;
 				}
 
@@ -329,9 +327,9 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	 */
 	public boolean indexExists(String index) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.HEAD, "/" + indexForTenant(index));
+		RestResponse response = execute(HttpMethod.HEAD, "/" + indexForTenant(index));
 
-		boolean ret = HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode());
+		boolean ret = HttpStatusUtils.isSuccessful(response.getStatusCode());
 
 		return ret;
 
@@ -379,13 +377,13 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 		String adjustedMappings = getAdjustedMappings(indexDoc, platform);
 
 		//apply the index
-		HttpResponse response = execute(HttpMethod.POST, "/" + indexName, adjustedMappings);
-		EntityUtils.consume(response.getEntity()); //consume response TODO: do something with the response
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		RestResponse response = execute(HttpMethod.POST, "/" + indexName, adjustedMappings);
+
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 
 			//TODO: trying to extract the response content gives closed stream error
 			throw new ProcessingException("error applying index mappings, response from elasticsearch: "
-					+ response.getStatusLine() );
+					+ response.payloadToString() );
 
 		}
 
@@ -466,19 +464,19 @@ public class ESClient extends RestClient implements JSONHandler, SecurityAware {
 	//TODO: re-work
 	public long docCount(String index, String type) throws Exception{
 
-		HttpResponse resp = execute(HttpMethod.GET, "/" + index + "/" + type + "/_count");
-		JSONObject o = (JSONObject) getJSONEntity(resp);
+		RestResponse resp = execute(HttpMethod.GET, "/" + index + "/" + type + "/_count");
+		JSONObject o = new JSONObject(resp.payloadToString());
 
 		return Long.parseLong(o.getString("count"));
 
 	}
 
-	protected Object getJSONEntity( HttpResponse response ) throws Exception {
+	protected Object getJSONEntity( RestResponse response ) throws Exception {
 
-		String data = IOUtils.toString(response.getEntity().getContent());
+		String data = response.payloadToString();
 
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-			throw new Exception("Unexpected http error: " + response.getStatusLine().getStatusCode() + " : " + data);
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+			throw new Exception("Unexpected http error: " + response.getStatusCode() + " : " + data);
 		}
 
 		try {

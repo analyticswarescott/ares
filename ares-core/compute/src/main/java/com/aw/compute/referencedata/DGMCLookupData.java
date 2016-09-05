@@ -1,6 +1,7 @@
 package com.aw.compute.referencedata;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.platform.NodeRole;
@@ -38,7 +39,7 @@ public class DGMCLookupData extends AbstractPlatformRestData implements Referenc
 	}
 
 	@Inject @com.google.inject.Inject
-	public DGMCLookupData(Platform platform) throws Exception {
+	public DGMCLookupData(Provider<Platform> platform) throws Exception {
 		super(NodeRole.DGMC, DGMC.PORT, platform);
 	}
 

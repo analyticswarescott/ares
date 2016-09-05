@@ -12,6 +12,7 @@ import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.compute.streams.processor.framework.IterableTupleProcessor;
 import com.aw.platform.Platform;
+import com.aw.platform.PlatformMgr;
 import com.aw.unity.Data;
 import com.aw.unity.UnityInstance;
 import com.aw.unity.es.UnityESClient;
@@ -98,6 +99,6 @@ public class GenericESProcessor extends AbstractIterableProcessor implements Dep
         }
     }
 
-    public UnityESClient getClient() { return new UnityESClient(getDependency(Platform.class)); }
+    public UnityESClient getClient() { return new UnityESClient(getDependency(PlatformMgr.class)); }
 
 }

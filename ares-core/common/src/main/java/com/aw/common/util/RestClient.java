@@ -1,15 +1,27 @@
 package com.aw.common.util;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
+import javax.annotation.Nullable;
+import javax.inject.Provider;
+
+import com.aw.common.exceptions.ProcessingException;
+import com.aw.common.system.EnvironmentSettings;
+import com.aw.platform.DefaultPlatformNode;
+import com.aw.platform.NodeRole;
+import com.aw.platform.Platform;
+import com.aw.platform.PlatformNode;
+import com.aw.platform.roles.Rest;
+import org.apache.commons.pool.ObjectPool;
+import org.apache.commons.pool.PoolableObjectFactory;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -20,18 +32,9 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.aw.common.exceptions.ProcessingException;
-import com.aw.common.system.EnvironmentSettings;
-import com.aw.platform.DefaultPlatformNode;
-import com.aw.platform.NodeRole;
-import com.aw.platform.Platform;
-import com.aw.platform.PlatformMgr;
-import com.aw.platform.PlatformNode;
-import com.aw.platform.roles.Rest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
 
@@ -42,68 +45,69 @@ import com.google.common.base.Preconditions;
  * an exception will be thrown. If a port setting is not specified, a "PORT" setting will be used if present for that node
  * role. If that is not present, an exception will be thrown.
  *
- *
+ * @author jlehmann
  *
  */
-public class RestClient {
+@SuppressWarnings("unused")
+public class RestClient implements PoolableObjectFactory<DefaultHttpClient> {
 
 	private static final Logger logger = Logger.getLogger(RestClient.class);
+	private static final String SHARED_SECRET_HEADER = "serviceSharedSecret";
 
 	//default port property if none specified
 	private static final String PORT = "PORT";
 
 	/**
+	 * maximum simultaneous rest connections from this rest client
+	 */
+	private static final int DEFAULT_MAX_ACTIVE = 10;
+
+	private ObjectPool<DefaultHttpClient> clients;
+
+	/**
 	 * Set up for raw rest access via request() - execute() will not work using this constructor, as
 	 * role and port must be set.
 	 */
-	public RestClient() {
-		this((NodeRole)null, null, PlatformMgr.getCachedPlatform());
+	public RestClient(Provider<Platform> platform) {
+		this((NodeRole)null, null, platform);
 	}
 
 
 	/**
 	 * Call a specific node
-	 * @param specificNode
-	 * @param role
-	 * @param sigChanger
+	 * @param specificNode The node for which this client is being used
+	 * @param role The role of the node
+	 * @param platform The platform provider, to keep up to date platform information
 	 */
-	public RestClient(PlatformNode specificNode, NodeRole role) {
-		this(role, role.settingValueOf(PORT), PlatformMgr.getCachedPlatform());
+	public RestClient(PlatformNode specificNode, NodeRole role, Provider<Platform> platform) {
+		this(role, role.settingValueOf(PORT), platform);
 		this.specificNode = specificNode;
 	}
 
 	/**
 	 * Rest client for role
 	 */
-	public RestClient(NodeRole role, Platform platform) {
+	public RestClient(NodeRole role, Provider<Platform> platform) {
 		this(role, role.settingValueOf(PORT), platform);
 	}
 
 	//TODO: this is needed to make calls before platform is known
 
-	public RestClient(NodeRole role, PlatformNode.RoleSetting port, Platform platform) {
+	public RestClient(NodeRole role, PlatformNode.RoleSetting port, Provider<Platform> platform) {
+		clients = new GenericObjectPool<>(this, DEFAULT_MAX_ACTIVE, GenericObjectPool.WHEN_EXHAUSTED_BLOCK, 0, DEFAULT_MAX_ACTIVE);
 		setRole(role);
 		setPort(port);
 		this.platform = platform;
 	}
 
 	/**
-	 * (re)initialize with the given platform
-	 *
-	 * @param platform
-	 */
-	public void initialize(Platform platform) {
-		this.platform = platform;
-	}
-
-	/**
 	 * Execute a GET. Everything behaves as if you sent a GET method and null payload to execute().
 	 *
-	 * @param path
-	 * @return
-	 * @throws Exception
+	 * @param path The tail end of the URI
+	 * @return The response
+	 * @throws Exception If anything goes wrong
 	 */
-	public HttpResponse get(String path) throws Exception {
+	public RestResponse get(String path) throws Exception {
 		return execute(HttpMethod.GET, path, (HttpEntity) null);
 	}
 
@@ -116,15 +120,18 @@ public class RestClient {
 	 */
 	public String getString(String path) throws Exception {
 
-		HttpResponse response = get(path);
+		try (RestResponse response = get(path)) {
 
-		//if not successful, we need to throw here
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-			throw new ProcessingException("error getting " + path + " : " + response.getStatusLine());
+			//if not successful, we need to throw here
+			if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+				throw new ProcessingException("error getting " + path + " : " + response);
+			}
+
+			//else success, return as a string
+			return response.payloadToString();
+
 		}
 
-		//else success, return as a string
-		return IOUtils.toString(response.getEntity().getContent());
 
 	}
 
@@ -146,21 +153,21 @@ public class RestClient {
 	 */
 	private <T> T executeReturnObjectInternal(HttpMethod method, String path, Class<T> type, boolean epochTime) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.GET, path);
+		try (RestResponse response = execute(HttpMethod.GET, path)) {
 
-		String content = EntityUtils.toString(response.getEntity());
+			String content = response.payloadToString();
 
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-			throw new ProcessingException("error during " + method + " rest operation, path=" + path + " type=" + type.getSimpleName() + " status=" + response.getStatusLine());
-		}
+			if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
+				throw new ProcessingException("error during " + method + " rest operation, path=" + path + " type=" + type.getSimpleName() + " status=" + response);
+			}
 
-		try {
+			try {
+				return JSONUtils.objectFromString(content, type, false, epochTime);
 
-			T ret = JSONUtils.objectFromString(content, type, false, epochTime);
-			return ret;
+			} catch (Exception e) {
+				throw new Exception("error returning object from json, path=" + path + " json=" + new JSONObject(content).toString(4), e);
+			}
 
-		} catch (Exception e) {
-			throw new Exception("error returning object from json, path=" + path + " json=" + new JSONObject(content).toString(4), e);
 		}
 
 
@@ -172,9 +179,9 @@ public class RestClient {
 	 * @param method The method
 	 * @param path The path
 	 * @return The response
-	 * @throws Exception if anything goes wrong
+	 * @throws ProcessingException if anything goes wrong
 	 */
-	public HttpResponse execute(HttpMethod method, String path) throws Exception {
+	public RestResponse execute(HttpMethod method, String path) throws ProcessingException {
 		return execute(method, path, (HttpEntity)null);
 	}
 
@@ -186,7 +193,7 @@ public class RestClient {
 	 * @param payload The content to send, if applicable
 	 * @return The response as a result of the execute
 	 */
-	public HttpResponse execute(HttpMethod method, String path, InputStream payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, InputStream payload) throws ProcessingException {
 		return execute(method, path, new InputStreamEntity(payload, -1L));
 	}
 
@@ -198,7 +205,7 @@ public class RestClient {
 	 * @param payload The content to send, if applicable
 	 * @return The response as a result of the execute
 	 */
-	public HttpResponse execute(HttpMethod method, String path, Object payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, Object payload) throws ProcessingException {
 		return execute(method, path, JSONUtils.objectToString(payload, false, false, false));
 	}
 
@@ -210,8 +217,12 @@ public class RestClient {
 	 * @param payload The content to send, if applicable
 	 * @return The response as a result of the execute
 	 */
-	public HttpResponse execute(HttpMethod method, String path, String payload) throws Exception {
-		return execute(method, path, new StringEntity(payload));
+	public RestResponse execute(HttpMethod method, String path, String payload) throws ProcessingException {
+		try {
+			return execute(method, path, new StringEntity(payload));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	/**
 	 * Send a request with a raw byte array specified as the entity payload
@@ -220,13 +231,11 @@ public class RestClient {
 	 * @param path The REST path
 	 * @param payload The entity payload
 	 * @return The response
-	 * @throws Exception If anything goes wrong
+	 * @throws ProcessingException If anything goes wrong
 	 */
-	public HttpResponse execute(HttpMethod method, String path, byte[] payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, byte[] payload) throws ProcessingException {
 		return execute(method, path, new ByteArrayEntity(payload));
 	}
-
-
 
 
 	/**
@@ -237,45 +246,17 @@ public class RestClient {
 	 * @param path The REST path
 	 * @param payload The entity payload
 	 * @return The response
-	 * @throws Exception If anything goes wrong
+	 * @throws ProcessingException If anything goes wrong
 	 */
-	public HttpResponse execute(HttpMethod method, String path, HttpEntity payload) throws Exception {
+	public RestResponse execute(HttpMethod method, String path, HttpEntity payload) throws ProcessingException {
 		//shuffle the nodes without modifying incoming list
 
 		//allow a call to a specific node
-		List<PlatformNode> nodes = null;
-
-		if (platform == null) {
-
-			Preconditions.checkNotNull(EnvironmentSettings.getFirstNodeConnect(), "no platform and no aw restawrl environment variable, cannot communicate with platform");
-			String[] hostPort = EnvironmentSettings.getFirstNodeConnect().split("\\:");
-			nodes = Collections.singletonList(new DefaultPlatformNode(hostPort[0], Rest.PORT, Integer.parseInt(hostPort[1])));
-
-		}
-
-		else {
-
-			if (specificNode != null) {
-
-				//logger.warn(" calling specific node " + m_specificNode.getHost());
-				nodes = new ArrayList<>();
-				nodes.add(specificNode);
-			}
-			else {
-				try {
-					nodes = new ArrayList<>(platform.getNodes(m_role));
-					Collections.shuffle(nodes);
-				} catch (Exception e) {
-					throw e;
-				}
-			}
-
-
-		}
+		List<PlatformNode> nodes = getNodes();
 
 		Exception lastException = null;
-		HttpUriRequest request = null;
-		HttpResponse response = null;
+		HttpUriRequest request;
+		RestResponse response = null;
 		String url = null;
 		for (PlatformNode node : nodes) {
 
@@ -284,40 +265,10 @@ public class RestClient {
 				url = getScheme() + "://" + node.getHost() + ":" + node.getSettingInt(m_port) + path;
 
 				logger.debug(" Rest URL is " + url); //TODO: promoted for ease of cluster debugging -- demote when stable
-				//System.out.println(" Rest URL is " + url); //TODO: promoted for ease of cluster debugging -- demote when stable
 
-				switch (method) {
-					case GET:
-						request = new HttpGet(url);
-						break;
-					case POST:
-						HttpPost post = new HttpPost(url);
-						post.setEntity(payload);
-						request = post;
-						break;
-					case PUT:
-						HttpPut put = new HttpPut(url);
-						put.setEntity(payload);
-						request = put;
-						break;
-					case DELETE:
-						HttpDelete delete = new HttpDelete(url);
-						request = delete;
-						break;
-					case HEAD:
-						HttpHead head = new HttpHead(url);
-						request = head;
-						break;
-					default: throw new UnsupportedOperationException("method " + method + " not supported");
-				}
+				request = generateRequest(url, method, payload);
 
-				//add shared secret if applicable
-				if (m_role == NodeRole.REST || m_role == NodeRole.NODE) {
-					String serviceSharedSecret = EnvironmentSettings.getServiceSharedSecret();
-					if ( serviceSharedSecret != null ) {
-						request.addHeader("serviceSharedSecret", serviceSharedSecret);
-					}
-				}
+				request = applyHeaders(request);
 
 				response = execute(request);
 
@@ -332,8 +283,8 @@ public class RestClient {
 
 		if (response == null) {
 			//we've tried all nodes, give up
-				throw new ProcessingException("could not communicate with " + m_role +
-					" url=" + url + ", last exception chained", lastException);
+			throw new ProcessingException("could not communicate with " + m_role +
+				" url=" + url + ", last exception chained", lastException);
 		}
 
 		else {
@@ -344,68 +295,74 @@ public class RestClient {
 
 	protected String request(HttpUriRequest request, boolean throwOnError) throws Exception {
 
-		HttpResponse response = null;
-
 		try {
 
 			//null request would mean something went wrong (if throwOnError is false)
-			String ret = null;
+			String ret;
 
 			//apply authentication to the request
 			request = applyAuthentication(request);
 
 			//add content header
-	        request.addHeader("Content-Type", "application/json;charset=UTF-8");
+			request.addHeader("Content-Type", "application/json;charset=UTF-8");
 
-	        //execute the request
-	        response = execute(request);
+			//execute the request
+			try (RestResponse response = execute(request)) {
 
-	        //get the response content as a string
-	        String strResponse = null;
-	        if (response.getEntity() != null && response.getEntity().getContent() != null) {
-	    		strResponse = IOUtils.toString(response.getEntity().getContent());
-	        }
-
-			//figure out error status if any
-			int status = response.getStatusLine().getStatusCode();
-			if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
-
-				if (throwOnError) {
-					throw new Exception("error during REST document operation (" + status + "): " + strResponse);
+				//get the response content as a string
+				String strResponse = null;
+				if (response.hasContent()) {
+					strResponse = response.payloadToString();
 				}
 
+				//figure out error status if any
+				int status = response.getStatusCode();
+				if (!HttpStatusUtils.isSuccessful(status)) {
+
+					if (throwOnError) {
+						throw new Exception("error during REST document operation (" + status + "): " + strResponse);
+					}
+
+					else {
+						logger.error("error during REST document operation (" + status + "): " + strResponse);
+						ret = null;
+					}
+
+				}
+
+				//if we're good, just return the string
 				else {
-					logger.error("error during REST document operation (" + status + "): " + strResponse);
-					ret = null;
+					ret = strResponse;
 				}
 
+				return ret;
+
 			}
 
-			//if we're good, just return the string
-			else {
-				ret = strResponse;
-			}
-
-			return ret;
 
 		} catch (Exception e) {
 			throw new Exception("error communicating with " + request.getURI(), e);
-		} finally {
-
-			//make sure response is consumed
-			if (response != null) {
-				EntityUtils.consume(response.getEntity());
-			}
-
 		}
 
 	}
 
-	protected HttpResponse execute(HttpUriRequest request) throws Exception {
+	protected RestResponse execute(HttpUriRequest request) throws Exception {
 
 		setContentType(request);
-		HttpResponse response = getClient().execute(request);
-		return response;
+
+		//take an available client
+		DefaultHttpClient client = clients.borrowObject();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+			return new DefaultRestResponse(response, clients, client);
+
+		} catch (Exception e) {
+			//on exception return the client
+			clients.returnObject(client);
+			throw e;
+		}
 
 	}
 
@@ -416,32 +373,31 @@ public class RestClient {
 	/**
 	 * Modify the request for any specific authentication details. Does nothing by default.
 	 *
-	 * @param request
-	 * @return
-	 * @throws Exception
+	 * @param request The request to authenticate
+	 * @return Authenticated request
+	 * @throws Exception if anything goes wrong
 	 */
 	protected HttpUriRequest applyAuthentication(HttpUriRequest request) throws Exception {
+		// TODO: This needs to be implemented, or removed
 		return request;
 	}
 
 	/**
-	 * @return Our http client for REST operations
-	 */
-	public HttpClient getClient() { return new DefaultHttpClient(); }
-
-	/**
 	 * @return The REST request scheme, defaults to http
 	 */
+	@JsonIgnore
 	public String getScheme() { return m_scheme; }
 	public void setScheme(String scheme) { m_scheme = scheme; }
 	private String m_scheme = "http";
 
+	@JsonIgnore
 	public NodeRole getRole() { return m_role; }
 	public void setRole(NodeRole role) { m_role = role; }
 	private NodeRole m_role;
 
 	@JsonIgnore
 	public PlatformNode.RoleSetting getPort() { return m_port; }
+	@JsonIgnore
 	public void setPort(PlatformNode.RoleSetting port) { m_port = port; }
 	private PlatformNode.RoleSetting m_port;
 
@@ -452,7 +408,100 @@ public class RestClient {
 	public void setSpecificNode(PlatformNode node) { specificNode = node; }
 	protected PlatformNode specificNode = null;
 
-	public void setPlatform(Platform platform) { this.platform = platform; }
-	protected Platform platform;
+	@JsonIgnore
+	public void setPlatform(Provider<Platform> platform) { this.platform = platform; }
+	protected Provider<Platform> platform;
 
+
+	private List<PlatformNode> getNodes() {
+		List<PlatformNode> nodes;
+
+		if (platform == null || platform.get() == null) {
+			Preconditions.checkNotNull(EnvironmentSettings.getFirstNodeConnect(), "no platform and no dg rest url environment variable, cannot communicate with platform");
+			String[] hostPort = EnvironmentSettings.getFirstNodeConnect().split(":");
+			nodes = Collections.singletonList(new DefaultPlatformNode(hostPort[0], Rest.PORT, Integer.parseInt(hostPort[1])));
+		} else {
+			if (specificNode != null) {
+
+				nodes = new ArrayList<>();
+				nodes.add(specificNode);
+			}
+			else {
+				nodes = new ArrayList<>(platform.get().getNodes(m_role));
+				Collections.shuffle(nodes);
+			}
+		}
+		return nodes;
+	}
+
+	private HttpUriRequest generateRequest(String url, HttpMethod method, @Nullable HttpEntity payload) {
+		HttpUriRequest request;
+
+		switch (method) {
+			case GET:
+				request = new HttpGet(url);
+				break;
+			case POST:
+				HttpPost post = new HttpPost(url);
+				post.setEntity(payload);
+				request = post;
+				break;
+			case PUT:
+				HttpPut put = new HttpPut(url);
+				put.setEntity(payload);
+				request = put;
+				break;
+			case DELETE:
+				request = new HttpDelete(url);
+				break;
+			case HEAD:
+				request = new HttpHead(url);
+				break;
+			default:
+				throw new UnsupportedOperationException("method " + method + " not supported");
+		}
+		return request;
+	}
+
+	private HttpUriRequest applyHeaders(HttpUriRequest request) {
+		if (m_role == NodeRole.REST || m_role == NodeRole.NODE) {
+			String serviceSharedSecret = EnvironmentSettings.getServiceSharedSecret();
+			if ( serviceSharedSecret != null ) {
+				request.addHeader(SHARED_SECRET_HEADER, serviceSharedSecret);
+			}
+		}
+		return request;
+	}
+
+	@Override
+	public void activateObject(DefaultHttpClient obj) throws Exception {
+		//no-op
+	}
+
+	@Override
+	public void destroyObject(DefaultHttpClient obj) throws Exception {
+		//no-op
+	}
+
+	@Override
+	public DefaultHttpClient makeObject() throws Exception {
+		return new DefaultHttpClient();
+	}
+
+	@Override
+	public void passivateObject(DefaultHttpClient obj) throws Exception {
+		//no-op
+	}
+
+	@Override
+	public boolean validateObject(DefaultHttpClient obj) {
+		return true;
+	}
+
+	/**
+	 * @return number of simultaneous clients active at once
+	 */
+	public int getMaxActiveClients() { return this.maxActiveClients;  }
+	public void setMaxActiveClients(int maxActiveClients) { this.maxActiveClients = maxActiveClients; }
+	private int maxActiveClients = DEFAULT_MAX_ACTIVE;
 }

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
 
+import com.aw.common.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,10 +18,6 @@ import com.aw.common.rest.security.SecurityUtil;
 import com.aw.common.spark.DriverRegistrationResponse;
 import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.HttpMethod;
-import com.aw.common.util.HttpStatusUtils;
-import com.aw.common.util.JSONUtils;
-import com.aw.common.util.RestClient;
 import com.aw.platform.exceptions.PlatformStateException;
 import com.aw.platform.monitoring.DefaultPlatformStatus;
 import com.aw.platform.monitoring.PlatformStatus;
@@ -30,6 +27,8 @@ import com.aw.platform.restcluster.SparkHandler;
 import com.aw.platform.roles.Rest;
 import com.aw.util.Statics;
 import com.google.common.base.Preconditions;
+
+import javax.inject.Provider;
 
 /**
  * Convenience rest client for platform operations
@@ -59,11 +58,11 @@ public class PlatformClient extends RestClient implements SparkHandler {
 
 	static final Logger logger = Logger.getLogger(PlatformClient.class);
 
-	public PlatformClient(PlatformNode node) {
-		super(node, NodeRole.REST);
+	public PlatformClient(PlatformNode node, Provider<Platform> platformProvider) {
+		super(node, NodeRole.REST, platformProvider);
 	}
 
-	public PlatformClient(Platform platform) {
+	public PlatformClient(Provider<Platform> platform) {
 		super(NodeRole.REST, platform);
 	}
 
@@ -71,12 +70,12 @@ public class PlatformClient extends RestClient implements SparkHandler {
 
         try {
 
-            HttpResponse resp = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/admin/register", driverInfo.toString());
+            RestResponse resp = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/admin/register", driverInfo.toString());
 
-            if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new RuntimeException(" failed to register: status  " + resp.getStatusLine().getStatusCode() );
+            if (resp.getStatusCode() != HttpStatus.SC_OK) {
+                throw new RuntimeException(" failed to register: status  " + resp.getStatusCode() );
             } else {
-				String content = IOUtils.toString(resp.getEntity().getContent());
+				String content = resp.payloadToString();
 				DriverRegistrationResponse dr  = JSONUtils.objectFromString(content, DriverRegistrationResponse.class);
 
 				return dr;
@@ -92,11 +91,11 @@ public class PlatformClient extends RestClient implements SparkHandler {
 
     	//TODO: why are we doing this all over the place? shouldn't be needed everywhere
     	SecurityUtil.setThreadSystemAccess();
-        HttpResponse resp = execute(HttpMethod.POST, com.aw.util.Statics.VERSIONED_REST_PREFIX + "/admin/register/" + driverName , processorName );
-        EntityUtils.consume(resp.getEntity());
+		RestResponse resp = execute(HttpMethod.POST, com.aw.util.Statics.VERSIONED_REST_PREFIX + "/admin/register/" + driverName , processorName );
 
-        if (resp.getStatusLine().getStatusCode() != 201) {
-            throw new InitializationException(" failed to register processor : " + processorName +  ": status  " + resp.getStatusLine().getStatusCode() );
+
+        if (resp.getStatusCode() != 201) {
+            throw new InitializationException(" failed to register processor : " + processorName +  ": status  " + resp.getStatusCode() );
         }
 
     }
@@ -108,14 +107,14 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	 */
 	public String announcePresence() throws Exception {
 
-		HttpResponse response = execute(HttpMethod.POST, PLATFORM_BASE_PATH + "/node/" + EnvironmentSettings.getHost());
+		RestResponse response = execute(HttpMethod.POST, PLATFORM_BASE_PATH + "/node/" + EnvironmentSettings.getHost());
 
-		String content = IOUtils.toString(response.getEntity().getContent());
+		String content = response.payloadToString();
 
 
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 
-			throw new PlatformStateException("error announcing presence : " + response.getStatusLine() + " : " + content);
+			throw new PlatformStateException("error announcing presence : " + response.getStatusCode() + " : " + content);
 		}
 
 		//build the platform node - because of issues converting a typed map directly to a pojo with jackson, this extra step is needed
@@ -136,12 +135,12 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	 */
 	public void requestState(PlatformState state) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.PUT, ADMIN_BASE_PATH + "/platform/" + state);
+		RestResponse response = execute(HttpMethod.PUT, ADMIN_BASE_PATH + "/platform/" + state);
 
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 
-			String strResponse = IOUtils.toString(response.getEntity().getContent());
-			throw new PlatformStateException("error setting platform state to " + state + " : " + response.getStatusLine() + " : " + strResponse);
+			String strResponse = response.payloadToString();
+			throw new PlatformStateException("error setting platform state to " + state + " : " + response.getStatusCode() + " : " + strResponse);
 
 		}
 
@@ -149,16 +148,12 @@ public class PlatformClient extends RestClient implements SparkHandler {
 
 	public void requestPlatformState(PlatformController.PlatformState state) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.PUT, PLATFORM_BASE_PATH + "/" + state);
+		RestResponse response = execute(HttpMethod.PUT, PLATFORM_BASE_PATH + "/" + state);
 
-		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+		if (response.getStatusCode() != HttpStatus.SC_OK) {
 			throw new Exception(" Platform state request failed with status "
-				+ response.getStatusLine().getStatusCode());
+				+ response.getStatusCode());
 		}
-
-/*		String content = EntityUtils.toString(response.getEntity());
-		logger.warn("state request result: " + content);*/
-		EntityUtils.consume(response.getEntity());
 
 	}
 
@@ -181,9 +176,9 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	public boolean provision(Tenant tenant) throws Exception {
 
 		logger.debug(" calling provision tenant for ID " + tenant.getTenantID());
-		HttpResponse response = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/ares/tenants", JSONUtils.objectToString(tenant));
+		RestResponse response = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/ares/tenants", JSONUtils.objectToString(tenant));
 		logger.warn(" done calling provision tenant for ID + " + tenant.getTenantID());
-		return HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode());
+		return HttpStatusUtils.isSuccessful(response.getStatusCode());
 
 	}
 
@@ -196,9 +191,9 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	public boolean unProvision(String tenantID) throws Exception {
 
 		logger.warn(" calling unProvision tenant for ID " + tenantID);
-		HttpResponse response = execute(HttpMethod.DELETE, Statics.VERSIONED_REST_PREFIX + "/ares/tenants/" + tenantID);
+		RestResponse response = execute(HttpMethod.DELETE, Statics.VERSIONED_REST_PREFIX + "/ares/tenants/" + tenantID);
 		logger.warn(" done calling unProvision tenant for ID  " + tenantID);
-		return HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode());
+		return HttpStatusUtils.isSuccessful(response.getStatusCode());
 
 	}
 
@@ -211,8 +206,8 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	public Boolean tenantExists(Tenant tenant) throws Exception {
 
 		logger.warn(" checking existence of tenant for ID " + tenant.getTenantID());
-		HttpResponse resp =  execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/documents/tenants/exists/" + tenant.getTenantID());
-		return Boolean.parseBoolean(EntityUtils.toString(resp.getEntity()));
+		RestResponse resp =  execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/documents/tenants/exists/" + tenant.getTenantID());
+		return Boolean.parseBoolean(resp.payloadToString());
 
 	}
 
@@ -253,8 +248,8 @@ public class PlatformClient extends RestClient implements SparkHandler {
 			payload = sw.toString();
 		}
 
-		HttpResponse response = execute(HttpMethod.POST, com.aw.util.Statics.VERSIONED_REST_PREFIX + path, String.valueOf(payload));
-		if (!HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		RestResponse response = execute(HttpMethod.POST, com.aw.util.Statics.VERSIONED_REST_PREFIX + path, String.valueOf(payload));
+		if (!HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 
 			if (payload instanceof Exception) {
 				logger.error("error logging to platform", (Exception)payload);
@@ -264,7 +259,7 @@ public class PlatformClient extends RestClient implements SparkHandler {
 				logger.error("error logging to platform" + String.valueOf(payload));
 			}
 
-			throw new Exception("error logging platform exception to rest: " + IOUtils.toString(response.getEntity().getContent()));
+			throw new Exception("error logging platform exception to rest: " + response.payloadToString());
 
 		}
 
@@ -276,7 +271,7 @@ public class PlatformClient extends RestClient implements SparkHandler {
 	 * @param tenant
 	 * @throws Exception
 	 */
-	public HttpResponse provisionTenant(Tenant tenant) throws Exception {
+	public RestResponse provisionTenant(Tenant tenant) throws Exception {
 
 		logger.warn(" calling provision tenant for ID " + tenant.getTenantID());
 		return execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/ares/tenants", JSONUtils.objectToString(tenant));
@@ -297,7 +292,7 @@ public class PlatformClient extends RestClient implements SparkHandler {
 		//TODO: replace with logging and add logging config to test framework
 		System.out.println("posting bundle\n\turl=" + path + "\n\tmachine=" + machineID + "\n\tid=" + payloadID);
 
-		HttpResponse response = execute(HttpMethod.POST, path, entity);
+		RestResponse response = execute(HttpMethod.POST, path, entity);
 
 	}
 

@@ -1,7 +1,10 @@
-package com.aw.compute.streams.processor.referencedata;
+/*package com.aw.compute.streams.processor.referencedata;
 
+import com.aw.common.inject.TestProvider;
+import com.aw.platform.Platform;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import com.aw.common.TestPlatform;
 import com.aw.common.util.RestClient;
@@ -26,7 +29,7 @@ public class OperationTypeLookupDataTest {
 	public void check() throws Exception {
 
 		//TODO: dependency injection
-		OperationTypeLookupData data = new OperationTypeLookupData(new TestPlatform()) {
+		OperationTypeLookupData data = new OperationTypeLookupData(new TestProvider<Platform>(mock(Platform.class))) {
 
 			@Override
 			protected RestClient getClient() {
@@ -48,10 +51,10 @@ public class OperationTypeLookupDataTest {
 
 		};
 
-	/*	assertEquals("user_print_file", data.get("22"));
+	*//*	assertEquals("user_print_file", data.get("22"));
 		assertNull("expected null for missing ot mapping", data.get("100"));
-		assertNull("expected null for null key", data.get(null));*/
+		assertNull("expected null for null key", data.get(null));*//*
 
 	}
 
-}
+}*/

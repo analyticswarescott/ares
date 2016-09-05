@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.generators;
 
 import java.io.BufferedOutputStream;
@@ -92,14 +93,18 @@ public class EDRGenerator extends AbstractEventGenerator {
 
 	}
 
-	/**
+	*/
+/**
 	 * Command line options for this tool
-	 */
+	 *//*
+
 	public static class Cli extends DGCommandLine {
 
-		/**
+		*/
+/**
 		 * serial version UID
-		 */
+		 *//*
+
 		private static final long serialVersionUID = 1L;
 
 		public Cli() {
@@ -181,14 +186,16 @@ public class EDRGenerator extends AbstractEventGenerator {
 
 	}
 
-	/**
+	*/
+/**
 	 * Populate static data up to count files
 	 *
 	 * @param count The maximum number of files to generate with the current json file
 	 * @param data The input json array of executables
 	 * @return The output json array of executables
 	 * @throws Exception
-	 */
+	 *//*
+
 	private JSONObject buildStaticData(Set<String> referencedFiles, int count, JSONObject data) throws Exception {
 
 		JSONArray executables = data.getJSONArray("OnDiskExecutables");
@@ -289,3 +296,4 @@ public class EDRGenerator extends AbstractEventGenerator {
 	}
 
 }
+*/

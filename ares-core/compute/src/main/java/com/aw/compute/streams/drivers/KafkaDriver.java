@@ -99,7 +99,7 @@ public class KafkaDriver implements Driver, Dependent {
 	public KafkaDriver(PlatformMgr platformMgr, Provider<DocumentHandler> docs) {
 		this.platformMgr = platformMgr;
 		this.docs = docs;
-		this.rest = new ComputeRestClient(platformMgr.getPlatform());
+		this.rest = new ComputeRestClient(platformMgr);
 	}
 
 	@Override
@@ -356,7 +356,7 @@ public class KafkaDriver implements Driver, Dependent {
 
 	private PlatformClient getClient() {
 		if (client == null) {
-			client = new PlatformClient(platformMgr.getPlatform());
+			client = new PlatformClient(platformMgr);
 		}
 		return client;
 	}

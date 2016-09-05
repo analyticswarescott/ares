@@ -277,7 +277,7 @@ public class DocumentMgr implements TenantAware {
 
 						//return a rest document handler
 						logger.info("no internal document handler detected, creating rest handler for tenant " + getTenantID());
-						ret = new DocumentHandlerRest(tenantID, platformMgr.get());
+						ret = new DocumentHandlerRest(tenantID, platformMgr);
 						docHandlers.put(tenantID, ret);
 
 					}

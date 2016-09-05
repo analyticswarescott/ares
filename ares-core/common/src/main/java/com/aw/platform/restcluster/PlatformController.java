@@ -526,7 +526,7 @@ public class PlatformController implements TenantAware {
     }
 
     public NodeClient newNodeClient(PlatformNode node) {
-    	return new DefaultNodeClient(node);
+    	return new DefaultNodeClient(node, platformMgr);
     }
 
 

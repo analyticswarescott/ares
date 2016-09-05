@@ -318,7 +318,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 
 			logger.debug("relaying get state request to leader: " + this.restCluster.getLeader().getHost());
 			RemoteRestMember rrr = (RemoteRestMember) restCluster.getLeader();
-			rrr.setPlatform(platformMgr.getPlatform());
+			rrr.setPlatform(platformMgr);
 			PlatformState state = rrr.getPlatformState();
 			return state;
 		}
@@ -339,7 +339,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
         	logger.debug("relaying provisioning of tenant to leader: " + this.restCluster.getLeader().getHost());
 
 			RemoteRestMember rrr = (RemoteRestMember)restCluster.getLeader();
-			rrr.setPlatform(platformMgr.getPlatform());
+			rrr.setPlatform(platformMgr);
 
 			boolean ret = rrr.provision(tenant);
 
@@ -558,7 +558,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 			logger.warn("relaying upgrade request to master: " + ((RestMember) restCluster.getLeader()).getHost());
 
 			RemoteRestMember rrr = (RemoteRestMember)restCluster.getLeader();
-			rrr.setPlatform(platformMgr.getPlatform());
+			rrr.setPlatform(platformMgr);
 
 			restCluster.getSystemZkAccessor().put(ZkPurpose.UPGRADE,ZkCluster.Key.UPGRADE_VERSION, upgrade);
 			rrr.upgrade(upgrade);
@@ -590,7 +590,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
     	else {
 
         	//will only work if we're master
-        	DefaultPlatformStatus status = new DefaultPlatformStatus(platformMgr.getPlatform(), docs, restCluster);
+        	DefaultPlatformStatus status = new DefaultPlatformStatus(platformMgr, docs, restCluster);
     		status.collect(restCluster.getTenantZkAccessor(), status, stattime);
     		ret = status;
 
@@ -640,7 +640,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 			}
 			logger.warn(" common JAR version is : " + TmpVersion.VERSION + " leader was identified as  " + leader.getHost());
 
-			m_leaderClient = new PlatformClient(leader);
+			m_leaderClient = new PlatformClient(leader, platformMgr);
 		}
 		return m_leaderClient;
 	}

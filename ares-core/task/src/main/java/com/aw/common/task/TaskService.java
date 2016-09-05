@@ -312,7 +312,7 @@ public class TaskService extends ZkCluster {
 	public List<TaskContainer> getContainers() throws Exception {
 		List<TaskContainer> containers = new ArrayList<TaskContainer>();
 		for (PlatformNode node : getParticipants()) {
-			containers.add(new RemoteTaskContainer(node));
+			containers.add(new RemoteTaskContainer(node, platformMgr));
 		}
 		return containers;
 	}

@@ -127,7 +127,7 @@ public class NodeManager {
     	try {
 
         	//get full platform back by announcing presence and cache it
-			String platform = new PlatformClient(platformMgr.get().get()).announcePresence();
+			String platform = new PlatformClient(platformMgr.get()).announcePresence();
 			tries = 0;
 			cachePlatform(platform);
 			return true;

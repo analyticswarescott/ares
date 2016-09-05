@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import com.aw.common.exceptions.ProcessingException;
 import com.aw.common.rest.security.TenantAware;
@@ -37,7 +38,7 @@ public class OperationTypeLookupData extends AbstractPlatformRestData implements
 	private static final Duration TTL = Duration.ofMinutes(5); //5 minute TTL for this stuff, should change very rarely
 
 	@Inject @com.google.inject.Inject
-	public OperationTypeLookupData(Platform platform) throws Exception {
+	public OperationTypeLookupData(Provider<Platform> platform) throws Exception {
 		super(NodeRole.REST, Rest.PORT, platform);
 		setTTL(TTL);
 	}

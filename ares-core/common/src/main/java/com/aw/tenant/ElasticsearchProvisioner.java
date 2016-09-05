@@ -29,7 +29,7 @@ public class ElasticsearchProvisioner implements Provisioner {
         	LOGGER.info("provisioning elasticsearch for tenant " + tenant.getTenantID());
 
         	//for each mapping, post the index to elasticsearch
-        	ESClient client = new ESClient(tenantMgr.getPlatform());
+        	ESClient client = new ESClient(tenantMgr.getPlatformMgr());
 
         	//create indexes for the current tenant
         	client.applyIndexMappings(tenantMgr.getDocs(), tenantMgr.getPlatform(), Instant.now());
@@ -57,7 +57,7 @@ public class ElasticsearchProvisioner implements Provisioner {
             LOGGER.info("un-provisioning elasticsearch for tenant " + tenant.getTenantID());
 
             //for each mapping, post the index to elasticsearch
-            ESClient client = new ESClient(tenantMgr.getPlatform());
+            ESClient client = new ESClient(tenantMgr.getPlatformMgr());
             client.removeIndexMappings(tenantMgr.getDocs(), tenantMgr.getPlatformMgr());
 
             LOGGER.info("completed un-provisioning of elasticsearch for tenant " + tenant.getTenantID());

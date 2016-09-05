@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -145,7 +146,7 @@ public class XMLBundleProcessorTest extends DGStreamUnitTest {
 		private UnityInstance unity;
 
 		@Inject @com.google.inject.Inject
-		public TestOTLookupData(UnityInstance unity, Platform platform) throws Exception {
+		public TestOTLookupData(UnityInstance unity, Provider<Platform> platform) throws Exception {
 			super(platform);
 			this.unity = unity;
 		}

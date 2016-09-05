@@ -11,6 +11,8 @@ import com.aw.platform.monitoring.NodeStatus.State;
 import com.aw.platform.nodes.NodeClient;
 import com.aw.platform.nodes.NodeClientFactory;
 
+import javax.inject.Provider;
+
 /**
  * Status for a platform role
  *
@@ -28,10 +30,10 @@ public class DefaultRoleStatus implements RoleStatus {
 	 * @param platform
 	 * @param doc
 	 */
-	public DefaultRoleStatus(Platform platform, DocumentHandler docs, NodeRole role, NodeClientFactory clients) throws Exception {
+	public DefaultRoleStatus(Provider<Platform> platform, DocumentHandler docs, NodeRole role, NodeClientFactory clients) throws Exception {
 
 		this.role = role;
-		collect(platform, docs, clients);
+		collect(platform.get(), docs, clients);
 
 	}
 

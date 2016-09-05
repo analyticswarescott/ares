@@ -1,6 +1,7 @@
 package com.aw.document;
 
 import com.aw.common.Tag;
+import com.aw.common.inject.TestProvider;
 import com.aw.platform.Platform;
 import org.apache.commons.httpclient.HttpException;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class DocumentHandlerRestTest {
 	Platform platform;
 
 	@Spy
-	DocumentHandlerRest documentHandlerRest = spy(new DocumentHandlerRest("0", platform));
+	DocumentHandlerRest documentHandlerRest = spy(new DocumentHandlerRest("0", new TestProvider<Platform>(platform)));
 
 	@Test
 	public void getTagsTest() throws Exception {

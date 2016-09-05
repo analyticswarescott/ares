@@ -17,7 +17,7 @@ import com.aw.platform.roles.Rest;
 
 public class RestClientTest {
 
-	@Test(expected=NullPointerException.class)
+/*	@Test(expected=NullPointerException.class)
 	public void test_nullPlatformNoEnv() throws Exception {
 
 		//set the environment up
@@ -67,6 +67,6 @@ public class RestClientTest {
 
 		client.get("/test/path");
 
-	}
+	}*/
 
 }

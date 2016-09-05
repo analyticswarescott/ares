@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.List;
 
+import com.aw.common.util.*;
 import com.aw.common.util.es.ESKnownIndices;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -19,15 +20,13 @@ import org.apache.log4j.Logger;
 import com.aw.common.exceptions.ProcessingException;
 import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
-import com.aw.common.util.HttpMethod;
-import com.aw.common.util.JSONHandler;
-import com.aw.common.util.JSONStreamUtils;
-import com.aw.common.util.TimeSource;
 import com.aw.common.util.es.ESClient;
 import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.util.ListMap;
 import com.aw.util.Statics;
+
+import javax.inject.Provider;
 
 /**
  * A general use elasticsearch client. Uses the platform to determine how to connect. This client is NOT thread safe.
@@ -40,7 +39,7 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 
 	private static final Logger logger = Logger.getLogger(UnityESClient.class);
 
-	public UnityESClient(Platform platform) {
+	public UnityESClient(Provider<Platform> platform) {
 		super(platform);
 	}
 
@@ -154,13 +153,13 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 
 		try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(outputFile.getFile()))) {
 
-			HttpResponse resp = execute(HttpMethod.POST, path, in);
+			RestResponse resp = execute(HttpMethod.POST, path, in);
 
 			//scan for error messages - avoid excessive memory use by streaming
 			m_error = null; //reset error from any previous operation
 			m_error_ordinal = 0;
 
-			JSONStreamUtils.processArrayElements("items", resp.getEntity().getContent(), this, null);
+			JSONStreamUtils.processArrayElements("items", resp.getStream(), this, null);
 
 			//TODO: maybe log these to hadoop and include a pointer ?
 			if (m_error != null) {
@@ -171,7 +170,6 @@ public class UnityESClient extends ESClient implements JSONHandler, SecurityAwar
 
 			}
 
-			EntityUtils.consume(resp.getEntity());
 			logger.debug(" inserted " + file.length() + " bytes to index " + index);
 
 		}

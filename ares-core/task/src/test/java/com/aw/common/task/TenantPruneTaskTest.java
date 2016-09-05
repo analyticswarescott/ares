@@ -55,7 +55,7 @@ public class TenantPruneTaskTest {
 				.when(mockClient).getAllIndices(tenant, index);
 		}
 
-		doReturn(mockClient).when(task).newESClient(any(Platform.class));
+		doReturn(mockClient).when(task).newESClient(any(PlatformMgr.class));
 
 		task.execute();
 

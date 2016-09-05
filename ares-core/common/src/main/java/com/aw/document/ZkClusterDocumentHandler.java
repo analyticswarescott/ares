@@ -243,7 +243,7 @@ public class ZkClusterDocumentHandler implements SequencedDocumentHandler {
 				if (!restNode.getHost().equals(thisHost)) {
 
 					try {
-						DocumentHandlerRest target = new DocumentHandlerRest(platformMgr.getTenantID(), restNode);
+						DocumentHandlerRest target = new DocumentHandlerRest(platformMgr.getTenantID(), platformMgr);
 						Document doc = target.getDocumentBySequence(opSequenceKey, missing);
 						wrapped.applyDocumentVerbatim(doc);
 

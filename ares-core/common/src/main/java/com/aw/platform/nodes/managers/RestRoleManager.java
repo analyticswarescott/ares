@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.aw.common.util.RestResponse;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,12 +102,11 @@ public class RestRoleManager extends AbstractRoleManager {
 
         NodeRoleStatus ret = super.getStatus();
 
-        RestClient r = new RestClient();
-		r.setRole(NodeRole.REST);
+        RestClient r = new RestClient(NodeRole.REST, platformMgr);
 		r.setPort(Rest.PORT);
 		r.setSpecificNode(m_node);
 
-        HttpResponse resp = null;
+        RestResponse resp = null;
         try {
 				resp = r.get(Statics.VERSIONED_REST_PREFIX + "/ping");
 
@@ -122,13 +122,13 @@ public class RestRoleManager extends AbstractRoleManager {
             return ret;
         }
 
-        if (resp.getStatusLine().getStatusCode() == 200) {
+        if (resp.getStatusCode() == 200) {
             ret.setState(State.RUNNING);
         }
         else {
-			logger.warn("rest status CODE error : " + resp.getStatusLine().getStatusCode());
+			logger.warn("rest status CODE error : " + resp.getStatusCode());
             ret.setState(State.ERROR);
-            ret.setStatusMessage(" REST ping call returned status " + resp.getStatusLine().getStatusCode());
+            ret.setStatusMessage(" REST ping call returned status " + resp.getStatusCode());
         }
 
         return ret;

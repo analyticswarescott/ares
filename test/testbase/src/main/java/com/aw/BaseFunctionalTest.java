@@ -317,7 +317,7 @@ public class BaseFunctionalTest {
         if ( platformDoc != null ) {
 
             //post DEFAULT platform doc to the wrapper, as it has loaded LOCAL by default
-            DocumentHandler restie = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform().get());
+            DocumentHandler restie = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatformMgr().get());
             restie.updateDocument(platformDoc);
 
             if (TestDependencies.getPlatformMgr() != null) {

@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import com.aw.common.inject.TestProvider;
+import com.aw.common.util.RestResponse;
+import com.aw.platform.Platform;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.StringEntity;
@@ -26,7 +26,8 @@ public class NodeClientTest {
 
 	private final PlatformNode platformNode = mock(PlatformNode.class);
 
-	private final DefaultNodeClient nodeClient = spy(new DefaultNodeClient(platformNode));
+	private final DefaultNodeClient nodeClient = spy(new DefaultNodeClient(platformNode, new TestProvider<Platform>(
+		mock(Platform.class))));
 
 	@Before
 	public void setUp() throws Exception {
@@ -40,11 +41,10 @@ public class NodeClientTest {
 		final String jsonData = "{\"state\": \"RUNNING\"}";
 
 		// Set up mocks
-		final HttpResponse response = mock(HttpResponse.class);
-		when(response.getEntity()).thenReturn(new StringEntity(jsonData));
+		final RestResponse response = mock(RestResponse.class);
+		when(response.payloadToString()).thenReturn(jsonData);
 		final StatusLine statusLine = mock(StatusLine.class);
-		when(statusLine.getStatusCode()).thenReturn(200);
-		when(response.getStatusLine()).thenReturn(statusLine);
+		when(response.getStatusCode()).thenReturn(200);
 		doReturn(response).when(nodeClient).execute(any(HttpMethod.class), anyString());
 
         NodeRoleStatus roleStatus = nodeClient.getRoleStatus(NodeRole.REST);
@@ -56,10 +56,9 @@ public class NodeClientTest {
     public void getRoleStatusException() throws Exception {
 
 		// Set up mocks
-		final HttpResponse response = mock(HttpResponse.class);
-		final StatusLine statusLine = mock(StatusLine.class);
-		when(statusLine.getStatusCode()).thenReturn(500);
-		when(response.getStatusLine()).thenReturn(statusLine);
+		final RestResponse response = mock(RestResponse.class);
+
+		when(response.getStatusCode()).thenReturn(500);
 		doReturn(response).when(nodeClient).execute(any(HttpMethod.class), anyString());
 
         nodeClient.getRoleStatus(NodeRole.REST);
@@ -71,11 +70,10 @@ public class NodeClientTest {
 		final String jsonData = "{\"state\": \"RUNNING\"}";
 
 		// Set up mocks
-		final HttpResponse response = mock(HttpResponse.class);
-		when(response.getEntity()).thenReturn(new StringEntity(jsonData));
-		final StatusLine statusLine = mock(StatusLine.class);
-		when(statusLine.getStatusCode()).thenReturn(200);
-		when(response.getStatusLine()).thenReturn(statusLine);
+		final RestResponse response = mock(RestResponse.class);
+		when(response.payloadToString()).thenReturn( jsonData);
+
+		when(response.getStatusCode()).thenReturn(200);
 		doReturn(response).when(nodeClient).execute(any(HttpMethod.class), anyString());
 
         NodeRoleStatus roleStatus = nodeClient.changeRoleState(NodeRole.REST, State.RUNNING);

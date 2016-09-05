@@ -91,7 +91,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 	}
 
     public PlatformClient newClient() {
-    	return new PlatformClient(getPlatform());
+    	return new PlatformClient(this);
     }
 
     /**
@@ -322,7 +322,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 	private boolean updateNodeCache(PlatformNode node, Document platformDoc) throws Exception{
 		try {
 			//TODO: inject a node client factory
-			NodeClient nc = new DefaultNodeClient(node);
+			NodeClient nc = new DefaultNodeClient(node, this);
 			nc.updatePlatformCache(platformDoc);
 			return true;
 		}
@@ -515,7 +515,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 
 	private synchronized PlatformClient getPlatformClient() {
 		if (platformClient == null) {
-			platformClient = new PlatformClient(getPlatform());
+			platformClient = new PlatformClient( this);
 		}
 		return platformClient;
 	}

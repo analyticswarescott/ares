@@ -1,3 +1,4 @@
+/*
 package com.aw.tools.generators;
 
 import java.io.File;
@@ -11,12 +12,14 @@ import org.codehaus.jettison.json.JSONObject;
 import com.aw.common.util.JSONUtils;
 import com.aw.platform.PlatformMgr;
 
+*/
 /**
  * Generates reasonable elasticsearch data for the last 30 days
  *
  *
  *
- */
+ *//*
+
 public class ESGenerator extends AbstractEventGenerator {
 
 	//{ "index" : { "_index" : "test", "_type" : "type1", "_id" : "1" } }
@@ -33,16 +36,20 @@ public class ESGenerator extends AbstractEventGenerator {
 	//maximum session length in milliseconds - 60 minutes seems reasonable
 	private static final long MAX_SESSION_LENGTH = DateUtils.MILLIS_PER_HOUR;
 
-	/**
+	*/
+/**
 	 * Build a generator for the cached platform
-	 */
+	 *//*
+
 	public ESGenerator() {
 		this(true);
 	}
 
-	/**
+	*/
+/**
 	 * @param includeEsDirectives whether to include elasticsearch { "index" ... } directives between unity data lines
-	 */
+	 *//*
+
 	public ESGenerator(boolean includeEsDirectives) {
 		super(PlatformMgr.getCachedPlatform());
 		this.includeEsDirectives = includeEsDirectives;
@@ -72,11 +79,13 @@ public class ESGenerator extends AbstractEventGenerator {
 
 	}
 
-	/**
+	*/
+/**
 	 * Close our writers after we're done generating data
 	 *
 	 * @throws Exception
-	 */
+	 *//*
+
 	private void close() throws Exception {
 
 		if (m_output == null) {
@@ -181,3 +190,4 @@ public class ESGenerator extends AbstractEventGenerator {
 
 	}
 }
+*/

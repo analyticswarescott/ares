@@ -2,19 +2,19 @@ package com.aw.common.task;
 
 import java.util.UUID;
 
+import com.aw.common.util.*;
+import com.aw.platform.Platform;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.aw.common.cluster.Member;
 import com.aw.common.task.exceptions.TaskException;
-import com.aw.common.util.HttpMethod;
-import com.aw.common.util.HttpStatusUtils;
-import com.aw.common.util.JSONUtils;
-import com.aw.common.util.RestClient;
 import com.aw.platform.NodeRole;
 import com.aw.platform.PlatformNode;
 import com.aw.util.Statics;
+
+import javax.inject.Provider;
 
 /**
  * provides access to a remote task container, usually from the controller
@@ -24,8 +24,8 @@ import com.aw.util.Statics;
  */
 public class RemoteTaskContainer extends RestClient implements Member, TaskContainer {
 
-	public RemoteTaskContainer(PlatformNode node) {
-		super(node, NodeRole.REST);
+	public RemoteTaskContainer(PlatformNode node, Provider<Platform> platformProvider) {
+		super(node, NodeRole.REST, platformProvider );
 	}
 
 	@Override
@@ -35,11 +35,11 @@ public class RemoteTaskContainer extends RestClient implements Member, TaskConta
 	@Override
 	public UUID executeTask(TaskDef taskDef) throws Exception {
 
-		HttpResponse response = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/tasks", taskDef);
+		RestResponse response = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/tasks", taskDef);
 
-		String strResponse = IOUtils.toString(response.getEntity().getContent());
+		String strResponse = response.payloadToString();
 
-		if (HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+		if (HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 			return JSONUtils.objectFromString(strResponse, UUID.class, false, false);
 		} else {
 			throw new TaskException("error executing task : " + new JSONObject(strResponse).optString(Statics.ERROR_MESSAGE));
@@ -52,15 +52,15 @@ public class RemoteTaskContainer extends RestClient implements Member, TaskConta
 
 		try {
 
-			HttpResponse response = execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/tasks/" + guid);
+			RestResponse response = execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/tasks/" + guid);
 
-			String strResponse = IOUtils.toString(response.getEntity().getContent());
-			if (HttpStatusUtils.isSuccessful(response.getStatusLine().getStatusCode())) {
+			String strResponse = response.payloadToString();
+			if (HttpStatusUtils.isSuccessful(response.getStatusCode())) {
 				return JSONUtils.objectFromString(strResponse, TaskStatus.class, false, false);
 			}
 
 			else {
-				throw new TaskException("error getting status for " + guid + " : " + response.getStatusLine() + " : " + strResponse);
+				throw new TaskException("error getting status for " + guid + " : " + response.getStatusCode() + " : " + strResponse);
 			}
 
 		} catch (TaskException e) {

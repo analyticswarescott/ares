@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.aw.common.inject.TestProvider;
 import com.aw.common.system.structure.Hive;
 import com.aw.common.zookeeper.DefaultZkAccessor;
 import com.aw.common.zookeeper.ZkAccessor;
@@ -57,7 +58,7 @@ public class DefaultPlatformStatusTest extends AbstractKafkaZkUnitTest {
 		TestDocumentHandler docs = spy(new TestDocumentHandler());
 		doReturn(Collections.singleton(doc)).when(docs).getAllTenants();
 
-		DefaultPlatformStatus status = new DefaultPlatformStatus(getPlatform(), docs, mockCluster);
+		DefaultPlatformStatus status = new DefaultPlatformStatus(new TestProvider<>(getPlatform()), docs, mockCluster);
 		//doReturn(mockNodeClient).when(status).newNodeClient(any(PlatformNode.class));
 
 		NodeClientFactory ncf = new NodeClientFactory() {

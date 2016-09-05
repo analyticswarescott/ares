@@ -1,8 +1,8 @@
 package com.aw.platform.nodes;
 
+import com.aw.common.util.RestResponse;
+import com.aw.platform.Platform;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import com.aw.platform.monitoring.NodeStatus;
 import com.aw.platform.monitoring.NodeStatus.State;
 import com.aw.util.Statics;
 
+import javax.inject.Provider;
 import java.time.Instant;
 import java.util.List;
 
@@ -31,8 +32,9 @@ import java.util.List;
 public class DefaultNodeClient extends RestClient implements NodeClient {
  public static final Logger logger = LoggerFactory.getLogger(DefaultNodeClient.class);
 
-    public DefaultNodeClient(PlatformNode remoteNode) {
-        super(remoteNode, NodeRole.NODE);
+    public DefaultNodeClient(PlatformNode remoteNode, Provider<Platform> platformProvider) {
+        super(NodeRole.NODE, platformProvider);
+		setSpecificNode(remoteNode);
 
     }
 
@@ -49,7 +51,7 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
 	private List<NodeStatus> getNodeStatusInternal(Instant timestamp) throws Exception {
 		SecurityUtil.setThreadSystemAccess();
 
-		HttpResponse resp = null;
+		RestResponse resp = null;
 
 		int tries = 0;
 		while (true) {
@@ -77,10 +79,10 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
 		if (resp == null) {
 			throw new Exception(" node status failed after 5 2s interval tries");
 		}
-		String content = EntityUtils.toString(resp.getEntity());
+		String content = resp.payloadToString();
 
-		if (resp.getStatusLine().getStatusCode() != 200) {
-			throw  new Exception("error response from getNodeStatus " + "on host: " + specificNode.getHost() + ": " + resp.getStatusLine().getStatusCode());
+		if (resp.getStatusCode() != 200) {
+			throw  new Exception("error response from getNodeStatus " + "on host: " + specificNode.getHost() + ": " + resp.getStatusCode());
 		}
 
 		//logger.debug("node status return: " + content);
@@ -94,16 +96,16 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
 		SecurityUtil.setThreadSystemAccess();
 
 		logger.warn("patching node with " + upgrade.toJSON().toString());
-		HttpResponse resp = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/node/patch", upgrade.toJSON().toString());
+		RestResponse resp = execute(HttpMethod.POST, Statics.VERSIONED_REST_PREFIX + "/node/patch", upgrade.toJSON().toString());
 
-		logger.warn(" patch http response received " + EntityUtils.toString(resp.getEntity()));
-		logger.debug("status was " + resp.getStatusLine().getStatusCode());
-		if (resp.getStatusLine().getStatusCode() != 200) {
+		logger.warn(" patch http response received " + resp.payloadToString());
+		logger.debug("status was " + resp.getStatusCode());
+		if (resp.getStatusCode() != 200) {
 			throw  new Exception("error response from node patch request " + "on host: " + specificNode.getHost()
-				+ ": " + + resp.getStatusLine().getStatusCode());
+				+ ": " + + resp.getStatusCode());
 		}
 
-		EntityUtils.consume(resp.getEntity());
+
 	}
 
 
@@ -111,15 +113,14 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
         SecurityUtil.setThreadSystemAccess();
 
 
-        HttpResponse resp = execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/node/" + role.toString() + "/status");
+        RestResponse resp = execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/node/" + role.toString() + "/status");
 
 
-        if (resp.getStatusLine().getStatusCode() != 200) {
+        if (resp.getStatusCode() != 200) {
             throw  new Exception("error response verifying node role start " + role.toString()+ "on host: " + specificNode.getHost() + ": " + resp);
         }
 
-        HttpEntity en = resp.getEntity();
-        NodeRoleStatus rs = JSONUtils.objectFromString(EntityUtils.toString(en), NodeRoleStatus.class);
+        NodeRoleStatus rs = JSONUtils.objectFromString(resp.payloadToString(), NodeRoleStatus.class);
 
         return rs;
 
@@ -138,15 +139,14 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
 
     public NodeRoleStatus changeRoleState(NodeRole role, State targetState) throws Exception{
         SecurityUtil.setThreadSystemAccess();
-        HttpResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/" + role.toString() + "/" + targetState.toString());
+        RestResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/" + role.toString() + "/" + targetState.toString());
 
 
-        if (resp.getStatusLine().getStatusCode() != 200) {
+        if (resp.getStatusCode() != 200) {
             throw  new Exception("error response for setting state to " + targetState +  " node role " + role.toString()+ "on host: " + specificNode.getHost() + ": " + resp);
         }
 
-        HttpEntity en = resp.getEntity();
-        NodeRoleStatus rs = JSONUtils.objectFromString( EntityUtils.toString(en), NodeRoleStatus.class);
+        NodeRoleStatus rs = JSONUtils.objectFromString(resp.payloadToString(), NodeRoleStatus.class);
 
         return rs;
 
@@ -159,15 +159,15 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
 		SecurityUtil.setThreadSystemAccess();
 
 		logger.warn(" about to request node state " + targetState);
-		HttpResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/"  + targetState.toString());
+		RestResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/" + targetState.toString());
 
 
-		if (resp.getStatusLine().getStatusCode() != 200) {
+		if (resp.getStatusCode() != 200) {
 			throw new Exception("error response for setting state to " + targetState);
 		}
 
-		HttpEntity en = resp.getEntity();
-		List<NodeStatus> ns = JSONUtils.listFromString( EntityUtils.toString(en), NodeStatus.class);
+
+		List<NodeStatus> ns = JSONUtils.listFromString( resp.payloadToString(), NodeStatus.class);
 
 		return ns.get(0);
 
@@ -184,34 +184,27 @@ public class DefaultNodeClient extends RestClient implements NodeClient {
         send.put("host", node.getHost());
         send.put("node", rawNode);
 
-        HttpResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node", send.toString());
+        RestResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node", send.toString());
 
-        try {
-            if (resp.getStatusLine().getStatusCode() != 200) {
-                throw new Exception("error updating node configuration " + "on host: " + specificNode.getHost() + ": " + resp + " : " + IOUtils.toString(resp.getEntity().getContent()));
-            }
-        }
-        finally {
-            EntityUtils.consume(resp.getEntity());
-        }
+
+            if (resp.getStatusCode() != 200) {
+				throw new Exception("error updating node configuration " + "on host: "
+					+ specificNode.getHost() + ": " + resp + " : " + resp.payloadToString());
+			}
+
 
     }
 
 	public void updatePlatformCache(Document platformDoc) throws Exception{
 		SecurityUtil.setThreadSystemAccess();
 
-		HttpResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/platform", platformDoc.toJSON().toString());
+		RestResponse resp = execute(HttpMethod.PUT, Statics.VERSIONED_REST_PREFIX + "/node/platform", platformDoc.toJSON().toString());
 
 
-		logger.debug(" platform cache response status " + resp.getStatusLine().getStatusCode());
-		try {
-			if (resp.getStatusLine().getStatusCode() > 202) {
+			if (resp.getStatusCode() > 202) {
 				throw new Exception("error updating platform cache " + "on host: " + specificNode.getHost() + ": " + resp);
 			}
-		}
-		finally {
-			EntityUtils.consume(resp.getEntity());
-		}
+
 
 	}
 }

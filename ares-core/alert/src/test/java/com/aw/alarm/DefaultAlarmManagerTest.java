@@ -10,6 +10,8 @@ import org.junit.Test;
 import com.aw.common.inject.TestProvider;
 import com.aw.platform.Platform;
 
+import javax.inject.Provider;
+
 public class DefaultAlarmManagerTest {
 
 	/**
@@ -18,9 +20,9 @@ public class DefaultAlarmManagerTest {
 	@Test
 	public void testCreateAlarm() {
 
-		Platform platform = mock(Platform.class);
+		Provider<Platform> platform = new TestProvider<>(mock(Platform.class));
 
-		DefaultAlarmManager mgr = new DefaultAlarmManager(new TestProvider<>(platform));
+		DefaultAlarmManager mgr = new DefaultAlarmManager(platform);
 
 		Alarm alarm = mock(Alarm.class);
 

@@ -1,3 +1,4 @@
+/*
 package com.aw.tools;
 
 import java.io.File;
@@ -29,12 +30,14 @@ import com.aw.document.DocumentHandlerRest;
 import com.aw.document.DocumentType;
 import com.aw.platform.PlatformMgr;
 
+*/
 /**
  * Used to make direct requests to the api
  *
  *
  *
- */
+ *//*
+
 @SuppressWarnings("static-access")
 public class DocTool {
 
@@ -252,3 +255,4 @@ public class DocTool {
 	}
 
 }
+*/

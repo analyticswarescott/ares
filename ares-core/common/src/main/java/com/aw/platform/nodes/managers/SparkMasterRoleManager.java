@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.aw.common.util.RestResponse;
 import org.apache.http.HttpResponse;
 
 import com.aw.common.system.EnvironmentSettings;
@@ -116,9 +117,9 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
 
         NodeRoleStatus ret = super.getStatus();
 
-        RestClient r = new RestClient(NodeRole.SPARK_MASTER, SparkMaster.SPARK_MASTER_UI_PORT, platformMgr.getPlatform());
+        RestClient r = new RestClient(NodeRole.SPARK_MASTER, SparkMaster.SPARK_MASTER_UI_PORT, platformMgr);
 		r.setSpecificNode(m_node); //make sure we are checking THIS node for a master
-        HttpResponse resp = null;
+        RestResponse resp = null;
         try {
             resp = r.get("");
         } catch (Exception e) {
@@ -127,12 +128,12 @@ public class SparkMasterRoleManager extends SparkBaseRoleManager {
             return ret;
         }
 
-        if (resp.getStatusLine().getStatusCode() == 200) {
+        if (resp.getStatusCode() == 200) {
             ret.setState(State.RUNNING);
         }
         else {
             ret.setState(State.ERROR);
-            ret.setStatusMessage(" Spark Master UI call returned status " + resp.getStatusLine().getStatusCode());
+            ret.setStatusMessage(" Spark Master UI call returned status " + resp.getStatusCode());
         }
 
         return ret;
