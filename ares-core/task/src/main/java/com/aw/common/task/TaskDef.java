@@ -256,4 +256,7 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 	public void setConfig(JSONObject config) { this.config = config; }
 	private JSONObject config;
 
+	@JsonIgnore
+	public JSONObject getConfig() { return this.config; }
+
 }

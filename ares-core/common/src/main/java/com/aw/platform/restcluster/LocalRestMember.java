@@ -491,9 +491,7 @@ public class LocalRestMember extends AbstractLocalMember implements SparkHandler
 
 		//if we are the leader
 		if (isMaster()) {
-
 			//register the processor
-			System.out.println("@@@@@@@@@@±±±±± Admin Resource registering processor " + processorName);
 			getController().registerProcessor(driverName, processorName);
 
 		} else {

@@ -58,6 +58,11 @@ public class PostgresJDBCProvider extends AbstractDocumentJDBCProvider {
 	}
 
 	@Override
+	public String getJDBCURL(Map<String, String> dbConfig) {
+		return null;
+	}
+
+	@Override
 	public void createDB(Platform platform, Tenant tenant) throws Exception {
 
 		LOGGER.info("creating database for " + tenant.getTenantID() + " : " + getDatabaseName(tenant));

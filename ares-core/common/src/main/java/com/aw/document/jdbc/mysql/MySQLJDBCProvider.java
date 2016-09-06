@@ -76,6 +76,14 @@ public class MySQLJDBCProvider extends AbstractDocumentJDBCProvider {
 	}
 
 	@Override
+	public String getJDBCURL(Map<String, String> dbConfig) {
+		String url = "jdbc:mysql://"+ dbConfig.get(DBConfig.DB_HOST) +":" + dbConfig.get(DBConfig.DB_PORT)
+			+ "/" +  dbConfig.get(DBConfig.DB_SCHEMA) ;
+		url = url + "?allowMultiQueries=true";
+		return url;
+	}
+
+	@Override
 	public void createDB(Platform platform, Tenant tenant) throws Exception {
 
 		LOGGER.info("creating database for " + tenant.getTenantID() + " : " + getDatabaseName(tenant));

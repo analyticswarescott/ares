@@ -42,6 +42,16 @@ public interface JDBCProvider {
 	 * @param tenant
 	 * @return a jdbc url for the given host/port/tenant
 	 */
+	public String getJDBCURL(Map<String , String> dbConfig);
+
+	/**
+	 * get the jdbc url for the given host:port and tenant
+	 *
+	 * @param host
+	 * @param port
+	 * @param tenant
+	 * @return a jdbc url for the given host/port/tenant
+	 */
 	public String getJDBCURL(Platform platform, Tenant tenant);
 
 	/**

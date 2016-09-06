@@ -311,15 +311,15 @@ public class KafkaDriver implements Driver, Dependent {
 
 		m_jssc = new JavaStreamingContext(m_sc, Durations.seconds(m_def.getBatchIntervalSeconds()));
 
-		System.out.println("applyUpdate : JSSC created state is" + m_jssc.getState().toString());
+		//System.out.println("applyUpdate : JSSC created state is" + m_jssc.getState().toString());
 
 		for (Map.Entry<Tenant, List<StreamDef>> entry : update.getTenantToStreams().entrySet()) {
 
-			System.out.println("applyUpdate : tenant : " + entry.getKey().toString());
+			//System.out.println("applyUpdate : tenant : " + entry.getKey().toString());
 
 			for (StreamDef def : entry.getValue()) {
 
-				System.out.println("applyUpdate : def : " + def.getProcessorId());
+				//System.out.println("applyUpdate : def : " + def.getProcessorId());
 
 				try {
 					long l = System.currentTimeMillis();
@@ -389,11 +389,11 @@ public class KafkaDriver implements Driver, Dependent {
 		try {
 
 			ActiveStream activeStream = new ActiveStream(zk, platformMgr, tenant, streamDef);
-			logger.error(" created stream...now starting "  + streamDef.getProcessorId());
+			//logger.error(" created stream...now starting "  + streamDef.getProcessorId());
 			activeStream.start(m_jssc);
-			logger.error(" created stream...now registering processor " + streamDef.getProcessorId());
+			//logger.error(" created stream...now registering processor " + streamDef.getProcessorId());
 			registerProcessor(tenant, streamDef);
-			logger.error(" registered processor for:  "  + streamDef.getProcessorId());
+			//logger.error(" registered processor for:  "  + streamDef.getProcessorId());
 			return activeStream;
 
 		}

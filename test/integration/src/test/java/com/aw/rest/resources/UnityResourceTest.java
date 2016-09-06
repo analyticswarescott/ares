@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import com.aw.BaseIntegrationTest;
 import com.aw.common.util.JSONUtils;
-import com.aw.tools.generators.ESGenerator;
+
 
 public class UnityResourceTest extends BaseIntegrationTest {
 
