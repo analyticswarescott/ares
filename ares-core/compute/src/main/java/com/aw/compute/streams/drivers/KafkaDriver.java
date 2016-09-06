@@ -17,6 +17,7 @@ import javax.inject.Provider;
 
 import com.aw.common.system.structure.Hive;
 import com.aw.common.util.JSONUtils;
+import com.aw.common.util.RestClient;
 import com.aw.common.zookeeper.DefaultZkAccessor;
 import com.aw.common.zookeeper.ZkAccessor;
 import org.apache.commons.lang.ObjectUtils;
@@ -71,6 +72,7 @@ public class KafkaDriver implements Driver, Dependent {
 	private Provider<DocumentHandler> docs;
 	private PlatformClient client;
 
+	private JavaStreamingContext jssc;
 
 	private ZkAccessor tenantZkAccessor;  //TODO: add to injector
 
@@ -160,40 +162,115 @@ public class KafkaDriver implements Driver, Dependent {
 		//setup registration heartbeat every 3 seconds //TODO: add this to driver def as a setting
 		Heartbeater hb = new Heartbeater();
 		daemons.scheduleAtFixedRate(() -> hb.run(), m_def.getHeartbeatInterval(), m_def.getHeartbeatInterval(), TimeUnit.SECONDS);
+		//daemons.scheduleAtFixedRate(() -> hb.run(), m_def.getHeartbeatInterval(), 60, TimeUnit.SECONDS);
 
 
 		//start polling for streams to start
 		Handshaker hs = new Handshaker();
 		daemons.scheduleAtFixedRate(() -> hs.run(), m_def.getWorkPollDelay(), m_def.getWorkPollInterval(), TimeUnit.SECONDS);
+		//daemons.scheduleAtFixedRate(() -> hs.run(), m_def.getWorkPollDelay(), 60, TimeUnit.SECONDS);
 
 		//wait for signal to apply work
-		waitForWork();
+		//System.out.println(" §§§§§§§§§§§§§§§ launching work loop ");
+		doWorkLoop();
 
 	}
 
 	/**
 	 * Wait until the handshaker has work for us
 	 */
-	void waitForWork() throws Exception {
+	void doWorkLoop() throws Exception {
 
 		do {
 
 			try {
 
 				//wait for work
-				Streams update = streamUpdates.take();
+				Streams update = streamUpdates.poll(5000, TimeUnit.MILLISECONDS);
+				System.out.println(" got update ");
 
-				//stop, apply, start
-				stopStreamingContext();
-				applyUpdate(update);
-				currentStreams = update;
-				startStreamingContext();
+				//if timeout, check streams
+				if (update == null) {
+					System.out.println(" update is null -- checking streams ");
+					checkStreams();
+				}
+
+				//else we have work, apply it
+				else {
+					System.out.println(" update is not null -- refreshing streams ");
+					refreshStreams(update);
+				}
 
 			} catch (Exception e) {
-				getClient().logError(e, NodeRole.SPARK_WORKER);
+				throw e;
 			}
 
 		} while (running);
+
+	}
+
+	/**
+	 * check streams, restarting if necessary
+	 *
+	 * @throws Exception if anything goes wrong
+	 */
+	void checkStreams() throws Exception {
+
+		//can only check if we have active streams
+		if (jssc != null) {
+
+/*			//occasionally report the streaming context status
+			if (nextStreamStateLog == null || !time.now().isBefore(nextStreamStateLog)) {
+				nextStreamStateLog = time.now().plus(STREAM_STATE_LOG_INTERVAL);
+				logger.info("streams state: " + jssc.getState());
+			}*/
+
+			//if the status is not active, refresh the current streams
+			if (jssc.getState() != StreamingContextState.ACTIVE) {
+
+				logger.warn("streams not active, restarting current streams");
+				refreshStreams(currentStreams);
+
+			}
+
+		}
+		else {
+			System.out.println(" JSSC --------->>>> NULL");
+		}
+
+	}
+
+	void refreshStreams(Streams streams) throws Exception {
+
+		System.out.println("in refresh streams ");
+		//stop, apply, start
+		stopStreamingContext();
+
+		//set current streams
+		currentStreams = streams;
+
+		//if there's any work to do, do it now
+		if (currentStreams.getTenantToStreams().size() > 0) {
+
+			System.out.println("in refresh streams -- applying update");
+			applyUpdate(streams);
+
+
+			System.out.println("=== in refresh streams -- AFTER applying update");
+			//start streaming if there is anything to process
+			if (currentStreams.getTenantToStreams().size() > 0) {
+				System.out.println(" ====== -----in refresh streams -- about to start streaming context ");
+				startStreamingContext();
+			}
+			else {
+				System.out.println(" === in refresh streams -- stream size 0");
+			}
+
+		}  else {
+			System.out.println("no streams to start ");
+			logger.info("no streams to start");
+
+		}
 
 	}
 
@@ -234,9 +311,15 @@ public class KafkaDriver implements Driver, Dependent {
 
 		m_jssc = new JavaStreamingContext(m_sc, Durations.seconds(m_def.getBatchIntervalSeconds()));
 
+		System.out.println("applyUpdate : JSSC created state is" + m_jssc.getState().toString());
+
 		for (Map.Entry<Tenant, List<StreamDef>> entry : update.getTenantToStreams().entrySet()) {
 
+			System.out.println("applyUpdate : tenant : " + entry.getKey().toString());
+
 			for (StreamDef def : entry.getValue()) {
+
+				System.out.println("applyUpdate : def : " + def.getProcessorId());
 
 				try {
 					long l = System.currentTimeMillis();
@@ -244,12 +327,18 @@ public class KafkaDriver implements Driver, Dependent {
 					long elapsed =  System.currentTimeMillis();
 					logger.debug("DEBUG: elapsed time to define stream " + elapsed);
 				} catch (Exception e) {
-					platformMgr.handleException(e, NodeRole.SPARK_WORKER);
+					e.printStackTrace();
+					throw e;
 				}
 
 			}
 
+			System.out.println("applyUpdate : FINISHED defs for tenant: " + entry.getKey().toString());
+
+
 		}
+
+		System.out.println("applyUpdate : FINISHED tenants");
 
 	}
 
@@ -280,6 +369,7 @@ public class KafkaDriver implements Driver, Dependent {
 
 	void startStreamingContext() throws Exception {
 		long l = System.currentTimeMillis();
+		System.out.println("starting streams" );
 		logger.info("starting streams");
 		long elapsed =  System.currentTimeMillis();
 		logger.debug("DEBUG: elapsed time to start streaming context " + elapsed);
@@ -299,8 +389,11 @@ public class KafkaDriver implements Driver, Dependent {
 		try {
 
 			ActiveStream activeStream = new ActiveStream(zk, platformMgr, tenant, streamDef);
+			logger.error(" created stream...now starting "  + streamDef.getProcessorId());
 			activeStream.start(m_jssc);
+			logger.error(" created stream...now registering processor " + streamDef.getProcessorId());
 			registerProcessor(tenant, streamDef);
+			logger.error(" registered processor for:  "  + streamDef.getProcessorId());
 			return activeStream;
 
 		}
@@ -329,7 +422,7 @@ public class KafkaDriver implements Driver, Dependent {
 
 			DriverRegistrationResponse result =  rest.register(driverRootName, m_driverName, m_driverID);
 
-			logger.debug("register result was ------------- " + result);
+			logger.error("register result was ------------- " + result);
 
 			if (result == DriverRegistrationResponse.STOP) {
 				isStopping = true;
@@ -342,7 +435,7 @@ public class KafkaDriver implements Driver, Dependent {
 
 		}
 		catch (DriverInitializationException dex) {
-			logger.warn("error trying to register " + dex.getMessage());
+			logger.error("error trying to register " + dex.getMessage());
 			return false;
 		}
 		catch (Exception ex) {
@@ -363,7 +456,12 @@ public class KafkaDriver implements Driver, Dependent {
 
 	protected void registerProcessor(Tenant tenant, StreamDef streamDef) throws Exception{
 
-		rest.registerProcessor(m_driverName, streamDef.getProcessorName(tenant));
+		PlatformClient platformClient = new PlatformClient(platformMgr);
+
+		platformClient.registerProcessor(m_driverName, streamDef.getProcessorName(tenant));
+
+		//RestClient restClient = (RestClient) getClient();
+
 
 	}
 
@@ -376,9 +474,9 @@ public class KafkaDriver implements Driver, Dependent {
 			//start/re-start processing
 			m_jssc.start();
 
-			logger.info("* streaming context started : thread : " + Thread.currentThread().getName());
+			logger.error("* streaming context started : thread : " + Thread.currentThread().getName());
 			m_jssc.awaitTermination();
-			logger.info("*** context stopped : thread :" + Thread.currentThread().getName());
+			logger.error("*** context stopped : thread :" + Thread.currentThread().getName());
 
 		}
 
@@ -394,13 +492,13 @@ public class KafkaDriver implements Driver, Dependent {
 				if (register()) {
 
 					//if registration succeeds, re-register current streams
-					ActiveStream[] streams = m_streams.values().toArray(new ActiveStream[m_streams.size()]);
+				/*	ActiveStream[] streams = m_streams.values().toArray(new ActiveStream[m_streams.size()]);
 					for ( ActiveStream activeStream : streams)	 {
 
 						getDependency(PlatformMgr.class).handleLog("\n\n\n\nregistering " + activeStream.getTenant().getTenantID() + "/" + activeStream.getStreamDef().getProcessorId(), NodeRole.SPARK_MASTER);
 						registerProcessor(activeStream.getTenant(), activeStream.getStreamDef());
 
-					}
+					}*/
 
 				}
 			} catch (Exception e) {
@@ -434,8 +532,8 @@ public class KafkaDriver implements Driver, Dependent {
 
 				SecurityUtil.setThreadSystemAccess();
 
-				//spark stdout log TODO: remove this?
-				logger.debug("calling REST for work");
+				System.out.println("DEBUG: calling REST for work " );
+
 
 				//impersonate and add to list
 				Collection<Document> tenants = KafkaDriver.this.docs.get().getAllTenants();
@@ -443,12 +541,17 @@ public class KafkaDriver implements Driver, Dependent {
 				//add global streams
 				List<Document> globalDefs = KafkaDriver.this.docs.get().getDocumentsOfType(DocumentType.STREAM_GLOBAL);
 
+
+
 				//map of tenant -> stream
 				ListMap<Tenant, StreamDef> streams = new ListMap<Tenant, StreamDef>();
 				streams.put(Tenant.SYSTEM, toStreams(globalDefs));
 
 				//add tenant streams
 				for (Document tenantDoc : tenants) {
+
+
+
 					Tenant tenant = Tenant.forId(tenantDoc.getName());
 					for (StreamDef def : getStreams(tenant)) {
 						if (tenant.getTenantID().equals(Tenant.SYSTEM_TENANT_ID)  && !def.isSystem()) {
@@ -461,13 +564,21 @@ public class KafkaDriver implements Driver, Dependent {
 					}
 				}
 
+				System.out.println("DEBUG: got work ======= stream count is " + streams.size());
+
 				//keep only our streams
 				Streams update = new Streams(streams);
 
+
+
 				//see if we need to do anything, if so queue it
 				if (!ObjectUtils.equals(last, update)) {
+					System.out.println(" not equals fired -- adding stream update ");
 					streamUpdates.add(update);
 					last = update;
+				}
+				else {
+					System.out.println(" nothing to do ");
 				}
 
 			} catch (Exception e) {

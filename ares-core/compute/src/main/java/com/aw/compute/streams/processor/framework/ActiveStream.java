@@ -102,11 +102,15 @@ public class ActiveStream
 			);
 			_messages = messages;
 
+			logger.error(" DEBUG --- created stream " + streamDef.getProcessorName(tenant) + "  to listen to topics: " + sb.toString());
+
 			//get the stream handler for this stream def and initialize it
 			StreamHandler pf = initStreamHandler(streamDef);
 
 			//handle the stream
 			pf.handle(messages);
+
+			logger.error(" DEBUG === handled stream " + streamDef.getProcessorName(tenant) + "  to listen to topics: " + sb.toString());
 
 		}
 

@@ -60,7 +60,7 @@ public class RestClient implements PoolableObjectFactory<DefaultHttpClient> {
 	/**
 	 * maximum simultaneous rest connections from this rest client
 	 */
-	private static final int DEFAULT_MAX_ACTIVE = 10;
+	private static final int DEFAULT_MAX_ACTIVE = 20;
 
 	private ObjectPool<DefaultHttpClient> clients;
 
@@ -352,17 +352,22 @@ public class RestClient implements PoolableObjectFactory<DefaultHttpClient> {
 
 		//take an available client
 		DefaultHttpClient client = clients.borrowObject();
+		//System.out.println(" Active clients: " + clients.getNumActive());
 
 		try {
 
 			HttpResponse response = client.execute(request);
 			return new DefaultRestResponse(response, clients, client);
 
+
 		} catch (Exception e) {
 			//on exception return the client
 			clients.returnObject(client);
 			throw e;
 		}
+		/*finally {
+			clients.returnObject(client);
+		}*/
 
 	}
 
