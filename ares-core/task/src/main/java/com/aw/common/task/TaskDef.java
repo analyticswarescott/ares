@@ -5,6 +5,7 @@ import static com.aw.common.util.JSONUtils.updateFromString;
 import java.time.Instant;
 import java.util.List;
 
+import com.aw.common.system.scope.ResourceScope;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -258,5 +259,16 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 
 	@JsonIgnore
 	public JSONObject getConfig() { return this.config; }
+
+	public ResourceScope getScope() {
+		return scope;
+	}
+
+	public void setScope(ResourceScope scope) {
+		this.scope = scope;
+	}
+
+	private ResourceScope scope;
+
 
 }

@@ -17,6 +17,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.inject.Provider;
 
+import com.aw.common.system.scope.ResourceScope;
+import com.aw.common.tenant.Tenant;
 import org.apache.log4j.Logger;
 
 import com.aw.common.rest.security.Impersonation;
@@ -244,6 +246,7 @@ public class TaskController implements DocumentListener {
 		}
 
 		for (TaskDef task : tasks) {
+
 			execute(task);
 		}
 
@@ -251,7 +254,20 @@ public class TaskController implements DocumentListener {
 
 	void execute(TaskDef taskDef) throws Exception {
 
-		LOGGER.info("executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
+
+		//LOGGER.error("@@@@@@@@@@@@@@@@@@@@@@@ task " + taskDef.getName() + " scope is "  + taskDef.getScope()); ;
+
+		if (taskDef.getScope() == ResourceScope.SYSTEM && !taskDef.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
+			//LOGGER.error("DEBUG : skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
+			return;
+		}
+
+		if (taskDef.getScope() == ResourceScope.TENANT && taskDef.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
+			//LOGGER.error("DEBUG : skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
+			return;
+		}
+
+		LOGGER.error("DEBUG : executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
 
 		//initialize task service to execute the given task def
 		container.getService().onStarting(container, taskDef);
