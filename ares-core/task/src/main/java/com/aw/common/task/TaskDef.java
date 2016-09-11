@@ -2,10 +2,14 @@ package com.aw.common.task;
 
 import static com.aw.common.util.JSONUtils.updateFromString;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.aw.common.system.scope.ResourceScope;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -36,6 +40,9 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 	static final String CONFIG_KEY = "config";
 
 	static final String TASK_TYPE = "task_type";
+
+	static final String DB_CONFIG = "db";
+	static final String FIXED_WATERMARK = "fixed_watermark";
 
 	@Override
 	public void initialize(Object data, DocumentHandler docs) throws Exception {
@@ -269,6 +276,30 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 	}
 
 	private ResourceScope scope;
+
+	@JsonIgnore
+	public Map<String, String> getDBConfig() throws Exception {
+		//get config
+		JSONObject config = getConfig();
+
+		//get DB Config
+		JSONObject dbc = config.getJSONObject("db");
+		HashMap<String,String> dbConfig =
+			new ObjectMapper().readValue(dbc.toString(), HashMap.class);
+
+		return dbConfig;
+	}
+
+
+	public String getFixedWatermark() {
+		return fixed_watermark;
+	}
+	public void setFixedWatermark(String fixed_watermark) {
+		this.fixed_watermark = fixed_watermark;
+	}
+	private String fixed_watermark;
+
+
 
 
 }

@@ -55,6 +55,16 @@ public class TaskService extends ZkCluster {
 
 	}
 
+
+	public void updateTaskDefDocument(TaskDef def) throws  Exception {
+
+		Document doc = docs.get().getDocument(DocumentType.TASK_DEF, def.getName());
+		doc.setBodyFromObject(def);
+		docs.get().updateDocument(doc);
+		logger.warn(" updated document " + doc.getKey());
+
+	}
+
 	/**
 	 * @return all task definitions that need to be executed at some point
 	 */
