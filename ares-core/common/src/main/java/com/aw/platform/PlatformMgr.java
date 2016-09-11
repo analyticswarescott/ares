@@ -742,7 +742,7 @@ public class PlatformMgr implements DocumentListener, SecurityAware, Provider<Pl
 		//send the message
 		messenger.send(new StringMessage(tenant, topic, metadata.toString())); //send the message to kafka
 
-		logger.error(" DEBUG: File message placed on topic " + topic.getTopicName() );
+		logger.debug("File message placed on topic " + topic.getTopicName() );
 
     }
 

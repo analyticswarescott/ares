@@ -267,7 +267,7 @@ public class TaskController implements DocumentListener {
 			return;
 		}
 
-		LOGGER.error("DEBUG : executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
+		LOGGER.warn("==executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
 
 		//initialize task service to execute the given task def
 		container.getService().onStarting(container, taskDef);
