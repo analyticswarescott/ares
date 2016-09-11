@@ -56,6 +56,17 @@ public class TaskService extends ZkCluster {
 	}
 
 
+	public TaskDef getUpdatedTaskDef(TaskDef def, String tenantID) throws Exception {
+		Impersonation.impersonateTenant(tenantID);
+		try {
+			Document doc = docs.get().getDocument(DocumentType.TASK_DEF, def.getName());
+			return doc.getBodyAsObject(TaskDef.class);
+		}
+		finally {
+			Impersonation.unImpersonate();
+		}
+	}
+
 	public void updateTaskDefDocument(TaskDef def) throws  Exception {
 
 		Document doc = docs.get().getDocument(DocumentType.TASK_DEF, def.getName());

@@ -25,4 +25,6 @@ public abstract class AbstractTask implements Task {
 	public void setStartTime(Instant startTime) { this.startTime = startTime; }
 	private Instant startTime;
 
+
+
 }
