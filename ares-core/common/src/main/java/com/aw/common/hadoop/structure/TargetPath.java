@@ -65,41 +65,44 @@ public class TargetPath {
 
     public void scan(Platform platform) throws Exception{
         if (isDFS()) {
-            _fs = new DistributedFileSystem();
 
-            //TODO: handle configuration
+			if (_fs == null) {
+				_fs = new DistributedFileSystem();
+
+				//TODO: handle configuration
 
 
-			Configuration conf = new Configuration(false);
+				Configuration conf = new Configuration(false);
 
-			String clusterName = PlatformUtils.getHadoopClusterName(platform);
+				String clusterName = PlatformUtils.getHadoopClusterName(platform);
 
-			conf.set("fs.defaultFS",_path.toString());
-			conf.set("fs.default.name", conf.get("fs.defaultFS"));
-			conf.set("dfs.nameservices", clusterName);
-			conf.set("dfs.ha.namenodes." + clusterName,
-				PlatformUtils.getHadoopNameNodeList(platform));
+				conf.set("fs.defaultFS", _path.toString());
+				conf.set("fs.default.name", conf.get("fs.defaultFS"));
+				conf.set("dfs.nameservices", clusterName);
+				conf.set("dfs.ha.namenodes." + clusterName,
+					PlatformUtils.getHadoopNameNodeList(platform));
 
-			for (PlatformNode nn : PlatformUtils.getHadoopNameNodes(platform)) {
-				conf.set("dfs.namenode.rpc-address." + clusterName + "." + nn.getHost(),
-					nn.getHost() + ":" + nn.getSettingInt(HdfsName.PORT));
+				for (PlatformNode nn : PlatformUtils.getHadoopNameNodes(platform)) {
+					conf.set("dfs.namenode.rpc-address." + clusterName + "." + nn.getHost(),
+						nn.getHost() + ":" + nn.getSettingInt(HdfsName.PORT));
+				}
+
+				if (PlatformUtils.getHadoopNameNodes(platform).size() > 1) {
+					conf.set("dfs.client.failover.proxy.provider." + clusterName
+						, "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+				}
+
+
+				Iterator<Map.Entry<String, String>> i = conf.iterator();
+				while (i.hasNext()) {
+					Map.Entry e = i.next();
+					logger.debug(e.getKey() + ":" + e.getValue());
+				}
+
+				//_fs.initialize(_path.toUri(), new Configuration()); //before HA
+				//_fs  =  FileSystem.get(URI.create(conf.get("fs.defaultFS")), conf);
+				_fs = FileSystem.newInstance(URI.create(conf.get("fs.defaultFS")), conf);
 			}
-
-			if (PlatformUtils.getHadoopNameNodes(platform).size() >1) {
-				conf.set("dfs.client.failover.proxy.provider." + clusterName
-					, "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
-			}
-
-
-			Iterator<Map.Entry<String, String>> i = conf.iterator();
-			while (i.hasNext()) {
-				Map.Entry e = i.next();
-				logger.debug(e.getKey() + ":" + e.getValue());
-			}
-
-			//_fs.initialize(_path.toUri(), new Configuration()); //before HA
-			//_fs  =  FileSystem.get(URI.create(conf.get("fs.defaultFS")), conf);
-			_fs = FileSystem.newInstance(URI.create(conf.get("fs.defaultFS")), conf);
 
 
         }
