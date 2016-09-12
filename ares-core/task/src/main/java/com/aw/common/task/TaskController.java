@@ -5,12 +5,7 @@ import static java.util.stream.Collectors.groupingBy;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -245,9 +240,19 @@ public class TaskController implements DocumentListener {
 			return;
 		}
 
+		HashSet<String> alreadyCalled = new HashSet<>();
+
 		for (TaskDef task : tasks) {
 
-			execute(task);
+			if (alreadyCalled.contains(task.getTenant().getTenantID() + "-"  + task.getName())) {
+
+				execute(task);
+		    }
+			else {
+				LOGGER.error(" DEBUG -- already ran TASK : "  + task.getTenant().getTenantID() + "-" + task.getName());
+			}
+
+			alreadyCalled.add(task.getTenant().getTenantID() + "-" +  task.getName());
 		}
 
 	}
@@ -267,7 +272,7 @@ public class TaskController implements DocumentListener {
 			return;
 		}
 
-		LOGGER.warn("==executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
+		LOGGER.error("DEBUG ==executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
 
 		//initialize task service to execute the given task def
 		container.getService().onStarting(container, taskDef);

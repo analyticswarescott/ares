@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.inject.Provider;
 
+import com.aw.common.system.scope.ResourceScope;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +89,9 @@ public class TaskServiceTest {
 
 
 		TaskDef taskDef = new TaskDef();
+		taskDef.setTenant(Tenant.forId("1"));
+		taskDef.setName("test_task");
+		taskDef.setScope(ResourceScope.TENANT);
 		Document tenantDoc = mock(Document.class);
 		doReturn(new JSONObject(JSONUtils.objectToString(Tenant.forId("1")))).when(tenantDoc).getBody();
 		doReturn(Collections.singletonList(tenantDoc)).when(docs.get()).getAllTenants();

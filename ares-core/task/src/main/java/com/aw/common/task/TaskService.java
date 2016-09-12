@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.inject.Provider;
 
+import com.aw.common.system.scope.ResourceScope;
 import com.aw.common.zookeeper.structure.ZkPurpose;
 import org.apache.log4j.Logger;
 
@@ -84,7 +85,9 @@ public class TaskService extends ZkCluster {
 		SecurityUtil.setThreadSystemAccess();
 
 		Set<TaskDef> ret = new HashSet<>();
-		ret.addAll(docs.get().getBodiesAsObjects(DocumentType.TASK_DEF, TaskDef.class));
+
+		Set<TaskDef> tmp = new HashSet<>();
+		tmp.addAll(docs.get().getBodiesAsObjects(DocumentType.TASK_DEF, TaskDef.class));
 
 		//get system tasks
 
@@ -95,12 +98,28 @@ public class TaskService extends ZkCluster {
 			Tenant tenant = new Tenant(tenantDoc.getBody());
 			Impersonation.impersonateTenant(tenant);
 			try {
-				ret.addAll(docs.get().getBodiesAsObjects(DocumentType.TASK_DEF, TaskDef.class));
+				tmp.addAll(docs.get().getBodiesAsObjects(DocumentType.TASK_DEF, TaskDef.class));
 			} finally {
 				Impersonation.unImpersonate();
 			}
 
 		}
+
+
+		//weed tasks based on scope
+			for (TaskDef task : tmp) {
+				if (task.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID) && task.getScope() == ResourceScope.SYSTEM) {
+					ret.add(task);
+				} else if (!task.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID) && task.getScope() == ResourceScope.TENANT) {
+					ret.add(task);
+				}
+
+				//ALL
+				if (task.getScope() == ResourceScope.ALL) {
+					ret.add(task);
+				}
+			}
+
 
 		return ret;
 
@@ -246,7 +265,7 @@ public class TaskService extends ZkCluster {
 
 			} catch (Exception e) {
 				//in this case no task status will be added to the map
-				logger.warn("error getting task status", e);
+				logger.warn("error getting task status : " +  e.getMessage());
 			}
 
 		}

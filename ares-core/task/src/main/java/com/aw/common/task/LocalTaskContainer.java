@@ -58,7 +58,7 @@ public class LocalTaskContainer extends AbstractLocalMember implements TaskConta
 	@Override
 	public UUID executeTask(TaskDef taskDef) throws Exception {
 
-		LOGGER.info("executing task " + taskDef.getTenant().getTenantID() + "/" + taskDef.getType());
+		LOGGER.error("DEBUG executing task " + taskDef.getTenant().getTenantID() + "/" + taskDef.getType());
 
 		//get a guid for the task
 		UUID id = UUID.randomUUID();

@@ -45,7 +45,12 @@ public class DefaultOSInfoProvider {
 		for (JSONObject stat: base) {
 
 			OSPerfStats perf = JSONUtils.objectFromString(stat.toString(), OSPerfStats.class);
-			addNetworkData(p,ssi,perf);
+			try {
+				addNetworkData(p, ssi, perf);
+			}
+			catch(Exception ee) {
+				logger.error(" network data SYSSTAT error " + ee.getMessage());
+			}
 			addDiskSpace(perf);
 			addNodeRoles(p, perf);
 			ret.add(perf);
