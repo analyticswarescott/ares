@@ -135,7 +135,7 @@ public class TaskControllerTest {
 	public void testTaskLoop() throws Exception {
 
 		TaskController controller = new TaskController(mockContainer, new TestProvider<DocumentHandler>(testDocs), setTime);
-		controller.setMaxWaitTime(Duration.ofMillis(10L));
+		controller.setMaxWaitTime(Duration.ofMillis(20L));
 		controller.taskLoop();
 
 		//verify the tasks were executed, they should have been based on their next execution time
@@ -152,7 +152,7 @@ public class TaskControllerTest {
 		doReturn(Instant.MIN).when(task2).getNextExecutionTime(any(TimeSource.class));
 
 		TaskController controller = new TaskController(mockContainer, new TestProvider<DocumentHandler>(testDocs), setTime);
-		controller.setMaxWaitTime(Duration.ofMillis(10L));
+		controller.setMaxWaitTime(Duration.ofMillis(20L));
 		controller.taskLoop();
 
 		//verify the tasks were executed, they should have been based on their next execution time
@@ -169,7 +169,7 @@ public class TaskControllerTest {
 		doReturn(Instant.MIN).when(task2).getNextExecutionTime(any(TimeSource.class));
 
 		TaskController controller = new TaskController(mockContainer, new TestProvider<DocumentHandler>(testDocs), setTime);
-		controller.setMaxWaitTime(Duration.ofMillis(10L));
+		controller.setMaxWaitTime(Duration.ofMillis(20L));
 		controller.taskLoop();
 
 		//verify the tasks were executed, they should have been based on their next execution time

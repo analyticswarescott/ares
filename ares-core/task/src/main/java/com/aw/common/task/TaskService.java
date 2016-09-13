@@ -121,6 +121,10 @@ public class TaskService extends ZkCluster {
 			}
 
 
+		for (TaskDef t : ret) {
+			System.out.println(" DEBUG " + t.getName());
+		}
+
 		return ret;
 
 	}
@@ -265,7 +269,7 @@ public class TaskService extends ZkCluster {
 
 			} catch (Exception e) {
 				//in this case no task status will be added to the map
-				logger.warn("error getting task status : " +  e.getMessage());
+				logger.warn("error getting task status : " + e.getMessage());
 			}
 
 		}

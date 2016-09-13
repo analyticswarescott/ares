@@ -126,6 +126,7 @@ public class TaskController implements DocumentListener {
 
 	void runTasks() throws Exception {
 
+
 		//get all tasks that should run
 		Set<TaskDef> tasks = container.getService().getTasks();
 
@@ -162,6 +163,8 @@ public class TaskController implements DocumentListener {
 			}
 
 		}
+
+
 
 	}
 	/**
@@ -233,46 +236,48 @@ public class TaskController implements DocumentListener {
 
 	}
 
+
 	void execute(List<TaskDef> tasks) throws Exception {
 
 		//nothing to execute if null
 		if (tasks == null) {
+			//LOGGER.error(" DEBUG -- no  TASKs to execute : "  );
 			return;
 		}
 
-		HashSet<String> alreadyCalled = new HashSet<>();
 
 		for (TaskDef task : tasks) {
 
-			if (alreadyCalled.contains(task.getTenant().getTenantID() + "-"  + task.getName())) {
+			execute(task);
 
-				execute(task);
-		    }
-			else {
-				LOGGER.error(" DEBUG -- already ran TASK : "  + task.getTenant().getTenantID() + "-" + task.getName());
-			}
-
-			alreadyCalled.add(task.getTenant().getTenantID() + "-" +  task.getName());
 		}
-
 	}
 
+	HashSet<String> alreadyCalled = new HashSet<>(); //TODO: when to clear this
 	void execute(TaskDef taskDef) throws Exception {
 
+		TaskDef task = taskDef;
+			LOGGER.warn("evaluating TASK execution request : "  + task.getTenant().getTenantID() + "-" + task.getName());
+			if (alreadyCalled.contains(task.getTenant().getTenantID() + "-"  + task.getName())) {
+				LOGGER.error(" DEBUG -- already ran TASK : "  + task.getTenant().getTenantID() + "-" + task.getName());
+				return;
+			}
+			alreadyCalled.add(task.getTenant().getTenantID() + "-" +  task.getName());
 
-		//LOGGER.error("@@@@@@@@@@@@@@@@@@@@@@@ task " + taskDef.getName() + " scope is "  + taskDef.getScope()); ;
 
 		if (taskDef.getScope() == ResourceScope.SYSTEM && !taskDef.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
-			//LOGGER.error("DEBUG : skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
+			LOGGER.debug("skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
 			return;
 		}
 
 		if (taskDef.getScope() == ResourceScope.TENANT && taskDef.getTenant().getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
-			//LOGGER.error("DEBUG : skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
+			LOGGER.debug("skipping task " + taskDef.getName() + " for tenant " + taskDef.getTenant().getTenantID());
 			return;
 		}
 
-		LOGGER.error("DEBUG ==executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
+
+		LOGGER.warn("==executing task " + taskDef.getType() + " for tenant " + taskDef.getTenant().getTenantID());
+		
 
 		//initialize task service to execute the given task def
 		container.getService().onStarting(container, taskDef);
