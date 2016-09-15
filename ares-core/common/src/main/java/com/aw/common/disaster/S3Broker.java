@@ -2,12 +2,17 @@ package com.aw.common.disaster;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.aw.common.rest.security.TenantAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,14 +27,21 @@ import java.util.List;
  */
 public class S3Broker implements TenantAware {
 
+	public static final Logger logger = LoggerFactory.getLogger(S3Broker.class);
 	private AmazonS3 s3Client;
 
 
 	public S3Broker() {
 
 
+		AWSCredentialsProvider creds = new AWSCredentialsProviderChain(
+			new EnvironmentVariableCredentialsProvider(),
+			new SystemPropertiesCredentialsProvider()
+		);
+
+
 		this.s3Client  = AmazonS3ClientBuilder.standard()
-			.withCredentials(new EnvironmentVariableCredentialsProvider())
+			.withCredentials(creds)
 			.withRegion(Regions.valueOf("EU_CENTRAL_1")) //TODO: env or platform?
 			.build();
 	}
@@ -87,8 +99,7 @@ public class S3Broker implements TenantAware {
 
 
 			PutObjectResult por = s3Client.putObject(req);
-
-			System.out.println("Result Etag: " + por.getETag());
+			logger.warn(" stream written: " + bucketName + File.separator + key);
 
 
 		}
