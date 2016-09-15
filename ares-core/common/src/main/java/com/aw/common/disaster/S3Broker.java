@@ -7,6 +7,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.aw.common.rest.security.TenantAware;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by scott on 15/09/16.
  */
-public class S3Broker {
+public class S3Broker implements TenantAware {
 
 	private AmazonS3 s3Client;
 
@@ -32,6 +33,47 @@ public class S3Broker {
 			.withRegion(Regions.valueOf("EU_CENTRAL_1")) //TODO: env or platform?
 			.build();
 	}
+
+
+	public void ensureNamespace (String fullNamespace) throws Exception {
+
+		try {
+			if(!(s3Client.doesBucketExist(fullNamespace)))
+			{
+				System.out.println(" bucket " + fullNamespace + " not found...creating  " );
+				// Note that CreateBucketRequest does not specify region. So bucket is
+				// created in the region specified in the client.
+				s3Client.createBucket(new CreateBucketRequest(
+					fullNamespace));
+
+				System.out.println(" bucket " + fullNamespace + " CREATED  ");
+			}
+
+
+			// Get location.
+			String bucketLocation = s3Client.getBucketLocation(new GetBucketLocationRequest(fullNamespace));
+			System.out.println("bucket location = " + bucketLocation);
+
+		} catch (AmazonServiceException ase) {
+			System.out.println("Caught an AmazonServiceException, which " +
+				"means your request made it " +
+				"to Amazon S3, but was rejected with an error response" +
+				" for some reason.");
+			System.out.println("Error Message:    " + ase.getMessage());
+			System.out.println("HTTP Status Code: " + ase.getStatusCode());
+			System.out.println("AWS Error Code:   " + ase.getErrorCode());
+			System.out.println("Error Type:       " + ase.getErrorType());
+			System.out.println("Request ID:       " + ase.getRequestId());
+		} catch (AmazonClientException ace) {
+			System.out.println("Caught an AmazonClientException, which " +
+				"means the client encountered " +
+				"an internal error while trying to " +
+				"communicate with S3, " +
+				"such as not being able to access the network.");
+			System.out.println("Error Message: " + ace.getMessage());
+		}
+	}
+
 
 
 	public void writeStream(String bucketName, String key, InputStream inputStream) throws Exception {
@@ -56,11 +98,13 @@ public class S3Broker {
 	}
 
 
-	public  List<String> listKeys(String bucketName) {
-		return listKeys(bucketName, null);
+	public  List<String> listKeys(String bucketPrefix) {
+		return listKeys(bucketPrefix, null);
 	}
 
-	public  List<String> listKeys(String bucketName, String prefix) {
+	public  List<String> listKeys(String bucketPrefix, String prefix) {
+
+		String bucketName = bucketPrefix + "-" + getTenantID();
 
 		List<String> ret = new ArrayList<>();
 
@@ -69,7 +113,7 @@ public class S3Broker {
 			ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withMaxKeys(2);
 
 			if (prefix != null) {
-				req = req.withPrefix("prefix");
+				req = req.withPrefix(prefix);
 			}
 
 

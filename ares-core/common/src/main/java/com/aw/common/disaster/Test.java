@@ -13,6 +13,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.aw.common.rest.security.SecurityUtil;
 
 /**
  * Created by scott on 14/09/16.
@@ -23,18 +24,20 @@ public class Test {
 
 	public static void main(String[] args) throws Exception {
 
+		SecurityUtil.setThreadSystemAccess();
+
 		DefaultColdStorageProvider csp = new DefaultColdStorageProvider();
-		csp.init("shill-1234"); //set namespace=S3 bucket
+		csp.init("shill-buckets"); //set namespace=S3 bucket
 
 		File f = new File("/Users/scott/dev/src/ares/cluster/.editorconfig");
-		csp.storeStream("prefix2-file", new FileInputStream(f));
+		csp.storeStream("prefix1-file", new FileInputStream(f));
 
 		for (String s : csp.getKeyList()) {
 			System.out.println(" key in bucket: " + s);
 		}
 
 		System.out.println(" ====== now with prefix ");
-		for (String s : csp.getKeyList("prefix")) {
+		for (String s : csp.getKeyList("prefix2")) {
 			System.out.println(" key in bucket: " + s);
 		}
 

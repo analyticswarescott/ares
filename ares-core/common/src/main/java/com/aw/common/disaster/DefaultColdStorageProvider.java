@@ -1,41 +1,42 @@
 package com.aw.common.disaster;
 
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.model.Region;
+import com.aw.common.rest.security.TenantAware;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 
 /**
  * Created by scott on 15/09/16.
  */
-public class DefaultColdStorageProvider {//TODO: extract interface
+public class DefaultColdStorageProvider implements TenantAware {//TODO: extract interface if other than s3 is ever needed
 
-	private String namespace;
+	private String namespacePrefix;
 
 
-	private S3Broker broker;
+	private S3Broker broker;//TODO: extract interface if other than s3 is ever needed
 
-	public void init(String namespace) {
-		this.namespace = namespace;
+	public void init(String namespacePrefix) {
+		this.namespacePrefix = namespacePrefix;
 		this.broker= new S3Broker();
 	}
 
 	public void storeStream(String key, InputStream stream) throws Exception{
 
-		broker.writeStream(namespace, key, stream);
+		String fullNamespace = namespacePrefix + "-" + getTenantID();
 
-		System.out.println(" Stored data in Cold Storage for DR");
+		//ensure the desired namespace is created
+		broker.ensureNamespace(fullNamespace);
+
+		broker.writeStream(fullNamespace, key, stream);
+		System.out.println(" Stored data " + key + " in Cold Storage namespace " + fullNamespace + "  for DR");
 	}
 
 	public List<String> getKeyList() {
-		return broker.listKeys(namespace);
+		return broker.listKeys(namespacePrefix);
 	}
 
 	public List<String> getKeyList(String prefix) {
-		return broker.listKeys(namespace, prefix);
+		return broker.listKeys(namespacePrefix, prefix);
 	}
 
 
