@@ -30,7 +30,7 @@ public class Test {
 		csp.init("shill-buckets"); //set namespace=S3 bucket
 
 		File f = new File("/Users/scott/dev/src/ares/cluster/.editorconfig");
-		csp.storeStream("prefix1-file", new FileInputStream(f));
+		csp.storeStream("prefix1-file2", new FileInputStream(f));
 
 		for (String s : csp.getKeyList()) {
 			System.out.println(" key in bucket: " + s);

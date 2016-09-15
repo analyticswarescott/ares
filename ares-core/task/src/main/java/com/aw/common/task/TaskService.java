@@ -120,11 +120,7 @@ public class TaskService extends ZkCluster {
 				}
 			}
 
-
-		for (TaskDef t : ret) {
-			System.out.println(" DEBUG " + t.getName());
-		}
-
+		
 		return ret;
 
 	}
