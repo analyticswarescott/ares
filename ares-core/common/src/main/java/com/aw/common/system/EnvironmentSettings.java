@@ -59,6 +59,8 @@ public class EnvironmentSettings {
 		CUSTOM_WEBAPP_PKG(false, true, "foo.pkg"),
 		CUSTOM_WEBAPP_JAR(false, true, "placeholder.jar"),
 
+		COLD_STORE_ENABLED(false, true, "false"),
+
 
 		DB_VENDOR(false, true, POSTGRES),
 
