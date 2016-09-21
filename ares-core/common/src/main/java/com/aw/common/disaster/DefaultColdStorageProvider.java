@@ -1,6 +1,7 @@
 package com.aw.common.disaster;
 
 import com.aw.common.rest.security.TenantAware;
+import com.aw.common.tenant.Tenant;
 
 import java.io.InputStream;
 import java.util.List;
@@ -40,6 +41,27 @@ public class DefaultColdStorageProvider implements TenantAware {//TODO: extract 
 	}
 
 
+	public List<String> listNamespaces() {
 
+		return broker.listBuckets();
+	}
+
+
+
+
+//System utility methods
+	public void emptyNamespace(String fullNamespace) {
+		if (!getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
+			throw new RuntimeException(" unauthorized method access -- must be system tenant ");
+		}
+		broker.emptyBucket(fullNamespace);
+	}
+
+	public void deleteNamespace(String fullNamespace) {
+		if (!getTenantID().equals(Tenant.SYSTEM_TENANT_ID)) {
+			throw new RuntimeException(" unauthorized method access -- must be system tenant ");
+		}
+		broker.deleteBucket(fullNamespace);
+	}
 
 }

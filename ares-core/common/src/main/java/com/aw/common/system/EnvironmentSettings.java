@@ -60,6 +60,7 @@ public class EnvironmentSettings {
 		CUSTOM_WEBAPP_JAR(false, true, "placeholder.jar"),
 
 		COLD_STORE_ENABLED(false, true, "false"),
+		COLD_STORE_NAMESPACE_PREFIX(false, true, "test.coldstore.analyticsware.com"),
 
 
 		DB_VENDOR(false, true, POSTGRES),

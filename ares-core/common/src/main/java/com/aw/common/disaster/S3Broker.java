@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -174,5 +175,44 @@ public class S3Broker implements TenantAware {
 		return ret;
 	}
 
+
+	public void emptyBucket(String bucketName) {
+		logger.warn("Emptying S3 bucket: " + bucketName);
+		ObjectListing objectListing = s3Client.listObjects(bucketName);
+
+		while (true) {
+			for ( Iterator<?> iterator = objectListing.getObjectSummaries().iterator(); iterator.hasNext(); ) {
+				S3ObjectSummary objectSummary = (S3ObjectSummary) iterator.next();
+				s3Client.deleteObject(bucketName, objectSummary.getKey());
+			}
+
+			if (objectListing.isTruncated()) {
+				objectListing = s3Client.listNextBatchOfObjects(objectListing);
+			} else {
+				break;
+			}
+		};
+		VersionListing list = s3Client.listVersions(new ListVersionsRequest().withBucketName(bucketName));
+		for ( Iterator<?> iterator = list.getVersionSummaries().iterator(); iterator.hasNext(); ) {
+			S3VersionSummary s = (S3VersionSummary)iterator.next();
+			s3Client.deleteVersion(bucketName, s.getKey(), s.getVersionId());
+		}
+	}
+
+	public void deleteBucket(String bucketName) {
+		logger.warn(" deleting S3 bucket: " + bucketName);
+		emptyBucket(bucketName);
+	}
+
+	public List<String> listBuckets() {
+
+		List<String> ret = new ArrayList<>();
+
+		for (Bucket bucket: s3Client.listBuckets()) {
+			ret.add(bucket.getName());
+		}
+
+		return ret;
+	}
 
 }
