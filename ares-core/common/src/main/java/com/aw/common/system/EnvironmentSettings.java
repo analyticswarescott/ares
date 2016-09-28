@@ -97,8 +97,13 @@ public class EnvironmentSettings {
         DG_REPORTING_SERVICE_BASE_URL(false, true, "http://localhost:8080"),
         DISABLE_AUTH_VALIDATION(false, false, "false"),
         ALLOW_ORIGIN_HOST(false, false, "http://localhost:8080"),
+
+
+
         DEVELOPMENT_MODE(false, false, "false"),
-        TEST_MODE(false, false, "false"),
+
+
+        TEST_MODE(false, true, "false"),
 
         /**
          * settable injection class for use in rest layer dependency injection, would generally extend AbstractBinder

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.system.scope.ResourceScope;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
@@ -38,6 +39,7 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 
 	//name of key storing task-type-specific config data
 	static final String CONFIG_KEY = "config";
+	static final String TEST_CONFIG_KEY = "test_config";
 
 	static final String TASK_TYPE = "task_type";
 
@@ -265,7 +267,9 @@ public class TaskDef implements TaskConfig, IBodyInitializable, JSONable, Compar
 	private JSONObject config;
 
 	@JsonIgnore
-	public JSONObject getConfig() { return this.config; }
+	public JSONObject getConfig() {
+		return this.config;
+	}
 
 	public ResourceScope getScope() {
 		return scope;

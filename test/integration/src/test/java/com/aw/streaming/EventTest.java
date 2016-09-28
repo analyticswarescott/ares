@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.aw.common.util.RestResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.DateTime;
@@ -97,7 +98,7 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 	public void testStatus(Tenant tenant, Topic topic, long offset) throws Exception {
 
 		setThreadSystemAccess();
-		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
+		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform());
 
 		DefaultPlatformStatus status = client.executeReturnObject(HttpMethod.GET,
 			VERSIONED_REST_PREFIX + "/platform/status/" + DateTime.now().getMillis(), DefaultPlatformStatus.class, false);
@@ -170,24 +171,19 @@ public class EventTest extends StreamingIntegrationTest implements TenantAware {
 		provisionTenant("1");
 
 		//fire array of events via REST
-		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform().get());
-		HttpResponse resp = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
+		RestClient client = new RestClient(NodeRole.REST, TestDependencies.getPlatform());
+		RestResponse resp = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
 
-		System.out.println(" event rest call 1 status: " + resp.getStatusLine().getStatusCode());
-		System.out.println(EntityUtils.toString(resp.getEntity()));
+		System.out.println(" event rest call 1 status: " + resp.payloadToString());
+
 
 		//test UPSERT-tolerance
-		HttpResponse resp2 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
-
-		System.out.println(" event rest call 2 status: " + resp2.getStatusLine().getStatusCode());
-		System.out.println(EntityUtils.toString(resp2.getEntity()));
+		RestResponse resp2 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event.json"));
 
 
 		//send event 2 with a different ID
-		HttpResponse resp3 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event2.json"));
+		RestResponse resp3 = client.execute(HttpMethod.PUT, "/rest/1.0/ares/event/1/event", DataFeedUtils.getInputStream("test_game_event2.json"));
 
-		System.out.println(" event rest call 3 status: " + resp3.getStatusLine().getStatusCode());
-		System.out.println(EntityUtils.toString(resp3.getEntity()));
 
 
 

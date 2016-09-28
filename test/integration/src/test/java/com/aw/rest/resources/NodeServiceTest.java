@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Provider;
 
+import com.aw.common.util.RestResponse;
 import com.aw.test.nodeservice.TestRoleManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;
@@ -95,17 +96,17 @@ public class NodeServiceTest extends BaseIntegrationTest {
 			new PlatformController(mock(RestCluster.class), mock(LocalRestMember.class), TestNodeBinder.getPlatformMgr().get()).configurePlatformNodes();
 
 			//test apis
-			RestClient client = new RestClient(NodeRole.NODE, TestDependencies.getPlatform().get());
+			RestClient client = new RestClient(NodeRole.NODE, TestDependencies.getPlatform());
 
 			//get status of roles
 			PlatformNode node = TestDependencies.getPlatform().get().getNode(NodeRole.NODE);
 			for (NodeRole role : node.getRoles()) {
 				logger.info("calling status on role " + role);
-				HttpResponse response = client.execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/node/"+role.name().toLowerCase()+"/status");
+				RestResponse response = client.execute(HttpMethod.GET, Statics.VERSIONED_REST_PREFIX + "/node/"+role.name().toLowerCase()+"/status");
 				if (role != NodeRole.NODE) {
-					assertEquals("expect a 200 from status for role " + role, response.getStatusLine().getStatusCode(), 200);
+					assertEquals("expect a 200 from status for role " + role, response.getStatusCode(), 200);
 				}
-				HttpClientUtils.closeQuietly(response);
+
 
 			}
 

@@ -176,6 +176,9 @@ public class DBMgr {
 		return new JSONArray();
 	}
 
+
+
+
 	public Connection getConnection(Tenant tenant) throws SQLException {
 
 		Preconditions.checkNotNull(tenant, "tenant cannot be null when getting database connection");
@@ -358,7 +361,7 @@ public class DBMgr {
 
 	}
 
-/*	public long executeScalarCountSelect(Tenant tenant, String sql) throws Exception {
+	public long executeScalarCountSelect(Tenant tenant, String sql) throws Exception {
 
 		try (Connection conn = getConnection(tenant)) {
 			Statement st = conn.createStatement();
@@ -369,7 +372,22 @@ public class DBMgr {
 		} catch (Exception ex) {
 			throw ex;
 		}
-	}*/
+	}
+
+	public long executeScalarCountSelect(Map<String, String> dbConfig, String sql) throws Exception {
+
+		try (Connection conn = DBMgr.getConnection(getJDBCProvider().getJDBCURL(dbConfig),
+			dbConfig.get(DBConfig.DB_USER), dbConfig.get(DBConfig.DB_PASS))) {
+
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			rs.next();
+			return rs.getLong(1);
+
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
 
 
 

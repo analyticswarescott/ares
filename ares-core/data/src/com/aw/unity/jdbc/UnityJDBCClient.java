@@ -133,9 +133,12 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 
 
 			if (conn == null) {
-				//get schema-ed connection to the defined target DB
-				conn = DBMgr.getConnection(provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID()))
-					, dbConfig.get(DBConfig.DB_USER), dbConfig.get(DBConfig.DB_PASS));
+
+				System.out.println("JDBC connecting to: " + provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID())));
+
+					//get schema-ed connection to the defined target DB
+					conn = DBMgr.getConnection(provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID()))
+						, dbConfig.get(DBConfig.DB_USER), dbConfig.get(DBConfig.DB_PASS));
 			}
 			 ps = getInsertForDataType(conn, dataType);
 

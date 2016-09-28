@@ -33,6 +33,8 @@ import com.google.common.base.Preconditions;
  *
  */
 public class DocumentMgr implements TenantAware {
+	public static final String DEFAULTS_DIR = "defaults";
+
 
 	static final Logger logger = Logger.getLogger(DocumentMgr.class);
 

@@ -62,6 +62,10 @@ public class TaskDefTest {
 		assertEquals(Type.RECURRING, def2.getSchedule().getType());
 		assertNotNull(def2.getSchedule().getRecurrencePattern());
 		assertEquals("0 0 1 1/1 * ? *", def2.getSchedule().getRecurrencePattern().toString());
+
+
+		System.out.println(JSONUtils.objectToString(def));
+
 	}
 
 	@Test
@@ -96,6 +100,10 @@ public class TaskDefTest {
 		assertEquals(2, testData.size());
 		assertEquals("data1", testData.get(0).getData());
 		assertEquals("data2", testData.get(1).getData());
+
+
+
+
 
 	}
 

@@ -107,7 +107,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 	public void getDocumentsOfType() throws Exception {
 
         setThreadSystemAccess();
-		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform().get());
+		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform());
 
 		String username = UUID.randomUUID().toString();
         addUser(username, "1");
@@ -132,7 +132,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 
 		//impersonate tenant 1, delete all stream documents from it
 		boolean unimpersonate = Impersonation.impersonateTenant("1");
-		DocumentHandler doc1 = new DocumentHandlerRest("1", TestDependencies.getPlatform().get());
+		DocumentHandler doc1 = new DocumentHandlerRest("1", TestDependencies.getPlatform());
 		List<Document> list1 = doc1.getDocumentsOfType(DocumentType.USER_SETTINGS);
 		TestDependencies.getDocs().get().deleteDocument(DocumentType.USER_SETTINGS, list1.get(0).getName());
 
@@ -149,7 +149,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 	public void getTagsForDocumentsOfType() throws Exception {
 
 		setThreadSystemAccess();
-		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform().get());
+		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform());
 
 		// No tags in the system yet for the test type
 		Collection<Tag> list = docs.getTagsForDocumentType(DocumentType.TEST_TYPE);
@@ -183,7 +183,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 	public void getAllTenants() throws Exception {
 
 
-		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform().get());
+		DocumentHandler docs = new DocumentHandlerRest(Tenant.SYSTEM_TENANT_ID, TestDependencies.getPlatform());
 
 		Collection<Document> tenants = docs.getAllTenants();
 		assertEquals("tenant list should have 3 tenants in it", 3, tenants.size());
@@ -192,7 +192,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 
 	public void updateDocument() throws Exception {
 
-		DocumentHandler docs = new DocumentHandlerRest("1", TestDependencies.getPlatform().get());
+		DocumentHandler docs = new DocumentHandlerRest("1", TestDependencies.getPlatform());
 
 		Document doc = docs.getDocument(DocumentType.WORKSPACE, "default");
 		DocumentEnvelope envelope = docs.updateDocument(doc);
@@ -211,7 +211,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 
 		final String tenantID = "1";
 
-		final DocumentHandler docs = new DocumentHandlerRest(tenantID, TestDependencies.getPlatform().get());
+		final DocumentHandler docs = new DocumentHandlerRest(tenantID, TestDependencies.getPlatform());
 
 		// Create a new test doc with no grouping
 		final String testDocName = "test_doc";
@@ -237,7 +237,7 @@ public class DocumentResourceTest extends BaseIntegrationTest {
 		addUser(userID, tenantID);
 		setThreadSecurity(tenantID, userID, userID);
 
-		DocumentHandler docs = new DocumentHandlerRest(tenantID, TestDependencies.getPlatform().get());
+		DocumentHandler docs = new DocumentHandlerRest(tenantID, TestDependencies.getPlatform());
 
 		final DocumentsBulkEditForm bulkEditForm = new DocumentsBulkEditForm();
 

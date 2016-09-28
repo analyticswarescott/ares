@@ -3,6 +3,7 @@ package com.aw.compute.streams.processor;
 import com.aw.common.processor.AbstractIterableProcessor;
 import com.aw.common.rdbms.DBMgr;
 import com.aw.common.spark.StreamDef;
+import com.aw.common.system.EnvironmentSettings;
 import com.aw.common.tenant.Tenant;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.ProcessorInitializationException;

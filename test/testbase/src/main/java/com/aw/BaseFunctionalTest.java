@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.aw.common.util.es.ESKnownIndices;
+import com.aw.document.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -56,10 +58,6 @@ import com.aw.common.tenant.Tenant;
 import com.aw.common.util.HttpStatusUtils;
 import com.aw.common.util.JSONUtils;
 import com.aw.compute.streams.processor.GenericESProcessor;
-import com.aw.document.Document;
-import com.aw.document.DocumentHandler;
-import com.aw.document.DocumentHandlerRest;
-import com.aw.document.DocumentType;
 import com.aw.platform.DefaultPlatform;
 import com.aw.platform.NodeRole;
 import com.aw.platform.Platform;
@@ -104,11 +102,13 @@ public class BaseFunctionalTest {
 		setExtraSysProps();
 
 
-	/*	String confDirectoryPath = getConfDirectory();
-		File confDirectory = new File(confDirectoryPath);
+		File confDirectory = getConfDirectory();
 		if ( !confDirectory.exists() || !confDirectory.isDirectory() ) {
 			throw new RuntimeException("Missing or invalid CONF_DIRECTORY environment variable. Please supply this to proceed.");
-		}*/
+		}
+
+		//set up the documents within the conf directory
+		initConfDir(confDirectory);
 
 		// Set defaults for the integration tests
 		final Map<String, String> env = new HashMap<>();
@@ -137,6 +137,36 @@ public class BaseFunctionalTest {
 		setEnv(env);
 
 	}
+
+
+
+	private void initConfDir(File confDir) throws Exception {
+
+		//populate the default document tree for integration tests
+		File docsDir = new File(confDir, DocumentMgr.DEFAULTS_DIR);
+
+		//delete if there in case there was something that was changed
+		docsDir.delete();
+
+		//make the new, clean docs directory
+		docsDir.mkdirs();
+
+		//we'll pull in the production docs and test docs into one tree
+		File prodDocs = new File(TestDocumentHandler.PROD_DOCS_PATH);
+		File testDocs = new File(TestDocumentHandler.UNIT_TEST_DOCS_PATH);
+
+		//copy production docs to this directory
+		FileUtils.copyDirectory(prodDocs, docsDir);
+
+		//copy test docs to this directory
+		FileUtils.copyDirectory(testDocs, docsDir);
+
+		//copy in log4j
+		FileUtils.copyFileToDirectory(new File(TestDocumentHandler.CONF_PATH + "/log4j.properties"), confDir);
+		FileUtils.copyFileToDirectory(new File(TestDocumentHandler.CONF_PATH + "/log4j.ns.properties"), confDir);
+
+	}
+
 
 	/**
 	 * Allows setting a custom environment variable
@@ -211,20 +241,14 @@ public class BaseFunctionalTest {
 
     }
 
-    private File getRootDir() {
-        File rootDir = new File( new File("").getAbsolutePath() );
+	protected File getRootDir() {
+		File rootDir = new File( new File("").getAbsolutePath() );
 
-		String s = rootDir.getAbsolutePath();
-        if ( s.endsWith("integration") ) {
-            rootDir = new File( rootDir.getParentFile().getParentFile().getAbsolutePath() );
-        }
-		else
-		if ( s.endsWith( "testbase" ) ) {
-			rootDir = new File( rootDir.getParentFile().getParentFile().getAbsolutePath() );
-		}
+		rootDir = new File( rootDir, "target" );
 
-        return rootDir;
-    }
+		return rootDir;
+	}
+
 
     @SuppressWarnings("all")
 	private void setEnv(Map<String, String> newenv) {
@@ -875,14 +899,16 @@ public class BaseFunctionalTest {
         Thread.sleep(3000);
     }
 
-    protected String getConfDirectory() {
-        // not set; assume its root
+	protected File getConfDirectory() {
+		// not set; assume its root
+		File rootDir = getRootDir();
 
-		return EnvironmentSettings.getConfDirectory();
+		//make sure it's there
+		File confDir = new File(rootDir, "conf");
+		confDir.mkdirs();
 
-       // File rooDir = getRootDir();
-        //return rooDir.getAbsolutePath() + File.separatorChar + "conf";
-    }
+		return confDir;
+	}
 
 	protected String getDataDirectory() {
 		// not set; assume its root

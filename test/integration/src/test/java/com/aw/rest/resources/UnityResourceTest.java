@@ -1,3 +1,4 @@
+/*
 package com.aw.rest.resources;
 
 import static org.junit.Assert.assertEquals;
@@ -110,7 +111,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 	}
 
 	//bulk test json - logon, download a bunch of bad files of varying sizes, logoff
-	/**
+	*/
+/**
 { "ot" : 23, "esu" : "2015-09-01 08:00:00.000 -0500", "un" : "jlehmann" }
 { "ot" :  2, "esu" : "2015-09-01 08:01:00.000 -0500", "un" : "jlehmann", "in" : "badFile1.exe", "fs" : 10000 }
 { "ot" :  2, "esu" : "2015-09-01 08:02:00.000 -0500", "un" : "jlehmann", "in" : "badFile2.exe", "fs" : 20000 }
@@ -124,7 +126,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 { "ot" :  2, "esu" : "2015-09-01 08:10:00.000 -0500", "un" : "jlehmann", "in" : "badFile10.exe", "fs" : 10000 }
 { "ot" :  2, "esu" : "2015-09-01 08:11:00.000 -0500", "un" : "jlehmann", "in" : "badFile11.exe", "fs" : 12000 }
 { "ot" : 24, "esu" : "2015-09-01 08:15:00.000 -0500", "un" : "jlehmann" }
-	 */
+	 *//*
+
 	private static List<String> BULK_TEST_DATA_1 = null; static { try { BULK_TEST_DATA_1 = Arrays.asList(new String[] {
 		"{ \"dg_utype\": \"user_action_logon\", \"ua_esu\" : "+JSONUtils.JSON_DATE_FORMAT.parse("2015-09-01 08:00:00.000 -0500").getTime()+", \"ua_un\" : \"jlehmann\" }"
 	});
@@ -188,7 +191,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 
 	private static int bulkDataSize() { return BULK_TEST_DATA_1.size() + BULK_TEST_DATA_2.size() + BULK_TEST_DATA_3.size(); }
 
-	/**
+	*/
+/**
 
 	 TEST QUERIES
 {
@@ -229,7 +233,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
         ]
     }
 }
-	 */
+	 *//*
+
 
 	//what follows is a generic query structure to make defining queries in this test class easier
 
@@ -450,7 +455,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 			"            }\n" +
 			QUERY_SUFFIX;
 
-	/**
+	*/
+/**
 	 * Mappings for test elasticsearch data
 	 *
 {
@@ -490,7 +496,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 		}}
 	}
 }
-	 */
+	 *//*
+
 	private static final String MAPPING =
 			"{\n" +
 			"        \"settings\": {\n" +
@@ -563,7 +570,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 			"                        }\n" +
 			"                    }";
 
-	/** Test Top N values
+	*/
+/** Test Top N values
 	{
 	    "detail": false,
 	    "size": 0,
@@ -606,7 +614,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
             ]
         }
     }
-	 */
+	 *//*
+
 	private static final String TOP_N =
 		"	{\n" +
 		"	    \"detail\": false,\n" +
@@ -648,7 +657,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 		"        }\n" +
 		"    }";
 
-	/** Test Bottom N values
+	*/
+/** Test Bottom N values
 	{
         "attributes": [
             {
@@ -692,7 +702,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
             ]
         }
     }
-	 */
+	 *//*
+
 	private static final String BOTTOM_N =
 			"	{\n" +
 			"        \"attributes\": [\n" +
@@ -738,7 +749,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 			"        }\n" +
 			"    }";
 
-	/**
+	*/
+/**
 {
     "size": 3,
     "attributes": [
@@ -776,7 +788,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
         ]
     }
 }
-	 */
+	 *//*
+
 	private static final String AND_QUERY =
 			"{\n" +
 			"    \"size\": 3,\n" +
@@ -816,7 +829,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
 			"    }\n" +
 			"}";
 
-	/**
+	*/
+/**
 {
     "filter": {
         "operator": "and",
@@ -854,7 +868,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
         }
     ]
 }
-	 */
+	 *//*
+
 	private static final String WORKSPACE_IN_TOP_TEST =
 			"{\n" +
 			"    \"filter\": {\n" +
@@ -894,8 +909,10 @@ public class UnityResourceTest extends BaseIntegrationTest {
 			"    ]\n" +
 			"}";
 
-	/**
-	/**
+	*/
+/**
+	*/
+/**
 {
     "filter": {},
     "attributes": [
@@ -916,7 +933,8 @@ public class UnityResourceTest extends BaseIntegrationTest {
         }
     ]
 }
-	 */
+	 *//*
+
 	private static final String EMPTY_FILTER_TEST =
 			"{\n" +
 			"    \"filter\": {},\n" +
@@ -1256,4 +1274,4 @@ public class UnityResourceTest extends BaseIntegrationTest {
 
 	}
 
-}
+}*/

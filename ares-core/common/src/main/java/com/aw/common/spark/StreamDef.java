@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aw.common.system.EnvironmentSettings;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -173,9 +174,21 @@ public class StreamDef {
 	public void setDestTopic(Topic destTopic) { this.destTopic = destTopic; }
 	private Topic destTopic;
 
-	public Map<String, String> getConfigData() { return configData; }
+	public Map<String, String> getConfigData() {  //TODO: create Testable interface for defs to implement to allow test divergence
+
+		if (EnvironmentSettings.isTestMode() && configDataTest != null) {
+			return configDataTest;
+		}
+		return configData;
+	}
 	public void setConfigData(Map<String, String> processorData) { configData = processorData; }
 	private Map<String, String> configData = new HashMap<String, String>();
+
+
+	public Map<String, String> getConfigDataTest() { return configDataTest; }
+	public void setConfigDataTest(Map<String, String> configDataTest) { this.configDataTest = configDataTest; }
+	private Map<String, String> configDataTest;
+
 
 	/**
 	 * optional property to set a number of rows to target for each task (e.g. optimal row count for ES bulk insert)
