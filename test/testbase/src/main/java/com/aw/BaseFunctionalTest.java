@@ -121,6 +121,10 @@ public class BaseFunctionalTest {
 		env.put("DISABLE_AUTH_VALIDATION", "false");
 		env.put( "TEST_MODE", "true"  );
 
+
+		//System.out.println(" ±±±±± Using CONFIG PATH :  " + confDirectory.getAbsolutePath());
+		env.put("CONF_DIRECTORY", confDirectory.getAbsolutePath());
+
 		File f = new File(".");
 		String path = f.getAbsolutePath();
 
@@ -159,6 +163,8 @@ public class BaseFunctionalTest {
 		FileUtils.copyDirectory(prodDocs, docsDir);
 
 		//copy test docs to this directory
+
+		System.out.println(" ===== copying test files from "  + testDocs.getAbsolutePath());
 		FileUtils.copyDirectory(testDocs, docsDir);
 
 		//copy in log4j

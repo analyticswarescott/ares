@@ -9,7 +9,7 @@ import java.io.File;
 
 public class TestDocumentHandler extends LocalDocumentHandler {
 
-	public static final String CONF_PATH = "../../rest/conf";
+	public static final String CONF_PATH = "../../conf";
 	public static final String PROD_DOCS_PATH = CONF_PATH + "/" + DocumentMgr.DEFAULTS_DIR;
 	public static final String UNIT_TEST_DOCS_PATH = "./src/test/resources/docs";
 
