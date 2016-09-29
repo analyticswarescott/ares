@@ -32,11 +32,13 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
 
 	public static final String TABLE_NAME = "table_name";
 
+	public static final String TARGET_DB = "target_db";
+
+
 
     private String table_name;
 
-	//TODO: DBDef object?
-	private Map<String, String> configData;
+
 
 	private DBMgr dbMgr;
 
@@ -53,7 +55,7 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
 
 		  // DBMgr dbMgr = getProviderDependency(DBMgr.class).get();
 
-		   UnityJDBCClient jdbcClient = new UnityJDBCClient(configData);
+		   UnityJDBCClient jdbcClient = new UnityJDBCClient(getTargetDBConfig());
 		   jdbcClient.bulkInsert(Tenant.forId(tenant), "", data.get(0).getType(), data);
 
 
@@ -69,8 +71,9 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
 
     @Override
     public void init(StreamDef streamDef) throws ProcessorInitializationException{
+		super.init(streamDef);
         try {
-            table_name = streamDef.getConfigData().get(TABLE_NAME).toUpperCase();
+            table_name = configData.get(TABLE_NAME).toString().toUpperCase();
 			this.configData = streamDef.getConfigData();
         }
         catch (Exception ex) {
@@ -78,9 +81,22 @@ public class GenericJDBCProcessor extends AbstractIterableDataProcessor implemen
         }
     }
 
-
 	@Override
 	protected Map<String, String> getRefDBConfig() {
-		return configData;
+		Object refDB = configData.get(REF_DB);
+
+		if (refDB == null) {
+			return (Map<String, String>) configData.get(TARGET_DB);
+		}
+
+		return (Map<String, String>) configData.get(REF_DB);
+
+	}
+
+
+	protected Map<String, String> getTargetDBConfig() {
+
+			return (Map<String, String>) configData.get(TARGET_DB);
+
 	}
 }

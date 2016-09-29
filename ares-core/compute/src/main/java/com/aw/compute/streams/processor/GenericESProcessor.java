@@ -2,6 +2,7 @@ package com.aw.compute.streams.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.aw.common.processor.AbstractIterableProcessor;
 import com.aw.common.spark.StreamDef;
@@ -10,6 +11,7 @@ import com.aw.common.util.es.ESKnownIndices;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
+import com.aw.compute.streams.processor.framework.AbstractIterableDataProcessor;
 import com.aw.compute.streams.processor.framework.IterableTupleProcessor;
 import com.aw.platform.Platform;
 import com.aw.platform.PlatformMgr;
@@ -24,7 +26,7 @@ import com.aw.unity.es.UnityESClient;
  *
  * <li>
  */
-public class GenericESProcessor extends AbstractIterableProcessor implements Dependent, IterableTupleProcessor {
+public class GenericESProcessor extends AbstractIterableDataProcessor implements Dependent, IterableTupleProcessor {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,34 +67,15 @@ public class GenericESProcessor extends AbstractIterableProcessor implements Dep
 
     }
 
-    /**
-     * Convert incoming json to platform data using unity
-     *
-     * @param messages
-     * @return
-     * @throws Exception
-     */
-    private List<Data> toData(Iterable<String> messages) throws Exception {
-
-    	List<Data> ret = new ArrayList<Data>();
-
-    	//get the unity data for this json so we can get the ID
-    	for (String json : messages) {
-
-    		Data cur = getDependency(UnityInstance.class).newData(json);
-    		ret.add(cur);
-
-    	}
-
-    	return ret;
-
-    }
 
     @Override
-    public void init(StreamDef streamDef) throws ProcessorInitializationException{
+    public void init(StreamDef streamDef ) throws ProcessorInitializationException{
+		super.init(streamDef);
         try {
-            index = ESKnownIndices.valueOf(streamDef.getConfigData().get(INDEX_NAME).toUpperCase());
-            index_type = streamDef.getConfigData().get(INDEX_TYPE);
+            index = ESKnownIndices.valueOf(streamDef.getConfigData().get(INDEX_NAME).toString().toUpperCase());
+			if (streamDef.getConfigData().get(INDEX_TYPE) != null) {
+				index_type = streamDef.getConfigData().get(INDEX_TYPE).toString();
+			}
         }
         catch (Exception ex) {
             throw new ProcessorInitializationException(ex.getMessage(), ex);
@@ -100,5 +83,7 @@ public class GenericESProcessor extends AbstractIterableProcessor implements Dep
     }
 
     public UnityESClient getClient() { return new UnityESClient(getDependency(PlatformMgr.class)); }
+
+
 
 }

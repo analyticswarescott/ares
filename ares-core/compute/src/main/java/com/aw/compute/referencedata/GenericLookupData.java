@@ -74,18 +74,15 @@ public class GenericLookupData extends AbstractReferenceData implements Referenc
 
 	}
 
+
+
+
 	protected void update() throws StreamProcessingException {
 
 		try {
 			logger.error(" DEBUG: updating from source ");
 
-
-			JDBCProvider provider = (JDBCProvider) Class.forName(refDBConfig.get(DBConfig.DB_PROVIDER)).newInstance();
-
-			System.out.println("JDBC connecting to: " + provider.getJDBCURL(refDBConfig, Tenant.forId(getTenantID())));
-
-			try (Connection conn = DBMgr.getConnection(provider.getJDBCURL(refDBConfig, Tenant.forId(getTenantID()))
-				, refDBConfig.get(DBConfig.DB_USER), refDBConfig.get(DBConfig.DB_PASS)))
+			try (Connection conn = DBMgr.getConnection(refDBConfig))
 
 			{
 				String sql = " select ref_key, ref_value from " + referenceType;

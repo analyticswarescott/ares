@@ -2,10 +2,12 @@ package com.aw.compute.streams.processor.framework;
 
 import com.aw.common.processor.IterableProcessor;
 import com.aw.common.rest.security.TenantAware;
+import com.aw.common.spark.StreamDef;
 import com.aw.compute.inject.Dependent;
 import com.aw.compute.referencedata.GenericLookupData;
 import com.aw.compute.referencedata.GenericLookupDataMgr;
 import com.aw.compute.streams.exceptions.DataProcessingException;
+import com.aw.compute.streams.exceptions.ProcessorInitializationException;
 import com.aw.compute.streams.exceptions.StreamProcessingException;
 import com.aw.unity.*;
 import org.codehaus.jettison.json.JSONObject;
@@ -26,7 +28,10 @@ public abstract class AbstractIterableDataProcessor implements IterableProcessor
 	private static final long serialVersionUID = 1L;
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	public static final String REF_DB = "ref_db";
 
+	//TODO: DBDef object?
+	protected Map<String, Object> configData;
 
 	public AbstractIterableDataProcessor() {
 
@@ -95,7 +100,20 @@ public abstract class AbstractIterableDataProcessor implements IterableProcessor
 
 	}
 
-	protected abstract Map<String, String> getRefDBConfig();
+	public void init(StreamDef streamDef) throws ProcessorInitializationException {
+		try {
+			this.configData = streamDef.getConfigData();
+		}
+		catch (Exception ex) {
+			throw new ProcessorInitializationException(ex.getMessage(), ex);
+		}
+	}
+
+	protected Map<String, String> getRefDBConfig() {
+
+		return (Map<String, String>) configData.get(REF_DB);
+
+	}
 
 
 }

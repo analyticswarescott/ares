@@ -6,6 +6,7 @@ import com.aw.common.rest.security.SecurityAware;
 import com.aw.common.tenant.Tenant;
 import com.aw.common.util.*;
 import com.aw.document.jdbc.JDBCProvider;
+import com.aw.document.jdbc.mysql.MySQLJDBCProvider;
 import com.aw.platform.Platform;
 import com.aw.unity.Data;
 import com.aw.unity.DataType;
@@ -127,18 +128,15 @@ public class UnityJDBCClient implements JSONHandler, SecurityAware {
 		//Connection conn = null;
 		PreparedStatement ps = null;
 		try {
+
 			if (provider == null) {
 				provider = (JDBCProvider) Class.forName(dbConfig.get(DBConfig.DB_PROVIDER)).newInstance();
 			}
 
-
 			if (conn == null) {
 
-				System.out.println("JDBC connecting to: " + provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID())));
-
-					//get schema-ed connection to the defined target DB
-					conn = DBMgr.getConnection(provider.getJDBCURL(dbConfig, Tenant.forId(getTenantID()))
-						, dbConfig.get(DBConfig.DB_USER), dbConfig.get(DBConfig.DB_PASS));
+				//get schema-ed connection to the defined target DB
+				conn = DBMgr.getConnection(dbConfig);
 			}
 			 ps = getInsertForDataType(conn, dataType);
 

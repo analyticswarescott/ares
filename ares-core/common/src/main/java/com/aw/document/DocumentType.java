@@ -51,6 +51,7 @@ public enum DocumentType implements ScopedResource {
 
     //other types
     TEST_TYPE,
+	Z_NOT_USED,
 
 	//Third party configuration file templates
 	CONFIG_3P(ResourceScope.SYSTEM);

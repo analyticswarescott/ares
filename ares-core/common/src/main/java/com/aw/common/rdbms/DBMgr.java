@@ -390,5 +390,19 @@ public class DBMgr {
 	}
 
 
+	public static Connection getConnection(Map<String, String> dbConfig) throws  Exception {
+		boolean dbPerTenant = false; //TODO add as config
+
+		JDBCProvider provider = (JDBCProvider) Class.forName(dbConfig.get(DBConfig.DB_PROVIDER)).newInstance();
+
+		String jdbcUrl = provider.getJDBCURL(dbConfig);
+		System.out.println("JDBC connecting to: " + jdbcUrl);
+
+		Connection conn = DBMgr.getConnection(jdbcUrl, dbConfig.get(DBConfig.DB_USER),
+			dbConfig.get(DBConfig.DB_PASS));
+
+		return conn;
+
+	}
 
 }

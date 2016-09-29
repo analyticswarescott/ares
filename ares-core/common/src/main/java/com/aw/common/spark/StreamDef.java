@@ -174,15 +174,12 @@ public class StreamDef {
 	public void setDestTopic(Topic destTopic) { this.destTopic = destTopic; }
 	private Topic destTopic;
 
-	public Map<String, String> getConfigData() {  //TODO: create Testable interface for defs to implement to allow test divergence
+	public Map<String, Object> getConfigData() {  //TODO: create Testable interface for defs to implement to allow test divergence
 
-		if (EnvironmentSettings.isTestMode() && configDataTest != null) {
-			return configDataTest;
-		}
 		return configData;
 	}
-	public void setConfigData(Map<String, String> processorData) { configData = processorData; }
-	private Map<String, String> configData = new HashMap<String, String>();
+	public void setConfigData(Map<String, Object> processorData) { configData = processorData; }
+	private Map<String, Object> configData = new HashMap<String, Object>();
 
 
 	public Map<String, String> getConfigDataTest() { return configDataTest; }

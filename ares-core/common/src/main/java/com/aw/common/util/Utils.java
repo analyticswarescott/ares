@@ -22,7 +22,7 @@ public class Utils {
 	 * @param obj The object that should be updated
 	 * @throws InitializationException If anything goes wrong
 	 */
-	public static <T> void initializeFromMap(Map<String, String> data, Object obj) throws InitializationException {
+	public static <T> void initializeFromMap(Map<String, Object> data, Object obj) throws InitializationException {
 
 		try {
 
