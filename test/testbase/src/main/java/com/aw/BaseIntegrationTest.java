@@ -69,7 +69,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 
 
 		if (EnvironmentSettings.getAresBaseHome() == null) {
-			System.out.println(" WTF no base home dir yet?");
+			System.out.println(" ??????????? no base home dir yet?");
 			Thread.sleep(1000);
 		}
 		else {
@@ -77,14 +77,14 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 		}
 
 		if (EnvironmentSettings.getAppLayerHome() == null) {
-			System.out.println(" WTF no app home dir yet?");
+			System.out.println(" ???????????? no app home dir yet?");
 			Thread.sleep(1000);
 		}else {
 			System.out.println("=======APP LAYER HOME is " + EnvironmentSettings.getAppLayerHome());
 		}
 
 		if (getConfDirectory().equals("null/conf")) {
-			System.out.println(" WTF no config dir yet?");
+			System.out.println(" ?????????? no config dir yet?");
 			Thread.sleep(1000);
 		}
 		else {
