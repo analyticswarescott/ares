@@ -56,11 +56,11 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 
 
 	@Override
-	public void setExtraSysProps() {
+	public void setExtraSysProps()  {
 
 	}
 
-	public void doExtraPreClean () {
+	public void doExtraPreClean () throws Exception {
 		//TODO: override in custom tests
 	}
 
@@ -91,6 +91,7 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 			System.out.println("=======CONF DIR is " + getConfDirectory().getAbsolutePath());
 		}
 
+		doExtraPreClean();
 
         //so I can see what the heck is being tested
     	System.out.println("\n\n=== " + getClass().getSimpleName() + "#" + name.getMethodName() + " ===\n\n");
