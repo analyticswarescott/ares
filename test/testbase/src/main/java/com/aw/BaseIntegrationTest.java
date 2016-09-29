@@ -60,6 +60,10 @@ public abstract class BaseIntegrationTest extends BaseFunctionalTest {
 
 	}
 
+	public void doExtraPreClean () {
+		//TODO: override in custom tests
+	}
+
     @Before
     public final void beforeIntegration() throws Exception {
 
