@@ -396,7 +396,7 @@ public class DBMgr {
 		JDBCProvider provider = (JDBCProvider) Class.forName(dbConfig.get(DBConfig.DB_PROVIDER)).newInstance();
 
 		String jdbcUrl = provider.getJDBCURL(dbConfig);
-		System.out.println("JDBC connecting to: " + jdbcUrl);
+		logger.debug("JDBC connecting to: " + jdbcUrl);
 
 		Connection conn = DBMgr.getConnection(jdbcUrl, dbConfig.get(DBConfig.DB_USER),
 			dbConfig.get(DBConfig.DB_PASS));

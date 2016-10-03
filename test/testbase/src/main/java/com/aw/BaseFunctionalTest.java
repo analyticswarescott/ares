@@ -164,12 +164,14 @@ public class BaseFunctionalTest {
 
 		//copy test docs to this directory
 
-		System.out.println(" ===== copying test files from "  + testDocs.getAbsolutePath());
+		System.out.println(" ===== copying test files from " + testDocs.getAbsolutePath());
 		FileUtils.copyDirectory(testDocs, docsDir);
 
 		//copy in log4j
 		FileUtils.copyFileToDirectory(new File(TestDocumentHandler.CONF_PATH + "/log4j.properties"), confDir);
 		FileUtils.copyFileToDirectory(new File(TestDocumentHandler.CONF_PATH + "/log4j.ns.properties"), confDir);
+
+		FileUtils.copyFileToDirectory(new File(TestDocumentHandler.CONF_PATH + "/sms.json"), confDir);
 
 	}
 

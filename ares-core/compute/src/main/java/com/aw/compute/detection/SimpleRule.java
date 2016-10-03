@@ -90,13 +90,13 @@ public class SimpleRule extends AbstractDetectionRule implements IBodyInitializa
     public void process(Data data) throws StreamProcessingException {
 
     	try {
-
     		//if we match
         	if (isMatch(data)) {
 
         		executeActions(data);
 
         	}
+
 
     	} catch (StreamProcessingException e) {
     		throw e;
@@ -105,6 +105,7 @@ public class SimpleRule extends AbstractDetectionRule implements IBodyInitializa
     	}
 
     }
+
 
     protected void executeActions(Data data) throws Exception {
 

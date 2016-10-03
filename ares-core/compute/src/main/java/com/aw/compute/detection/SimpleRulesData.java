@@ -51,7 +51,7 @@ public class SimpleRulesData extends AbstractPlatformDocumentData implements Ref
 		for (Document doc : documents) {
 
 			try {
-				rules.add(doc.getBodyAsObject(SimpleRule.class));
+				rules.add(doc.getBodyAsObject());
 			} catch (Exception e) {
 				getDependency(PlatformMgr.class).handleException(e, NodeRole.SPARK_WORKER);
 			}
