@@ -597,6 +597,15 @@ public class PlatformController implements TenantAware {
 
     public void startProcessing() throws Exception{
 
+		if (_globalDrivers.size() == 0) {
+			logger.warn("========================== 0 spark drivers defined -- starting without spark ");
+			setPlatformState(PlatformState.RUNNING);
+			return;
+		}
+		else {
+			logger.warn("========================== " + _globalDrivers.size() +  " spark drivers defined -- starting spark ");
+		}
+
         if (!isPlatformStartEnabled()) {
             logger.warn(" Platform startup is disabled.  This should only happen in test modes ");
             return;
@@ -617,7 +626,7 @@ public class PlatformController implements TenantAware {
 
         while (getPlatformState() == PlatformState.STARTING) {
 
-            //wait for status of
+			//wait for status of
             initializeSpark();
 
         }
