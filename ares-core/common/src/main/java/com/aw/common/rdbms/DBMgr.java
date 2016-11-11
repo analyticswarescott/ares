@@ -146,8 +146,14 @@ public class DBMgr {
 		p.setPassword(provider.getPassword());
 		// p.setJmxEnabled(true);
 		p.setTestWhileIdle(false);
-		// p.setTestOnBorrow(true);
-		// p.setValidationQuery("SELECT 1");
+
+
+		//allow for re-connect when underlying DB re-starts
+		 p.setTestOnBorrow(true);
+		 p.setValidationQuery("SELECT 1");
+
+
+
 		p.setTestOnReturn(false);
 		p.setValidationInterval(5000);
 		p.setTimeBetweenEvictionRunsMillis(10000);
